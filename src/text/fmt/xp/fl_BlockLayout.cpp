@@ -10557,7 +10557,7 @@ void	fl_BlockLayout::StopListInBlock(void)
 	//
 	// Stops the list in the current block
 	//
-	static gchar lid[15],pszlevel[5];
+	static gchar lid[15], pszlevel[12];
 	UT_DebugOnly<bool> bRet;
 	UT_uint32 id, level;
 	UT_GenericVector<const gchar*> vp;
