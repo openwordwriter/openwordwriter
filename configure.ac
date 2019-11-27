@@ -71,20 +71,31 @@ AC_ARG_ENABLE([qt],
 	abi_cv_qt="no"
 ])
 
+AC_ARG_ENABLE([gtk4],
+	[AS_HELP_STRING([--enable-gtk4], [Build using Gtk4])],
+[
+	abi_cv_gtk4="yes"
+        GTK_VERSION_REQ=3.96.0
+        GTK_ENCODED_VERSION="GDK_VERSION_3_96"
+],
+[
+	abi_cv_gtk4="no"
+])
+
 #
 # setting the deps requirement is done further down
 #
 
 # cross platform deps
 fribidi_req='fribidi >= 0.10.4'
-glib_req='glib-2.0 >= 2.6.0 gthread-2.0 >= 2.6.0 gobject-2.0 >= 2.6.0'
+glib_req='glib-2.0 >= 2.6.0 gthread-2.0 >= 2.60.0 gobject-2.0 >= 2.60.0'
 gsf_req='libgsf-1 >= 1.14.26'
 wv_req='wv-1.0 >= 1.2.0'
 
 dnl Do NOT get goffice on Qt
 dnl It will link Gtk+ 3 but Qt will dlopen Gtk+ 2
 dnl This cause kaboom.
-if test "x$abi_cv_qt" = "xno"; then
+if test "x$abi_cv_qt" = "xno" -a "x$abi_cv_gtk4" = "xno"; then
 goffice_req='libgoffice-0.10 >= 0.10.12'
 fi
 
@@ -109,7 +120,11 @@ opt_pkgs=''
 # gtk deps
 cairo_req='cairo-pdf cairo-ps pangocairo'
 #
+if test "x$abi_cv_gtk4" = "xno"; then
 gtk_req="gtk+-3.0 >= $GTK_VERSION_REQ gtk+-unix-print-3.0 librsvg-2.0 >= 2.16.0"
+else
+gtk_req="gtk4 >= $GTK_VERSION_REQ gtk4-unix-print librsvg-2.0 >= 2.16.0"
+fi
 dnl cairo-fc is needed but only available on cairo > 1.10
 dnl http://bugzilla.abisource.com/show_bug.cgi?id=13265
 PKG_CHECK_EXISTS(cairo >= 1.10, [gtk_req="$gtk_req cairo-fc"],[])
@@ -163,6 +178,8 @@ case ${host_os} in
     PLATFORM="unix"
     if test "x$abi_cv_qt" = "xyes"; then
       TOOLKIT="qt"
+    elif test "x$abi_cv_gtk4" = "xyes"; then
+      TOOLKIT="gtk4"
     else
       TOOLKIT="gtk"
     fi
@@ -471,7 +488,7 @@ AC_ARG_WITH([champlain],
 	[AS_HELP_STRING([--with-champlain], [use champlain to display maps])],
 	,[with_champlain="check"])
 
-if test "$TOOLKIT" = "qt"; then
+if test "$TOOLKIT" = "qt" -a "$TOOLKIT" = "gtk4"; then
     with_champlain=no
 fi
 
@@ -690,13 +707,13 @@ fi
 
 PKG_CHECK_MODULES(DEPS,[$deps_pkgs])
 
-if test "$TOOLKIT" = "gtk"; then
+if test "$TOOLKIT" = "gtk" -a "$TOOLKIT" = "gtk4"; then
        DEPS_CFLAGS="$DEPS_CFLAGS -DGDK_VERSION_MIN_REQUIRED=$GTK_ENCODED_VERSION"
 fi
 dnl -DGDK_VERSION_MAX_ALLOWED=$GTK_ENCODED_VERSION"
 
 dnl make that for all.
-if test "$TOOLKIT" = "gtk" -o "$TOOLKIT" = "cocoa" -o "$TOOLKIT" = "qt"; then
+if test "$TOOLKIT" = "gtk" -o "$TOOLKIT" = "gtk4" -o "$TOOLKIT" = "cocoa" -o "$TOOLKIT" = "qt"; then
 	dnl move away
 	AC_DEFINE([WITH_CAIRO], [1], [Using Cairo])
 	WITH_CAIRO=1
@@ -723,15 +740,21 @@ BASE_CPPFLAGS="$SYSTEM_CFLAGS"
 for f in $(echo $BASE_CPPFLAGS_); do BASE_CPPFLAGS="$BASE_CPPFLAGS $f"; done
 AC_SUBST([BASE_CPPFLAGS])
 
+TOOLKIT_DIR=${TOOLKIT}
+if test "$TOOLKIT" = gtk4; then
+   TOOLKIT_DIR=gtk
+fi
+AC_SUBST([TOOLKIT_DIR])
+
 AF_CPPFLAGS_='
   ${BASE_CPPFLAGS} 
-  -I${top_srcdir}/src/af/ev/${TOOLKIT} 
+  -I${top_srcdir}/src/af/ev/${TOOLKIT_DIR}
   -I${top_srcdir}/src/af/ev/xp 
-  -I${top_srcdir}/src/af/gr/${TOOLKIT} 
+  -I${top_srcdir}/src/af/gr/${TOOLKIT_DIR}
   -I${top_srcdir}/src/af/gr/xp 
-  -I${top_srcdir}/src/af/util/${PLATFORM} 
+  -I${top_srcdir}/src/af/util/${PLATFORM}
   -I${top_srcdir}/src/af/util/xp 
-  -I${top_srcdir}/src/af/xap/${TOOLKIT} 
+  -I${top_srcdir}/src/af/xap/${TOOLKIT_DIR}
   -I${top_srcdir}/src/af/xap/xp'
 AF_CPPFLAGS=
 for f in $(echo $AF_CPPFLAGS_); do AF_CPPFLAGS="$AF_CPPFLAGS $f"; done
@@ -746,7 +769,7 @@ AC_SUBST([AF_TEST_CPPFLAGS])
 
 TEXT_CPPFLAGS_='
   ${AF_CPPFLAGS} 
-  -I${top_srcdir}/src/text/fmt/${TOOLKIT}
+  -I${top_srcdir}/src/text/fmt/${TOOLKIT_DIR}
   -I${top_srcdir}/src/text/fmt/xp 
   -I${top_srcdir}/src/text/ptbl/xp'
 TEXT_CPPFLAGS=
@@ -762,7 +785,7 @@ AC_SUBST([TEXT_TEST_CPPFLAGS])
 
 IMPEXP_CPPFLAGS_='
   ${TEXT_CPPFLAGS} 
-  -I${top_srcdir}/src/wp/impexp/${TOOLKIT} 
+  -I${top_srcdir}/src/wp/impexp/${TOOLKIT_DIR}
   -I${top_srcdir}/src/wp/impexp/xp'
 IMPEXP_CPPFLAGS=
 for f in $(echo $IMPEXP_CPPFLAGS_); do IMPEXP_CPPFLAGS="$IMPEXP_CPPFLAGS $f"; done
@@ -777,7 +800,7 @@ AC_SUBST([IMPEXP_TEST_CPPFLAGS])
 
 WP_CPPFLAGS_='
   ${IMPEXP_CPPFLAGS} 
-  -I${top_srcdir}/src/wp/ap/${TOOLKIT} 
+  -I${top_srcdir}/src/wp/ap/${TOOLKIT_DIR}
   -I${top_srcdir}/src/wp/ap/xp
   -I${top_srcdir}/src/plugins'
 WP_CPPFLAGS=
@@ -808,7 +831,7 @@ fi
 
 # maybe just switch on TOOLKIT instead of the fancy TARGET defines
 AM_CONDITIONAL([TOOLKIT_COCOA], test "$TOOLKIT" = "cocoa")
-AM_CONDITIONAL([TOOLKIT_GTK], test "$TOOLKIT" = "gtk")
+AM_CONDITIONAL([TOOLKIT_GTK], test "$TOOLKIT" = "gtk" -o "$TOOLKIT" = "gtk4")
 AM_CONDITIONAL([TOOLKIT_QT], test "$TOOLKIT" = "qt")
 AM_CONDITIONAL([TOOLKIT_WIN], test "$TOOLKIT" = "win")
 
@@ -837,7 +860,7 @@ elif test "$TOOLKIT" = "cocoa"; then
 	# override static/shared, on cocoa. shared only
 	enable_shared="yes"
 	enable_static="no"
-elif test "$TOOLKIT" = "gtk"; then
+elif test "$TOOLKIT" = "gtk" -o "$TOOLKIT" = "gtk4"; then
 	AC_DEFINE([TOOLKIT_GTK], [1], [Build gtk+ user interface])
 	AC_DEFINE([TOOLKIT_GTK_ALL], [1], [Build gtk+ user interface])
 dnl We have no reason to mess with that.
@@ -855,7 +878,7 @@ AM_CONDITIONAL([ENABLE_STATIC], test "$enable_static" = "yes")
 
 PKG_CHECK_MODULES(PLUGIN,[$glib_req])
 PLUGIN_CFLAGS="$PLUGIN_CFLAGS "'${WP_CPPFLAGS} -DABI_DLL'
-if test "$TOOLKIT" = "gtk"  || test "$TOOLKIT" = "qt" && 
+if test "$TOOLKIT" = "gtk" || test "$TOOLKIT" = "gtk4" || test "$TOOLKIT" = "qt" &&
    test "$enable_shared" = "yes"; then
 	# link plugins to work around gcc visibility issue with 
 	# derived classes in dlopened modules
@@ -936,9 +959,12 @@ if test "$abi_cv_gio" = "yes"; then
 	AC_DEFINE([WITH_GIO], [1], [Define if using GIO])
 fi
 
-dnl It's always on with goffice.
-AC_DEFINE([HAVE_GO_MATH_EDITOR_NEW], [1], [Always defined to goffice])
-AM_CONDITIONAL([TOOLKIT_GTK_ALL], test "$TOOLKIT" = "gtk")
+dnl It's always on with goffice. Disabled for gtk4
+if test "$TOOLKIT" != "gtk4"; then
+   AC_DEFINE([HAVE_GOFFICE], [1], [We have goffice])
+   AC_DEFINE([HAVE_GO_MATH_EDITOR_NEW], [1], [Always defined to goffice])
+fi
+AM_CONDITIONAL([TOOLKIT_GTK_ALL], test "$TOOLKIT" = "gtk" -o "$TOOLKIT" = "gtk4")
 
 ALL_PLUGINS_="\
   m4_n([plugin_list])"

@@ -1,5 +1,5 @@
 
-noinst_LTLIBRARIES = libgtk.la
+noinst_LTLIBRARIES = lib@TOOLKIT@.la
 
 AM_CPPFLAGS = 						\
 	$(WP_CPPFLAGS) 						\
@@ -16,7 +16,7 @@ spell_ui_gtk3 = ap_UnixDialog_Spell.ui
 
 statusbar_src = ap_UnixStatusBar.cpp
 
-libgtk_la_SOURCES = \
+lib@TOOLKIT@_la_SOURCES = \
 	GTKCommon.h \
 	GTKCommon.cpp \
 	ap_DocView.cpp \
@@ -161,12 +161,12 @@ conditional_ui = \
 
 if ENABLE_SPELL
 
-libgtk_la_SOURCES += $(spell_src)
+lib@TOOLKIT@_la_SOURCES += $(spell_src)
 
 endif
 
 if ENABLE_STATUSBAR
-libgtk_la_SOURCES += $(statusbar_src)
+lib@TOOLKIT@_la_SOURCES += $(statusbar_src)
 endif
 
 EXTRA_DIST = ap_UnixDialog_Annotation.ui \

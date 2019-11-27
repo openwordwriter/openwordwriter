@@ -1,7 +1,7 @@
 
 DIST_SUBDIRS = t
 
-noinst_LTLIBRARIES = libgtk.la
+noinst_LTLIBRARIES = lib@TOOLKIT@.la
 
 # TODO: fix the wp include, needed because of ap_Features.h
 AM_CPPFLAGS = \
@@ -10,7 +10,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/wp/ap/xp \
 	-DICONDIR="\"$(ABIWORD_ICONDIR)\""
 
-libgtk_la_SOURCES = \
+lib@TOOLKIT@_la_SOURCES = \
 	xap_GtkUtils.h \
 	xap_GtkUtils.cpp \
 	xap_GtkObjectHolder.h \
@@ -102,4 +102,4 @@ EXTRA_DIST =  \
 	xap_UnixDlg_ListDocuments.ui \
 	$(NULL)
 
-libgtk_la_SOURCES += $(altgtk_src)
+lib@TOOLKIT@_la_SOURCES += $(altgtk_src)

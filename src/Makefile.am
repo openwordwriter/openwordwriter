@@ -76,16 +76,16 @@ libabiword_@ABIWORD_SERIES@_la_LIBADD = \
 	plugins/libplugins.la \
 	text/fmt/xp/libxp.la \
 	text/ptbl/xp/libxp.la \
-	wp/ap/$(TOOLKIT)/lib$(TOOLKIT).la \
+	wp/ap/$(TOOLKIT_DIR)/lib$(TOOLKIT).la \
 	wp/ap/xp/libxp.la \
 	wp/impexp/xp/libxp.la \
-	af/xap/$(TOOLKIT)/lib$(TOOLKIT).la \
+	af/xap/$(TOOLKIT_DIR)/lib$(TOOLKIT).la \
 	af/xap/xp/libxp.la \
-	af/gr/$(TOOLKIT)/lib$(TOOLKIT).la \
+	af/gr/$(TOOLKIT_DIR)/lib$(TOOLKIT).la \
 	af/gr/xp/libxp.la \
 	af/util/$(PLATFORM)/lib$(PLATFORM).la \
 	af/util/xp/libxp.la \
-	af/ev/$(TOOLKIT)/lib$(TOOLKIT).la \
+	af/ev/$(TOOLKIT_DIR)/lib$(TOOLKIT).la \
 	af/ev/xp/libxp.la \
 	$(opt_libs)
 
@@ -120,7 +120,7 @@ libabiword_@ABIWORD_SERIES@_include_HEADERS = \
 	af/xap/gtk/xap_UnixTableWidget.h
 else
 libabiword_@ABIWORD_SERIES@_la_LIBADD += \
-	wp/impexp/$(TOOLKIT)/lib$(TOOLKIT).la
+	wp/impexp/$(TOOLKIT_DIR)/lib$(TOOLKIT).la
 endif
 
 libabiword_@ABIWORD_SERIES@_la_DEPENDENCIES = \

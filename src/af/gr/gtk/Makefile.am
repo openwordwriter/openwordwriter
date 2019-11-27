@@ -1,10 +1,10 @@
 
-noinst_LTLIBRARIES = libgtk.la
+noinst_LTLIBRARIES = lib@TOOLKIT@.la
 
 AM_CPPFLAGS = \
 	$(AF_CPPFLAGS)
 
-libgtk_la_SOURCES = \
+lib@TOOLKIT@_la_SOURCES = \
 	gr_CairoPrintGraphics.cpp \
 	gr_CairoPrintGraphics.h \
 	gr_UnixCairoGraphics.h \
