@@ -1978,6 +1978,7 @@ abi_widget_set_property(GObject  *object,
 	abi_widget_set_prop(object, arg_id, arg, pspec);
 }
 
+#if !GTK_CHECK_VERSION(3,96,0)
 static void 
 abi_widget_get_preferred_height(GtkWidget *widget,
                                 int *minimum_height, int *natural_height)
@@ -1997,6 +1998,7 @@ abi_widget_get_preferred_width(GtkWidget *widget,
 		gtk_widget_get_preferred_height(ABI_WIDGET(widget)->child,
 		                                minimum_width, natural_width);
 }
+#endif
 
 //
 // Needed for the gtkbin class
@@ -2053,8 +2055,12 @@ abi_widget_init (AbiWidget * abi, gpointer)
 	// but i'm keeping it around anyway just in case that changes
 	gtk_widget_set_can_focus(GTK_WIDGET(abi), true);
 	gtk_widget_set_receives_default(GTK_WIDGET(abi), true);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_widget_set_has_surface(GTK_WIDGET(abi), true);
+#else
 	gtk_widget_set_can_default(GTK_WIDGET(abi), true);
 	gtk_widget_set_has_window(GTK_WIDGET(abi), true);
+#endif
 }
 
 static void
@@ -2068,18 +2074,35 @@ abi_widget_size_allocate (GtkWidget     *widget,
 	UT_return_if_fail (allocation != NULL);
 
 	GtkAllocation child_allocation;
-	gtk_widget_set_allocation(widget, allocation);
 
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_widget_size_allocate(widget, allocation, -1);
+#else
+	gtk_widget_set_allocation(widget, allocation);
+#endif
+
+#if GTK_CHECK_VERSION(3,96,0)
+	gint border_width = gtk_widget_get_margin_start(widget);
+#else
 	gint border_width = gtk_container_get_border_width(GTK_CONTAINER (widget));
+#endif
 	GtkStyleContext *ctxt = gtk_widget_get_style_context(widget);
 	GtkBorder border;
-	gtk_style_context_get_padding(ctxt, gtk_widget_get_state_flags(widget), &border);
+	gtk_style_context_get_padding(ctxt,
+#if !GTK_CHECK_VERSION(3,96,0)
+								  gtk_widget_get_state_flags(widget),
+#endif
+								  &border);
  	if (gtk_widget_get_realized(widget))
     {
 		// only allocate on realized widgets
 
 		abi = ABI_WIDGET(widget);
+#if GTK_CHECK_VERSION(3,96,0)
+		gdk_surface_move_resize(gtk_widget_get_surface(widget),
+#else
 		gdk_window_move_resize (gtk_widget_get_window(widget),
+#endif
 					allocation->x+border_width, 
 					allocation->y+border_width,
 					allocation->width - border_width*2, 
@@ -2094,7 +2117,11 @@ abi_widget_size_allocate (GtkWidget     *widget,
 										   (gint)allocation->width - border.left - border.right - border_width * 2);
 			 child_allocation.height = MAX (1, 
 											(gint)allocation->height - border.top - border.bottom - border_width * 2);
-			 gtk_widget_size_allocate (ABI_WIDGET (widget)->child, &child_allocation);
+			 gtk_widget_size_allocate (ABI_WIDGET (widget)->child, &child_allocation
+#if GTK_CHECK_VERSION(3,96,0)
+									   , -1
+#endif
+				 );
 		}
     }
 }
@@ -2116,8 +2143,6 @@ static void
 abi_widget_realize (GtkWidget * widget)
 {
 	AbiWidget * abi;
-	GdkWindowAttr attributes;
-	gint attributes_mask;
 	GtkAllocation alloc;
 
 	// we *must* ensure that we get a GdkWindow to draw into
@@ -2126,10 +2151,15 @@ abi_widget_realize (GtkWidget * widget)
 	UT_return_if_fail (widget != NULL);
 	UT_return_if_fail (IS_ABI_WIDGET(widget));
 
-	gtk_widget_set_realized(widget, true);
 	abi = ABI_WIDGET(widget);
-
 	gtk_widget_get_allocation(widget, &alloc);
+
+#if !GTK_CHECK_VERSION(3,96,0)
+	gtk_widget_set_realized(widget, true);
+
+	GdkWindowAttr attributes;
+	gint attributes_mask;
+
 	attributes.x = alloc.x;
 	attributes.y = alloc.y;
 	attributes.width = ABI_DEFAULT_WIDTH;
@@ -2144,13 +2174,19 @@ abi_widget_realize (GtkWidget * widget)
 						GDK_FOCUS_CHANGE_MASK |
 						GDK_STRUCTURE_MASK;
 	attributes.visual = gtk_widget_get_visual (widget);
-	
-	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
 
-	gtk_widget_set_window(widget,
-	                      gdk_window_new (gtk_widget_get_parent_window (widget),
-	                                      &attributes, attributes_mask));
+	attributes_mask = GDK_WA_X | GDK_WA_Y;
+	attributes_mask |= GDK_WA_VISUAL;
+
+	auto window = gdk_window_new (gtk_widget_get_parent_window (widget),
+								  &attributes, attributes_mask);
+	gtk_widget_set_window(widget, window);
 	gdk_window_set_user_data (gtk_widget_get_window(widget), abi);
+#else
+	auto window = gdk_surface_new_child(
+		gtk_widget_get_surface(gtk_widget_get_parent(widget)), &alloc);
+	gtk_widget_set_surface(widget, window);
+#endif
 
 	//
 	// connect a signal handler to load files after abiword is in a stable
@@ -2233,9 +2269,11 @@ abi_widget_class_init (AbiWidgetClass *abi_class, gpointer)
 
 	// set our custom class methods
 	widget_class->realize       = abi_widget_realize;
+#if !GTK_CHECK_VERSION(3,96,0)
 	widget_class->get_preferred_height  = abi_widget_get_preferred_height;
 	widget_class->get_preferred_width  = abi_widget_get_preferred_width;
-   	widget_class->size_allocate = abi_widget_size_allocate; 
+	widget_class->size_allocate = abi_widget_size_allocate;
+#endif
 	widget_class->grab_focus    = abi_widget_grab_focus;
 
 	// For the container methods

@@ -124,7 +124,11 @@ void AP_UnixDialog_MarkRevisions::constructWindowContents ( GtkWidget * containe
    
    vbox1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
    gtk_widget_show (vbox1);
+#if GTK_CHECK_VERSION(3,96,0)
+   gtk_container_add(GTK_CONTAINER(container), vbox1);
+#else
    gtk_box_pack_start (GTK_BOX (container), vbox1, TRUE, TRUE, 0);
+#endif
    XAP_gtk_widget_set_margin(vbox1, 3);
 
    if(getRadio1Label() != NULL)
@@ -134,10 +138,15 @@ void AP_UnixDialog_MarkRevisions::constructWindowContents ( GtkWidget * containe
 			 radiobutton1 = gtk_radio_button_new_with_label (vbox1_group, getRadio1Label());
 			 vbox1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton1));
 			 gtk_widget_show (radiobutton1);
-			 gtk_box_pack_start (GTK_BOX (vbox1), radiobutton1, FALSE, FALSE, 0);
 			 lbl1 = gtk_label_new(getComment1(true));
 			 gtk_widget_show (lbl1);
+#if GTK_CHECK_VERSION(3,96,0)
+			 gtk_container_add(GTK_CONTAINER(vbox1), radiobutton1);
+			 gtk_container_add(GTK_CONTAINER(vbox1), lbl1);
+#else
+			 gtk_box_pack_start (GTK_BOX (vbox1), radiobutton1, FALSE, FALSE, 0);
 			 gtk_box_pack_start (GTK_BOX (vbox1), lbl1, FALSE, FALSE, 0);
+#endif
 		 }
 		 radiobutton2 = gtk_radio_button_new_with_label (vbox1_group, getRadio2Label());
 		 vbox1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton2));
@@ -145,8 +154,11 @@ void AP_UnixDialog_MarkRevisions::constructWindowContents ( GtkWidget * containe
 		 if (isRev ())
 			 gtk_widget_show (radiobutton2);
 		 
+#if GTK_CHECK_VERSION(3,96,0)
+		 gtk_container_add(GTK_CONTAINER(vbox1), radiobutton2);
+#else
 		 gtk_box_pack_start (GTK_BOX (vbox1), radiobutton2, FALSE, FALSE, 6);
-		 
+#endif
 		 g_signal_connect ( G_OBJECT(radiobutton2), "toggled",
 							G_CALLBACK(focus_toggled_callback), this ) ;
 		 
@@ -156,11 +168,16 @@ void AP_UnixDialog_MarkRevisions::constructWindowContents ( GtkWidget * containe
    
    lbl2 = gtk_label_new (getComment2Label());
    gtk_widget_show (lbl2);
-   gtk_box_pack_start (GTK_BOX (vbox1), lbl2, FALSE, FALSE, 0);
-   
    entry1 = gtk_entry_new();
    gtk_widget_show (entry1);
+
+#if GTK_CHECK_VERSION(3,96,0)
+   gtk_container_add(GTK_CONTAINER(vbox1), lbl2);
+   gtk_container_add(GTK_CONTAINER(vbox1), entry1);
+#else
+   gtk_box_pack_start (GTK_BOX (vbox1), lbl2, FALSE, FALSE, 0);
    gtk_box_pack_start (GTK_BOX (vbox1), entry1, FALSE, FALSE, 8);
+#endif
    
    mEntryLbl = lbl2 ;
    mComment = entry1 ;

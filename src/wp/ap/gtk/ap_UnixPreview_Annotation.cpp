@@ -87,12 +87,21 @@ void  AP_UnixPreview_Annotation::_constructWindow(void)
 	m_pPreviewWindow = gtk_window_new(GTK_WINDOW_POPUP);
 	gtk_widget_set_size_request(m_pPreviewWindow, m_width, m_height);
 	gint root_x,root_y;
+#if GTK_CHECK_VERSION(3,96,0)
+	GdkSurface* surface = gtk_widget_get_surface(m_pPreviewWindow);
+	gdk_surface_get_position(surface, &root_x, &root_y);
+#else
 	gtk_window_get_position (GTK_WINDOW(m_pPreviewWindow),&root_x,&root_y);
+#endif
 	m_pDrawingArea = gtk_drawing_area_new();
 	gtk_widget_show(GTK_WIDGET(m_pDrawingArea));
 	gtk_container_add(GTK_CONTAINER(m_pPreviewWindow), m_pDrawingArea);
 	root_y -= (m_height/2 + m_Offset);
+#if GTK_CHECK_VERSION(3,96,0)
+	gdk_surface_move(surface, root_x, root_y);
+#else
 	gtk_window_move(GTK_WINDOW(m_pPreviewWindow), root_x, root_y);
+#endif
 	gtk_widget_show_all(GTK_WIDGET(m_pPreviewWindow));
 }
 

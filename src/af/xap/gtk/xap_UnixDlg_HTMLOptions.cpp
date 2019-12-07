@@ -1,5 +1,4 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
-
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t -*- */
 /* AbiSource Application Framework
  * Copyright (C) 2002 AbiSource, Inc.
  * 
@@ -299,7 +298,11 @@ GtkWidget * XAP_UnixDialog_HTMLOptions::_constructWindow ()
 	if (labelActivate)
 	{
 		gtk_widget_show (labelActivate);
-		gtk_box_pack_start (GTK_BOX (vboxMain), labelActivate, FALSE, TRUE, 0);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(vboxMain), labelActivate);
+#else
+	gtk_box_pack_start (GTK_BOX (vboxMain), labelActivate, FALSE, TRUE, 0);
+#endif
 	}
 
 	m_wIs4 = gtk_check_button_new_with_label (Is4);
@@ -307,7 +310,11 @@ GtkWidget * XAP_UnixDialog_HTMLOptions::_constructWindow ()
 		{
 			XAP_gtk_widget_set_margin(m_wIs4, 5);
 			gtk_widget_show (m_wIs4);
+#if GTK_CHECK_VERSION(3,96,0)
+			gtk_container_add(GTK_CONTAINER(vboxMain), m_wIs4);
+#else
 			gtk_box_pack_start (GTK_BOX (vboxMain), m_wIs4, TRUE, TRUE, 0);
+#endif
 			g_signal_connect (G_OBJECT (m_wIs4), "toggled",
 							  G_CALLBACK (s_Is4), static_cast<gpointer>(this));
 		}
@@ -316,7 +323,11 @@ GtkWidget * XAP_UnixDialog_HTMLOptions::_constructWindow ()
 		{
 			XAP_gtk_widget_set_margin(m_wAbiWebDoc, 5);
 			gtk_widget_show (m_wAbiWebDoc);
+#if GTK_CHECK_VERSION(3,96,0)
+			gtk_container_add(GTK_CONTAINER(vboxMain), m_wAbiWebDoc);
+#else
 			gtk_box_pack_start (GTK_BOX (vboxMain), m_wAbiWebDoc, TRUE, TRUE, 0);
+#endif
 			g_signal_connect (G_OBJECT (m_wAbiWebDoc), "toggled",
 							  G_CALLBACK (s_AbiWebDoc), static_cast<gpointer>(this));
 		}
@@ -325,7 +336,11 @@ GtkWidget * XAP_UnixDialog_HTMLOptions::_constructWindow ()
 		{
 			XAP_gtk_widget_set_margin(m_wDeclareXML, 5);
 			gtk_widget_show (m_wDeclareXML);
+#if GTK_CHECK_VERSION(3,96,0)
+			gtk_container_add(GTK_CONTAINER(vboxMain), m_wDeclareXML);
+#else
 			gtk_box_pack_start (GTK_BOX (vboxMain), m_wDeclareXML, TRUE, TRUE, 0);
+#endif
 			g_signal_connect (G_OBJECT (m_wDeclareXML), "toggled",
 							  G_CALLBACK (s_DeclareXML), static_cast<gpointer>(this));
 		}
@@ -334,7 +349,11 @@ GtkWidget * XAP_UnixDialog_HTMLOptions::_constructWindow ()
 		{
 			XAP_gtk_widget_set_margin(m_wAllowAWML, 5);
 			gtk_widget_show (m_wAllowAWML);
+#if GTK_CHECK_VERSION(3,96,0)
+			gtk_container_add(GTK_CONTAINER(vboxMain), m_wAllowAWML);
+#else
 			gtk_box_pack_start (GTK_BOX (vboxMain), m_wAllowAWML, TRUE, TRUE, 0);
+#endif
 			g_signal_connect (G_OBJECT (m_wAllowAWML), "toggled",
 							  G_CALLBACK (s_AllowAWML), static_cast<gpointer>(this));
 		}
@@ -343,7 +362,11 @@ GtkWidget * XAP_UnixDialog_HTMLOptions::_constructWindow ()
 		{
 			XAP_gtk_widget_set_margin(m_wEmbedCSS, 5);
 			gtk_widget_show (m_wEmbedCSS);
+#if GTK_CHECK_VERSION(3,96,0)
+			gtk_container_add(GTK_CONTAINER(vboxMain), m_wEmbedCSS);
+#else
 			gtk_box_pack_start (GTK_BOX (vboxMain), m_wEmbedCSS, TRUE, TRUE, 0);
+#endif
 			g_signal_connect (G_OBJECT (m_wEmbedCSS), "toggled",
 							  G_CALLBACK (s_EmbedCSS), static_cast<gpointer>(this));
 		}
@@ -352,7 +375,11 @@ GtkWidget * XAP_UnixDialog_HTMLOptions::_constructWindow ()
 		{
 			XAP_gtk_widget_set_margin(m_wEmbedImages, 5);
 			gtk_widget_show (m_wEmbedImages);
+#if GTK_CHECK_VERSION(3,96,0)
+			gtk_container_add(GTK_CONTAINER(vboxMain), m_wEmbedImages);
+#else
 			gtk_box_pack_start (GTK_BOX (vboxMain), m_wEmbedImages, TRUE, TRUE, 0);
+#endif
 			g_signal_connect (G_OBJECT (m_wEmbedImages), "toggled",
 							  G_CALLBACK (s_EmbedImages), static_cast<gpointer>(this));
 		}
@@ -362,7 +389,11 @@ GtkWidget * XAP_UnixDialog_HTMLOptions::_constructWindow ()
 		{
 			XAP_gtk_widget_set_margin(m_wMathMLRenderPNG, 5);
 			gtk_widget_show (m_wMathMLRenderPNG);
+#if GTK_CHECK_VERSION(3,96,0)
+			gtk_container_add(GTK_CONTAINER(vboxMain), m_wMathMLRenderPNG);
+#else
 			gtk_box_pack_start (GTK_BOX (vboxMain), m_wMathMLRenderPNG, TRUE, TRUE, 0);
+#endif
 			g_signal_connect (G_OBJECT (m_wMathMLRenderPNG), "toggled",
 							  G_CALLBACK (s_MathMLRenderPNG), static_cast<gpointer>(this));
 		}
@@ -372,7 +403,11 @@ GtkWidget * XAP_UnixDialog_HTMLOptions::_constructWindow ()
 		{
 			XAP_gtk_widget_set_margin(m_wSplitDocument, 5);
 			gtk_widget_show (m_wSplitDocument);
+#if GTK_CHECK_VERSION(3,96,0)
+			gtk_container_add(GTK_CONTAINER(vboxMain), m_wSplitDocument);
+#else
 			gtk_box_pack_start (GTK_BOX (vboxMain), m_wSplitDocument, TRUE, TRUE, 0);
+#endif
 			g_signal_connect (G_OBJECT (m_wSplitDocument), "toggled",
 							  G_CALLBACK (s_SplitDocument), static_cast<gpointer>(this));
 		}

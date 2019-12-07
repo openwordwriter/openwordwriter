@@ -171,11 +171,15 @@ void  AP_UnixDialog_InsertBookmark::_constructWindowContents(GtkWidget * contain
   pSS->getValueUTF8(AP_STRING_ID_DLG_InsertBookmark_Msg,s);
   label1 = gtk_label_new (s.c_str());
   gtk_widget_show (label1);
-  gtk_box_pack_start (GTK_BOX (container), label1, FALSE, FALSE, 0);
-
   m_comboBookmark = gtk_combo_box_text_new_with_entry();
   gtk_widget_show (m_comboBookmark);
+#if GTK_CHECK_VERSION(3,96,0)
+  gtk_container_add(GTK_CONTAINER(container), label1);
+  gtk_container_add(GTK_CONTAINER(container), m_comboBookmark);
+#else
+  gtk_box_pack_start (GTK_BOX (container), label1, FALSE, FALSE, 0);
   gtk_box_pack_start (GTK_BOX (container), m_comboBookmark, FALSE, FALSE, 0);
+#endif
 }
 
 GtkWidget*  AP_UnixDialog_InsertBookmark::_constructWindow(void)

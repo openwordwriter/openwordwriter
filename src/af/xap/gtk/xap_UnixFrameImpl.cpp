@@ -91,7 +91,17 @@ enum {
 	TARGET_UNKNOWN
 };
 
-static const GtkTargetEntry XAP_UnixFrameImpl__knownDragTypes[] = {
+#if GTK_CHECK_VERSION(3,96,0)
+struct _TargetEntry {
+    const char* target;
+    guint flags;
+    guint info;
+};
+static const _TargetEntry
+#else
+static const GtkTargetEntry
+#endif
+XAP_UnixFrameImpl__knownDragTypes[] = {
 	{(gchar *)"text/uri-list", 	0, TARGET_URI_LIST},
 	{(gchar *)"_NETSCAPE_URL", 	0, TARGET_URL},
 	{(gchar *)"image/gif", 	0, TARGET_IMAGE},
@@ -106,6 +116,43 @@ static const GtkTargetEntry XAP_UnixFrameImpl__knownDragTypes[] = {
     {(gchar *)"text/x-vcard", 0, TARGET_DOCUMENT}
 };
 
+#if GTK_CHECK_VERSION(3,96,0)
+struct DragInfo {
+    GdkContentFormats* formats;
+    GdkContentFormatsBuilder* builder;
+	guint count;
+
+    DragInfo()
+        : formats(nullptr), builder(gdk_content_formats_builder_new())
+        , count(0)
+        {
+        }
+
+    ~DragInfo()
+        {
+            gdk_content_formats_builder_unref(builder);
+            if (formats) {
+                gdk_content_formats_unref(formats);
+            }
+        }
+    GdkContentFormats* build()
+        {
+            if (!formats) {
+                formats = gdk_content_formats_builder_free_to_formats(builder);
+                builder = nullptr;
+            }
+            return formats;
+        }
+    void addEntry(const char * target, guint flags, guint info)
+        {
+            if (builder == nullptr) {
+                return;
+            }
+            gdk_content_formats_builder_add_mime_type(builder, target);
+            count++;
+        }
+};
+#else
 struct DragInfo {
 	GtkTargetEntry * entries;
 	guint			 count;
@@ -136,6 +183,7 @@ private:
 	DragInfo& operator=(const DragInfo & rhs);
 	DragInfo(const DragInfo & rhs);
 };
+#endif
 
 /*!
  * Build targets table from supported mime types.
@@ -221,12 +269,18 @@ static int s_mapMimeToUriType (const char * uri)
 	UT_DEBUGMSG(("DOM: mimeType %s dropped into AbiWord(%s)\n", mimeType, uri));
 
 	DragInfo * dragInfo = s_getDragInfo();
+#if GTK_CHECK_VERSION(3,96,0)
+	if (gdk_content_formats_contain_mime_type(dragInfo->formats, mimeType)) {
+		#warning fixme Gtk4
+		return 0;
+	}
+#else
 	for (size_t i = 0; i < dragInfo->count; i++)
 		if (!g_ascii_strcasecmp (mimeType, dragInfo->entries[i].target)) {
 			target = dragInfo->entries[i].info;
 			break;
 		}
-
+#endif
 	g_free (mimeType);
 	return target;
 }
@@ -419,7 +473,11 @@ s_pasteText (XAP_Frame * pFrame, const char * target_name,
 
 static void
 s_drag_data_get_cb (GtkWidget        * /*widget*/,
+#if GTK_CHECK_VERSION(3,96,0)
+					GdkDrag* /*context*/,
+#else
 					GdkDragContext   * /*context*/,
+#endif
 					GtkSelectionData *selection,
 					guint             /*_info*/,
 					guint             /*_time*/,
@@ -430,8 +488,13 @@ s_drag_data_get_cb (GtkWidget        * /*widget*/,
 	const char * formatFound = NULL;
 
 	GdkAtom target = gtk_selection_data_get_target(selection);
+#if GTK_CHECK_VERSION(3,96,0)
+	#warning fix this for Gtk4
+	const char *targetName = "BOGUS";
+#else
 	char *targetName = gdk_atom_name(target);
-	char *formatList[2];
+#endif
+	const char *formatList[2];
 
 	formatList[0] = targetName;
 	formatList[1] = 0;
@@ -457,7 +520,9 @@ s_drag_data_get_cb (GtkWidget        * /*widget*/,
 								(guchar *) szName,
 								iLen);
 
+#if !GTK_CHECK_VERSION(3,96,0)
 		g_free(targetName);
+#endif
 		return;
 	}
 	EV_EditMouseContext emc = pView->getLastMouseContext();
@@ -507,12 +572,18 @@ s_drag_data_get_cb (GtkWidget        * /*widget*/,
 									dataLen);
 		}
 
+#if !GTK_CHECK_VERSION(3,96,0)
 	g_free (targetName);
+#endif
 }
 
 static void
 s_dndDropEvent(GtkWidget        *widget,
-			   GdkDragContext   * /*context*/,
+#if GTK_CHECK_VERSION(3,96,0)
+               GdkDrop* /*context*/,
+#else
+               GdkDragContext   * /*context*/,
+#endif
 				 gint              x,
 				 gint              y,
 				 GtkSelectionData *selection_data,
@@ -527,7 +598,11 @@ s_dndDropEvent(GtkWidget        *widget,
 	XAP_Frame * pFrame = pFrameImpl->getFrame ();
 	FV_View   * pView  = static_cast<FV_View*>(pFrame->getCurrentView ());
 
+#if GTK_CHECK_VERSION(3,96,0)
+	const char* targetName = "BOGUS";
+#else
 	char *targetName = gdk_atom_name(gtk_selection_data_get_target(selection_data));
+#endif
 	UT_DEBUGMSG(("JK: target in selection = %s \n", targetName));
 
 	if (info == TARGET_URI_LIST)
@@ -596,29 +671,59 @@ s_dndDropEvent(GtkWidget        *widget,
 				}
 				UT_DEBUGMSG(("trimmed Uri is (%s) \n",sUri.utf8_str()));
 				s_loadImage(sUri,pView,pFrame,x,y);
+#if !GTK_CHECK_VERSION(3,96,0)
 				g_free (targetName);
+#endif
 				return;
 			}
 		}
 		pView->cmdInsertHyperlink(uri);
 	}
 
+#if !GTK_CHECK_VERSION(3,96,0)
 	g_free (targetName);
+#endif
 }
 
+#if GTK_CHECK_VERSION(3,96,0)
+static gboolean
+s_dndRealDropEvent (GtkWidget *widget,
+					GdkDrop* drop,
+#else
 static void
-s_dndRealDropEvent (GtkWidget *widget, GdkDragContext * context,
-					gint /*x*/, gint /*y*/, guint time, gpointer /*ppFrame*/)
+s_dndRealDropEvent (GtkWidget *widget,
+					GdkDragContext * context,
+#endif
+					gint /*x*/, gint /*y*/,
+#if !GTK_CHECK_VERSION(3,96,0)
+					guint time,
+#endif
+                    gpointer /*ppFrame*/)
 {
 	UT_DEBUGMSG(("DOM: dnd drop event\n"));
+#if GTK_CHECK_VERSION(3,96,0)
+	GdkContentFormats* formats = gdk_drop_get_formats(drop);
+	const char* format = gdk_content_formats_match_mime_type (formats, formats);
+	if (format) {
+		gtk_drag_get_data (widget, drop, format);
+		return TRUE;
+	}
+	return FALSE;
+#else
 	GdkAtom selection = gdk_drag_get_selection(context);
-
 	UT_DEBUGMSG(("RealDrag and drop event: target in selection = %s \n", gdk_atom_name(selection)));
-	gtk_drag_get_data (widget,context,selection,time);
+	gtk_drag_get_data (widget, context, selection, time);
+#endif
 }
 
 static void
-s_dndDragEnd (GtkWidget  *, GdkDragContext *, gpointer /*ppFrame*/)
+s_dndDragEnd (GtkWidget  *,
+#if GTK_CHECK_VERSION(3,96,0)
+              GdkDrag*,
+#else
+              GdkDragContext *,
+#endif
+              gpointer /*ppFrame*/)
 {
 	UT_DEBUGMSG(("DOM: dnd end event\n"));
 
@@ -626,7 +731,13 @@ s_dndDragEnd (GtkWidget  *, GdkDragContext *, gpointer /*ppFrame*/)
 }
 
 static void
-s_dndDragBegin (GtkWidget  *, GdkDragContext *, gpointer /*ppFrame*/)
+s_dndDragBegin (GtkWidget  *,
+#if GTK_CHECK_VERSION(3,96,0)
+                GdkDrag*,
+#else
+                GdkDragContext *,
+#endif
+                gpointer /*ppFrame*/)
 {
 	UT_DEBUGMSG(("DOM: dnd begin event\n"));
 }
@@ -986,27 +1097,45 @@ gint XAP_UnixFrameImpl::_fe::do_ZoomUpdate(gpointer /* XAP_UnixFrameImpl * */ p)
 	return FALSE;
 }
 
+#if GTK_CHECK_VERSION(3,96,0)
+void
+XAP_UnixFrameImpl::_fe::size_changed(GdkSurface*, gint ev_width, gint ev_height, gpointer user_data)
+{
+	XAP_UnixFrameImpl * pUnixFrameImpl = static_cast<XAP_UnixFrameImpl *>(user_data);
+	pUnixFrameImpl->_handleResize(pUnixFrameImpl->m_iNewX, pUnixFrameImpl->m_iNewY,
+								  ev_width, ev_height);
+}
+#else
 gint XAP_UnixFrameImpl::_fe::configure_event(GtkWidget* w, GdkEventConfigure *e)
 {
 	// This is basically a resize event.
 
 	XAP_UnixFrameImpl * pUnixFrameImpl = static_cast<XAP_UnixFrameImpl *>(g_object_get_data(G_OBJECT(w), "user_data"));
-	XAP_Frame* pFrame = pUnixFrameImpl->getFrame();
+    gdouble ev_x, ev_y;
+    ev_x = ev_y = 0.0f;
+    gdk_event_get_coords((GdkEvent*)e, &ev_x, &ev_y);
+
+    auto r = pUnixFrameImpl->_handleResize(ev_x, ev_y, e->width, e->height);
+	gtk_widget_grab_focus(w);
+    return r;
+}
+#endif
+
+gint XAP_UnixFrameImpl::_handleResize(gint ev_x, gint ev_y, gint ev_width, gint ev_height)
+{
+	XAP_Frame* pFrame = getFrame();
 	AV_View * pView = pFrame->getCurrentView();
 	if (pView)
 	{
-		gdouble ev_x, ev_y;
-		ev_x = ev_y = 0.0f;
-		gdk_event_get_coords((GdkEvent*)e, &ev_x, &ev_y);
-		if (pUnixFrameImpl->m_iNewWidth == e->width &&
-		    pUnixFrameImpl->m_iNewHeight == e->height &&
-		    pUnixFrameImpl->m_iNewY == static_cast<gint>(ev_y) &&
-		    pUnixFrameImpl->m_iNewX == static_cast<gint>(ev_x))
+		if (m_iNewWidth == ev_width &&
+		    m_iNewHeight == ev_height &&
+		    m_iNewY == ev_y &&
+		    m_iNewX == ev_x)
 			return 1;
-		pUnixFrameImpl->m_iNewWidth = e->width;
-		pUnixFrameImpl->m_iNewHeight = e->height;
-		pUnixFrameImpl->m_iNewY = ev_y;
-		pUnixFrameImpl->m_iNewX = ev_x;
+		m_iNewWidth = ev_width;
+		m_iNewHeight = ev_height;
+		m_iNewY = ev_y;
+		m_iNewX = ev_x;
 		xxx_UT_DEBUGMSG(("Drawing in zoom at x %f y %f height %d width %d \n", ev_x, ev_y, e->height, e->width));
 		XAP_App * pApp = XAP_App::getApp();
 		UT_sint32 x,y;
@@ -1020,14 +1149,22 @@ gint XAP_UnixFrameImpl::_fe::configure_event(GtkWidget* w, GdkEventConfigure *e)
 // -- MES
 //
 
-        GtkWindow * pWin = NULL;
+		GtkWindow * pWin = NULL;
 		if(pFrame->getFrameMode() == XAP_NormalFrame) {
-			pWin = GTK_WINDOW(pUnixFrameImpl->m_wTopLevelWindow);
+			pWin = GTK_WINDOW(m_wTopLevelWindow);
 			// worth remembering size?
+#if GTK_CHECK_VERSION(3,96,0)
+			GdkSurfaceState state =
+				gdk_surface_get_state(gtk_widget_get_surface(GTK_WIDGET(pWin)));
+			if (!(state & GDK_SURFACE_STATE_ICONIFIED ||
+				  state & GDK_SURFACE_STATE_MAXIMIZED ||
+				  state & GDK_SURFACE_STATE_FULLSCREEN)) {
+#else
 			GdkWindowState state = gdk_window_get_state (gtk_widget_get_window(GTK_WIDGET(pWin)));
 			if (!(state & GDK_WINDOW_STATE_ICONIFIED ||
 				  state & GDK_WINDOW_STATE_MAXIMIZED ||
 				  state & GDK_WINDOW_STATE_FULLSCREEN)) {
+#endif
 
 				gint gwidth,gheight;
 				gtk_window_get_size(pWin,&gwidth,&gheight);
@@ -1037,13 +1174,11 @@ gint XAP_UnixFrameImpl::_fe::configure_event(GtkWidget* w, GdkEventConfigure *e)
 
 		// Dynamic Zoom Implementation
 
-		if(!pUnixFrameImpl->m_bDoZoomUpdate && (pUnixFrameImpl->m_iZoomUpdateID == 0))
+		if(!m_bDoZoomUpdate && (m_iZoomUpdateID == 0))
 		{
-			pUnixFrameImpl->m_iZoomUpdateID = g_idle_add(reinterpret_cast<GSourceFunc>(do_ZoomUpdate), static_cast<gpointer>(pUnixFrameImpl));
+			m_iZoomUpdateID = g_idle_add(reinterpret_cast<GSourceFunc>(_fe::do_ZoomUpdate), static_cast<gpointer>(this));
 		}
-			
 	}
-	gtk_widget_grab_focus(w);
 	return 1;
 }
 
@@ -1052,6 +1187,7 @@ gint XAP_UnixFrameImpl::_fe::motion_notify_event(GtkWidget* w, GdkEventMotion* e
 	XAP_UnixFrameImpl * pUnixFrameImpl = static_cast<XAP_UnixFrameImpl *>(g_object_get_data(G_OBJECT(w), "user_data"));
 	if (gdk_event_get_event_type((GdkEvent*)e) == GDK_MOTION_NOTIFY)
 	{
+#if !GTK_CHECK_VERSION(3,96,0)
 		//
 		// swallow queued drag events and just get the last one.
 		//
@@ -1074,6 +1210,7 @@ gint XAP_UnixFrameImpl::_fe::motion_notify_event(GtkWidget* w, GdkEventMotion* e
 				gdk_event_free(eNext);
 			}
 		}
+#endif
 	}
 
 	XAP_Frame* pFrame = pUnixFrameImpl->getFrame();
@@ -1326,6 +1463,16 @@ void XAP_UnixFrameImpl::_setCursor(GR_Graphics::Cursor c)
 
 	const char* cursor_name = GR_UnixCairoGraphics::_getCursor(c);
 	xxx_UT_DEBUGMSG(("Set cursor number in Frame %d to %s\n", c, cursor_name));
+#if GTK_CHECK_VERSION(3,96,0)
+	GdkCursor * cursor = gdk_cursor_new_from_name(cursor_name, nullptr);
+	gtk_widget_set_cursor(getTopLevelWindow(), cursor);
+	gtk_widget_set_cursor(getVBoxWidget(), cursor);
+
+	gtk_widget_set_cursor(m_wSunkenBox, cursor);
+	if (m_wStatusBar) {
+		gtk_widget_set_cursor(m_wStatusBar, cursor);
+	}
+#else
 	GdkCursor * cursor = gdk_cursor_new_from_name(
 		gtk_widget_get_display(getTopLevelWindow()), cursor_name);
 	gdk_window_set_cursor(gtk_widget_get_window(getTopLevelWindow()), cursor);
@@ -1335,6 +1482,7 @@ void XAP_UnixFrameImpl::_setCursor(GR_Graphics::Cursor c)
 
 	if (m_wStatusBar)
 		gdk_window_set_cursor(gtk_widget_get_window(m_wStatusBar), cursor);
+#endif
 
 	g_object_unref(cursor);
 }
@@ -1387,7 +1535,9 @@ void XAP_UnixFrameImpl::_createTopLevelWindow(void)
 		gtk_window_set_title(GTK_WINDOW(m_wTopLevelWindow),
 				     XAP_App::getApp()->getApplicationTitleForTitleBar());
 		gtk_window_set_resizable(GTK_WINDOW(m_wTopLevelWindow), TRUE);
+#if !GTK_CHECK_VERSION(3,96,0)
 		gtk_window_set_role(GTK_WINDOW(m_wTopLevelWindow), "topLevelWindow");
+#endif
 
 		g_object_set_data(G_OBJECT(m_wTopLevelWindow), "ic_attr", NULL);
 		g_object_set_data(G_OBJECT(m_wTopLevelWindow), "ic", NULL);
@@ -1417,8 +1567,12 @@ void XAP_UnixFrameImpl::_createTopLevelWindow(void)
 
 	gtk_drag_dest_set (m_wTopLevelWindow,
 					   GTK_DEST_DEFAULT_ALL,
+#if GTK_CHECK_VERSION(3,96,0)
+					   dragInfo->formats,
+#else
 					   dragInfo->entries,
 					   dragInfo->count,
+#endif
 					   GDK_ACTION_COPY);
 
 	gtk_drag_dest_add_text_targets (m_wTopLevelWindow);
@@ -1428,7 +1582,11 @@ void XAP_UnixFrameImpl::_createTopLevelWindow(void)
 					  G_CALLBACK (s_dndDropEvent),
 					  static_cast<gpointer>(this));
   	g_signal_connect (G_OBJECT (m_wTopLevelWindow),
+#if GTK_CHECK_VERSION(3,96,0)
+					  "drag-drop",
+#else
 					  "drag_drop",
+#endif
 					  G_CALLBACK (s_dndRealDropEvent),
 					  static_cast<gpointer>(this));
 
@@ -1476,7 +1634,11 @@ void XAP_UnixFrameImpl::_createTopLevelWindow(void)
 	if(m_iFrameMode == XAP_NormalFrame)
 		gtk_widget_realize(m_wTopLevelWindow);
 
+#if GTK_CHECK_VERSION(3,96,0)
+	_createIMContext(gtk_widget_get_surface(m_wTopLevelWindow));
+#else
 	_createIMContext(gtk_widget_get_window(m_wTopLevelWindow));
+#endif
 
 	/* If refactoring the toolbars code, please make sure that toolbars
 	 * are created AFTER the main menu bar has been synthesized, otherwise
@@ -1506,7 +1668,11 @@ void XAP_UnixFrameImpl::_createTopLevelWindow(void)
 	if (m_wStatusBar)
 	{
 		gtk_widget_show(m_wStatusBar);
+#if GTK_CHECK_VERSION(3,96,0)
+        gtk_container_add(GTK_CONTAINER(m_wVBox), m_wStatusBar);
+#else
 		gtk_box_pack_end(GTK_BOX(m_wVBox), m_wStatusBar, FALSE, FALSE, 0);
+#endif
 	}
 
 	gtk_widget_show(m_wVBox);
@@ -1516,13 +1682,19 @@ void XAP_UnixFrameImpl::_createTopLevelWindow(void)
 		_setWindowIcon();
 }
 
+#if GTK_CHECK_VERSION(3,96,0)
+void XAP_UnixFrameImpl::_createIMContext(GdkSurface *)
+#else
 void XAP_UnixFrameImpl::_createIMContext(GdkWindow *w)
+#endif
 {
 	m_imContext = gtk_im_multicontext_new();
 
 	gtk_im_context_set_use_preedit (m_imContext, FALSE);
 
+#if !GTK_CHECK_VERSION(3,96,0)
 	gtk_im_context_set_client_window(m_imContext, w);
+#endif
 
 	g_signal_connect(G_OBJECT(m_imContext), "commit",
 					 G_CALLBACK(_imCommit_cb), this);
@@ -1788,8 +1960,14 @@ void XAP_UnixFrameImpl::_setGeometry ()
 		GdkGeometry geom;
 		geom.min_width   = 100;
 		geom.min_height	 = 100;
+#if GTK_CHECK_VERSION(3,96,0)
+		gdk_surface_set_geometry_hints(
+			gtk_widget_get_surface(m_wTopLevelWindow), &geom,
+			static_cast<GdkSurfaceHints>(GDK_HINT_MIN_SIZE));
+#else
 		gtk_window_set_geometry_hints (GTK_WINDOW(m_wTopLevelWindow), m_wTopLevelWindow, &geom,
 									   static_cast<GdkWindowHints>(GDK_HINT_MIN_SIZE));
+#endif
 
 		GdkDisplay* display = gdk_display_get_default();
 		GdkMonitor* monitor = gdk_display_get_primary_monitor(display);
@@ -1812,7 +1990,11 @@ void XAP_UnixFrameImpl::_setGeometry ()
 	if (pApp->getFrameCount () <= 1)
 		if (user_f & XAP_UnixApp::GEOMETRY_FLAG_POS)
 			{
+#if GTK_CHECK_VERSION(3,96,0)
+				gdk_surface_move(gtk_widget_get_surface(m_wTopLevelWindow), user_x, user_y);
+#else
 				gtk_window_move (GTK_WINDOW(m_wTopLevelWindow), user_x, user_y);
+#endif
 			}
 
 	// Remember geometry settings for next time
@@ -1952,7 +2134,11 @@ bool XAP_UnixFrameImpl::_runModalContextMenu(AV_View * /* pView */, const char *
 		// We run this menu synchronously, since GTK doesn't.
 		// Popup menus have a special "unmap" function to call
 		// gtk_main_quit() when they're done.
+#if GTK_CHECK_VERSION(3,96,0)
+		g_object_unref(event);
+#else
 		gdk_event_free(event);
+#endif
 		gtk_main();
 	}
 

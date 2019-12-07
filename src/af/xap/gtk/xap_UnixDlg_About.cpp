@@ -68,15 +68,20 @@ void XAP_UnixDialog_About::runModal(XAP_Frame * pFrame)
 
 	static const gchar *website = "http://www.abisource.com";
 
-	static GdkPixbuf * logo = NULL;
 	static GtkWidget * dlg = NULL;
 
 	// TODO Rob: use the more fancy "sidebar.png" logo, just like win32
+#if GTK_CHECK_VERSION(3,96,0)
+	GdkTexture* logo = gdk_texture_new_from_resource(
+		"/com/abisource/AbiWord/48x48/apps/abiword.png");
+#else
+	static GdkPixbuf * logo = NULL;
 	if (!logo) {
 		std::string str (ICONDIR);
 		str += "/hicolor/48x48/apps/abiword.png";
 		logo = gdk_pixbuf_new_from_file (str.c_str(), NULL); // ignore errors
 	}
+#endif
 
 	dlg = gtk_about_dialog_new();
 	//JEAN: do we really need the "activate-link" signal?
@@ -84,11 +89,16 @@ void XAP_UnixDialog_About::runModal(XAP_Frame * pFrame)
 	gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(dlg), authors);
 	gtk_about_dialog_set_documenters(GTK_ABOUT_DIALOG(dlg), documenters);
 	gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dlg), copyright);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_about_dialog_set_logo(GTK_ABOUT_DIALOG(dlg), GDK_PAINTABLE(logo));
+	gtk_window_set_icon_name(GTK_WINDOW(dlg), "abiword");
+#else
 	gtk_about_dialog_set_logo(GTK_ABOUT_DIALOG(dlg), logo);
+	gtk_window_set_icon(GTK_WINDOW(dlg), logo);
+#endif
 	gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(dlg), XAP_App::s_szBuild_Version);
 	gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dlg), website);
 	gtk_about_dialog_set_website_label(GTK_ABOUT_DIALOG(dlg), website);
-	gtk_window_set_icon(GTK_WINDOW(dlg), logo);
 	gtk_window_set_position(GTK_WINDOW(dlg), GTK_WIN_POS_CENTER);
 	GtkWidget* parent = pFrame ?
 		static_cast<XAP_UnixFrameImpl*>(pFrame->getFrameImpl())->getTopLevelWindow() :
@@ -98,4 +108,7 @@ void XAP_UnixDialog_About::runModal(XAP_Frame * pFrame)
 	}
 	gtk_dialog_run(GTK_DIALOG(dlg));
 	gtk_widget_destroy(dlg);
+#if GTK_CHECK_VERSION(3,96,0)
+	g_object_unref(logo);
+#endif
 }

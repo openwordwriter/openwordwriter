@@ -183,7 +183,6 @@ GtkWidget * AP_UnixDialog_MetaData::_constructWindow ()
 	if ( !prop.empty () ) { \
 		XAP_gtk_entry_set_text (GTK_ENTRY(m_entry##name), prop.c_str() ) ; \
 	}
-	
 	SET_ENTRY_TXT(Title)
 	SET_ENTRY_TXT(Subject)
 	SET_ENTRY_TXT(Author)

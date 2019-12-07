@@ -115,32 +115,41 @@ void AP_UnixDialog_ToggleCase::_constructWindowContents (GtkWidget *vbox1)
   pSS->getValueUTF8(AP_STRING_ID_DLG_ToggleCase_SentenceCase,s);
   sentenceCase = gtk_radio_button_new_with_label (vbox1_group,s.c_str());
   vbox1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (sentenceCase));
-  gtk_widget_show (sentenceCase);
-  gtk_box_pack_start (GTK_BOX (vbox1), sentenceCase, FALSE, FALSE, 0);
 
   pSS->getValueUTF8(AP_STRING_ID_DLG_ToggleCase_LowerCase,s);
   lowerCase = gtk_radio_button_new_with_label (vbox1_group,s.c_str());
   vbox1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (lowerCase));
-  gtk_widget_show (lowerCase);
-  gtk_box_pack_start (GTK_BOX (vbox1), lowerCase, FALSE, FALSE, 0);
 
   pSS->getValueUTF8(AP_STRING_ID_DLG_ToggleCase_UpperCase,s);
   upperCase = gtk_radio_button_new_with_label (vbox1_group,s.c_str());
   vbox1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (upperCase));
-  gtk_widget_show (upperCase);
-  gtk_box_pack_start (GTK_BOX (vbox1), upperCase, FALSE, FALSE, 0);
 
   pSS->getValueUTF8(AP_STRING_ID_DLG_ToggleCase_FirstUpperCase,s);
   firstUpperCase = gtk_radio_button_new_with_label (vbox1_group,s.c_str());
   vbox1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (firstUpperCase));
-  gtk_widget_show (firstUpperCase);
-  gtk_box_pack_start (GTK_BOX (vbox1), firstUpperCase, FALSE, FALSE, 0);
 
   pSS->getValueUTF8(AP_STRING_ID_DLG_ToggleCase_ToggleCase,s);
   toggleCase = gtk_radio_button_new_with_label (vbox1_group,s.c_str());
   vbox1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (toggleCase));
+
+#if GTK_CHECK_VERSION(3,96,0)
+  gtk_container_add(GTK_CONTAINER(vbox1), sentenceCase);
+  gtk_container_add(GTK_CONTAINER(vbox1), lowerCase);
+  gtk_container_add(GTK_CONTAINER(vbox1), upperCase);
+  gtk_container_add(GTK_CONTAINER(vbox1), firstUpperCase);
+  gtk_container_add(GTK_CONTAINER(vbox1), toggleCase);
+#else
+  gtk_widget_show (sentenceCase);
+  gtk_box_pack_start (GTK_BOX (vbox1), sentenceCase, FALSE, FALSE, 0);
+  gtk_widget_show (lowerCase);
+  gtk_box_pack_start (GTK_BOX (vbox1), lowerCase, FALSE, FALSE, 0);
+  gtk_widget_show (upperCase);
+  gtk_box_pack_start (GTK_BOX (vbox1), upperCase, FALSE, FALSE, 0);
+  gtk_widget_show (firstUpperCase);
+  gtk_box_pack_start (GTK_BOX (vbox1), firstUpperCase, FALSE, FALSE, 0);
   gtk_widget_show (toggleCase);
   gtk_box_pack_start (GTK_BOX (vbox1), toggleCase, FALSE, FALSE, 0);
+#endif
 
   g_object_set_data (G_OBJECT(sentenceCase), "user_data", GINT_TO_POINTER(CASE_SENTENCE));
   g_object_set_data (G_OBJECT(lowerCase), "user_data", GINT_TO_POINTER(CASE_LOWER));

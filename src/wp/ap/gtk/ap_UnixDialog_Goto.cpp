@@ -70,7 +70,12 @@ AP_UnixDialog_Goto__onFocusPage (GtkWidget 		  * /*widget*/,
 								 GdkEventFocus    *event,
 								 gpointer 		  data) 
 {
-	gboolean ev_in = event->in;
+	gboolean ev_in =
+#if GTK_CHECK_VERSION(3,96,0)
+		gdk_event_get_focus_in((GdkEvent*)event, &ev_in);
+#else
+		event->in;
+#endif
 	GdkEventType ev_type = gdk_event_get_event_type((GdkEvent*)event);
 	UT_DEBUGMSG (("ROB: _onFocusPage () '%d', '%d'\n", ev_type, ev_in));
 	if (ev_type == GDK_FOCUS_CHANGE && ev_in) {
@@ -89,7 +94,12 @@ AP_UnixDialog_Goto__onFocusLine (GtkWidget 		  * /*widget*/,
 								 GdkEventFocus    *event,
 								 gpointer 		  data) 
 {
-	gboolean ev_in = event->in;
+	gboolean ev_in =
+#if GTK_CHECK_VERSION(3,96,0)
+		gdk_event_get_focus_in((GdkEvent*)event, &ev_in);
+#else
+		event->in;
+#endif
 	GdkEventType ev_type = gdk_event_get_event_type((GdkEvent*)event);
 	UT_DEBUGMSG (("ROB: _onFocusLine () '%d', '%d'\n", ev_type, ev_in));
 	if (ev_type == GDK_FOCUS_CHANGE && ev_in) {
@@ -108,7 +118,12 @@ AP_UnixDialog_Goto__onFocusBookmarks (GtkWidget 	   * /*widget*/,
 									  GdkEventFocus    *event,
 									  gpointer 		   data) 
 {
-	gboolean ev_in = event->in;
+	gboolean ev_in =
+#if GTK_CHECK_VERSION(3,96,0)
+		gdk_event_get_focus_in((GdkEvent*)event, &ev_in);
+#else
+		event->in;
+#endif
 	GdkEventType ev_type = gdk_event_get_event_type((GdkEvent*)event);
 	UT_DEBUGMSG (("ROB: _onFocusBookmarks () '%d', '%d'\n", ev_type, ev_in));
 	if (ev_type == GDK_FOCUS_CHANGE && ev_in) {
@@ -123,7 +138,12 @@ AP_UnixDialog_Goto__onFocusXMLIDs (GtkWidget 	   * /*widget*/,
 									  GdkEventFocus    *event,
 									  gpointer 		   data) 
 {
-	gboolean ev_in = event->in;
+	gboolean ev_in =
+#if GTK_CHECK_VERSION(3,96,0)
+		gdk_event_get_focus_in((GdkEvent*)event, &ev_in);
+#else
+		event->in;
+#endif
 	GdkEventType ev_type = gdk_event_get_event_type((GdkEvent*)event);
 	UT_DEBUGMSG (("MIQ: _onFocusXMLIDs () '%d', '%d'\n", ev_type, ev_in));
 	if (ev_type == GDK_FOCUS_CHANGE && ev_in)
@@ -139,7 +159,12 @@ AP_UnixDialog_Goto__onFocusAnno (GtkWidget 	   * /*widget*/,
                                  GdkEventFocus    *event,
                                  gpointer 		   data) 
 {
-	gboolean ev_in = event->in;
+	gboolean ev_in =
+#if GTK_CHECK_VERSION(3,96,0)
+		gdk_event_get_focus_in((GdkEvent*)event, &ev_in);
+#else
+		event->in;
+#endif
 	GdkEventType ev_type = gdk_event_get_event_type((GdkEvent*)event);
 	UT_DEBUGMSG (("MIQ: _onFocusAnno () '%d', '%d'\n", ev_type, ev_in));
 	if (ev_type == GDK_FOCUS_CHANGE && ev_in)

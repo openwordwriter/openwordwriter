@@ -172,8 +172,11 @@ void AP_UnixDialog_ListRevisions::constructWindowContents ( GtkWidget * vbDialog
                                         "xalign", 0.0, "yalign", 0.5,
                                         NULL);
   gtk_widget_show (lbExistingRevisions);
+#if GTK_CHECK_VERSION(3,96,0)
+  gtk_container_add(GTK_CONTAINER(vbContent), lbExistingRevisions);
+#else
   gtk_box_pack_start (GTK_BOX (vbContent), lbExistingRevisions, FALSE, FALSE, 0);
-
+#endif
   swExistingRevisions = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_show (swExistingRevisions);
   gtk_container_add (GTK_CONTAINER (vbContent), swExistingRevisions);

@@ -349,16 +349,18 @@ class PD_RDFDialogsGTK : public PD_RDFDialogs
 private:
     void _setIcon (GtkWidget *window)
     {
+#if !GTK_CHECK_VERSION(3,96,0)
         XAP_Frame *lff = XAP_App::getApp()->getLastFocussedFrame();
         XAP_UnixFrameImpl *pUnixFrameImpl = static_cast<XAP_UnixFrameImpl *>(lff->getFrameImpl());
         GtkWidget *top = gtk_widget_get_toplevel(pUnixFrameImpl->getTopLevelWindow());
-        
+
         if (gtk_widget_is_toplevel(top))
         {
-            GdkPixbuf *icon = gtk_window_get_icon(GTK_WINDOW(top));	
-            
+            GdkPixbuf *icon = gtk_window_get_icon(GTK_WINDOW(top));
+
             if (icon) gtk_window_set_icon(GTK_WINDOW(window), icon);
         }
+#endif
     }
 public:
     PD_RDFDialogsGTK()

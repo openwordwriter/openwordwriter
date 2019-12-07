@@ -40,10 +40,13 @@
 ABI_W_NO_CONST_QUAL
 #include <gtk/gtk.h>
 ABI_W_POP
-#include <goffice/gtk/go-combo-box.h>
+
+#if HAVE_GOFFICE
+# include <goffice/gtk/go-combo-box.h>
 ABI_W_NO_DEPRECATED
-#include <goffice/gtk/go-combo-color.h>
+# include <goffice/gtk/go-combo-color.h>
 ABI_W_POP
+#endif
 
 #include "ap_Features.h"
 #include "ut_assert.h"
@@ -90,7 +93,19 @@ class _wd;
 
 static void s_proxy_activated(GtkMenuItem * , _wd * wd);
 
+#if GTK_CHECK_VERSION(3,96,0)
+static GdkContentFormats* _getAbiTBTargets()
+{
+	static GdkContentFormats* s_formats = nullptr;
+	if (s_formats == nullptr) {
+		const char* s[] = {"application/x-abi-toolbars", nullptr};
+		s_formats = gdk_content_formats_new(s, 0);
+	}
+	return s_formats;
+}
+#else
 static const GtkTargetEntry s_AbiTBTargets[] = {{(gchar*)"abi-toolbars",0,0}};
+#endif
 
 static GtkWidget *
 toolbar_append_item_with_proxy (GtkToolbar *toolbar,
@@ -112,9 +127,13 @@ toolbar_append_item_with_proxy (GtkToolbar *toolbar,
 	}
 	else {
 		tool_item = gtk_tool_item_new ();
+#if GTK_CHECK_VERSION(3,96,0)
+		gtk_container_add(GTK_CONTAINER(tool_item), widget);
+#else
 		GtkWidget *box = gtk_event_box_new ();
 		gtk_container_add (GTK_CONTAINER (tool_item), box);
 		gtk_container_add (GTK_CONTAINER (box), widget);
+#endif
 		gtk_tool_item_set_tooltip_text(tool_item, text);
 		if (action_name && data) {
 			GtkWidget	*menu_item;
@@ -165,7 +184,11 @@ toolbar_append_button (GtkToolbar 	*toolbar,
 	gchar		*stock_id;
 
 	stock_id = abi_stock_from_toolbar_id (icon_name);
-	icon = gtk_image_new_from_icon_name (stock_id, GTK_ICON_SIZE_LARGE_TOOLBAR);
+	icon = gtk_image_new_from_icon_name (stock_id
+#if !GTK_CHECK_VERSION(3,96,0)
+										 , GTK_ICON_SIZE_LARGE_TOOLBAR
+#endif
+		);
 	item = gtk_tool_button_new (icon, label);
 	g_free (stock_id);
 	stock_id = NULL;
@@ -193,7 +216,11 @@ toolbar_append_toggle (GtkToolbar 	*toolbar,
 	gchar		*stock_id;
 
 	stock_id = abi_stock_from_toolbar_id (icon_name);
-	icon = gtk_image_new_from_icon_name (stock_id, GTK_ICON_SIZE_LARGE_TOOLBAR);
+	icon = gtk_image_new_from_icon_name(stock_id
+#if !GTK_CHECK_VERSION(3,96,0)
+										, GTK_ICON_SIZE_LARGE_TOOLBAR
+#endif
+		);
 	item = gtk_toggle_tool_button_new ();
 	gtk_tool_button_set_icon_widget(GTK_TOOL_BUTTON(item), icon);
 	gtk_tool_button_set_label(GTK_TOOL_BUTTON(item), label);
@@ -383,7 +410,12 @@ public:									// we create...
 	}
 
 	static void s_drag_begin(GtkWidget  *widget,
-							 GdkDragContext     * /*context*/)
+#if GTK_CHECK_VERSION(3,96,0)
+							 GdkDrag*
+#else
+							 GdkDragContext* /*context*/
+#endif
+		)
 	{
 		_wd * wd = static_cast<_wd *>(g_object_get_data(G_OBJECT(widget),"wd_pointer"));
 		XAP_Frame * pFrame = static_cast<XAP_Frame *>(wd->m_pUnixToolbar->getFrame());
@@ -393,7 +425,11 @@ public:									// we create...
 
 
 	static void s_drag_drop(GtkWidget  *widget,
-							GdkDragContext     *context,
+#if GTK_CHECK_VERSION(3,96,0)
+							GdkDrag* context,
+#else
+							GdkDragContext* context,
+#endif
 							gint /*x*/, gint /*y*/, guint /*time*/ )
 	{
 		_wd * wd = static_cast<_wd *>(g_object_get_data(G_OBJECT(widget),"wd_pointer"));
@@ -407,7 +443,11 @@ public:									// we create...
 	};
 
 	static void s_drag_drop_toolbar(GtkWidget  * /*widget*/,
-									GdkDragContext     *context,
+#if GTK_CHECK_VERSION(3,96,0)
+									GdkDrag* context,
+#else
+									GdkDragContext* context,
+#endif
 									gint /*x*/, gint /*y*/, 
 									guint /*time*/, gpointer pTB)
 	{
@@ -490,7 +530,11 @@ public:									// we create...
 			widget = GTK_WIDGET(combo);
 			GtkAllocation alloc;
 			gtk_widget_get_allocation(widget, &alloc);
+#if GTK_CHECK_VERSION(3,96,0)
+			gdk_surface_get_origin(gtk_widget_get_surface(widget), &x, &y);
+#else
 			gdk_window_get_origin(gtk_widget_get_window(widget), &x,&y);
+#endif
 			if (wd->m_pUnixToolbar->m_pFontPreviewPositionX > -1) {
 				x = wd->m_pUnixToolbar->m_pFontPreviewPositionX;
 			}
@@ -610,6 +654,7 @@ public:									// we create...
 	gulong				m_handlerId;
 };
 
+#if HAVE_GOFFICE
 static void
 s_fore_color_changed (GOComboColor 	* /*cc*/, 
 					  GOColor 		 color,
@@ -652,6 +697,7 @@ s_back_color_changed (GOComboColor 	* /*cc*/,
 
 	wd->m_pUnixToolbar->toolbarEvent(wd, str.ucs4_str().ucs4_str(), str.size());
 }
+#endif
 
 static void s_proxy_activated(GtkMenuItem * item, _wd * wd)
 {
@@ -810,8 +856,13 @@ void EV_UnixToolbar::rebuildToolbar(UT_sint32 oldpos)
   // the frame.
   //
     synthesize();
+#if GTK_CHECK_VERSION(3,96,0)
+	UT_UNUSED(oldpos);
+	#warning TODO for Gtk4
+#else
 	GtkBox * wBox = _getContainer();
 	gtk_box_reorder_child(wBox, m_wToolbar, oldpos);
+#endif
 //
 // bind  view listener
 //
@@ -821,6 +872,17 @@ void EV_UnixToolbar::rebuildToolbar(UT_sint32 oldpos)
 
 static void setDragIcon(GtkWidget * wwd, GtkImage * img)
 {
+#if GTK_CHECK_VERSION(3,96,0)
+	auto paintable = gtk_image_get_paintable(img);
+	if (paintable) {
+		gtk_drag_source_set_icon_paintable(wwd, paintable);
+	} else {
+		const char* icon_name = gtk_image_get_icon_name(img);
+		if (icon_name) {
+			gtk_drag_source_set_icon_name(wwd, icon_name);
+		}
+	}
+#else
   if (GTK_IMAGE_PIXBUF == gtk_image_get_storage_type(img))
     {
       GdkPixbuf * pixbuf = gtk_image_get_pixbuf ( img ) ;
@@ -837,6 +899,7 @@ static void setDragIcon(GtkWidget * wwd, GtkImage * img)
       gtk_drag_source_set_icon_stock ( wwd, stk ) ;
 #endif
     }
+#endif
 }
 
 /*
@@ -939,7 +1002,9 @@ bool EV_UnixToolbar::synthesize(void)
 					pSS->getValueUTF8(XAP_STRING_ID_TB_InsertNewTable, s);
 					toolbar_append_item (GTK_TOOLBAR (m_wToolbar), abi_table, 
 										 s.c_str(), TRUE);
+#if !GTK_CHECK_VERSION(3,96,0)
 					gtk_widget_show_all(abi_table);
+#endif
 					wd->m_widget = abi_table;
 				}
 				GtkWidget * wwd = wd->m_widget;
@@ -947,16 +1012,27 @@ bool EV_UnixToolbar::synthesize(void)
 									"wd_pointer",
 									wd);
 				gtk_drag_source_set(wwd,GDK_BUTTON3_MASK,
+#if GTK_CHECK_VERSION(3,96,0)
+									_getAbiTBTargets(),
+#else
 									s_AbiTBTargets,1,
+#endif
 									GDK_ACTION_COPY);
 				GtkImage * dragimage
-					= (GtkImage*)gtk_image_new_from_icon_name(ABIWORD_INSERT_TABLE,
-															  GTK_ICON_SIZE_DND);
+					= (GtkImage*)gtk_image_new_from_icon_name(ABIWORD_INSERT_TABLE
+#if !GTK_CHECK_VERSION(3,96,0)
+															  , GTK_ICON_SIZE_DND
+#endif
+						);
 				g_object_ref_sink(dragimage);
 				setDragIcon(wwd, dragimage);  // does not take ownership
 				g_object_unref(dragimage);
 				gtk_drag_dest_set(wwd, GTK_DEST_DEFAULT_ALL,
+#if GTK_CHECK_VERSION(3,96,0)
+									_getAbiTBTargets(),
+#else
 									s_AbiTBTargets,1,
+#endif
 									GDK_ACTION_COPY);
 				g_signal_connect(G_OBJECT(wd->m_widget),"drag_begin",G_CALLBACK(_wd::s_drag_begin), wd);
 				g_signal_connect(G_OBJECT(wd->m_widget),"drag_drop",G_CALLBACK(_wd::s_drag_drop), wd);
@@ -981,19 +1057,30 @@ bool EV_UnixToolbar::synthesize(void)
 									"wd_pointer",
 									wd);
 				gtk_drag_source_set(wwd,GDK_BUTTON3_MASK,
+#if GTK_CHECK_VERSION(3,96,0)
+									_getAbiTBTargets(),
+#else
 									s_AbiTBTargets,1,
+#endif
 									GDK_ACTION_COPY);
 				gchar *stock_id = abi_stock_from_toolbar_id(pLabel->getIconName());
 				GtkImage *dragimage
-					= (GtkImage*)gtk_image_new_from_icon_name(stock_id,
-															  GTK_ICON_SIZE_DND);
+					= (GtkImage*)gtk_image_new_from_icon_name(stock_id
+#if !GTK_CHECK_VERSION(3,96,0)
+															  , GTK_ICON_SIZE_LARGE
+#endif
+						);
 				g_object_ref_sink(dragimage);
 				setDragIcon(wwd, dragimage); // does not take dragimage ownership
 				g_object_unref(dragimage);
 				g_free (stock_id);
 				stock_id = NULL;
 				gtk_drag_dest_set(wwd,static_cast<GtkDestDefaults>(GTK_DEST_DEFAULT_ALL),
+#if GTK_CHECK_VERSION(3,96,0)
+									_getAbiTBTargets(),
+#else
 									s_AbiTBTargets,1,
+#endif
 									GDK_ACTION_COPY);
 				g_signal_connect(G_OBJECT(wd->m_widget),"drag_begin",G_CALLBACK(_wd::s_drag_begin), wd);
 				g_signal_connect(G_OBJECT(wd->m_widget),"drag_drop",G_CALLBACK(_wd::s_drag_drop), wd);
@@ -1017,7 +1104,11 @@ bool EV_UnixToolbar::synthesize(void)
 					combo = gtk_combo_box_text_new_with_entry();
 					GtkEntry *entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(combo)));
 					g_object_set (G_OBJECT(entry), "can-focus", TRUE, NULL);
+#if GTK_CHECK_VERSION(3,96,0)
+					gtk_editable_set_width_chars(GTK_EDITABLE(entry), 4);
+#else
 					gtk_entry_set_width_chars (entry, 4);
+#endif
 					g_signal_connect (G_OBJECT (entry), "insert-text", G_CALLBACK (_wd::s_insert_text_cb), NULL);
 					g_signal_connect (G_OBJECT (entry), "focus-out-event", G_CALLBACK (_wd::s_focus_out_event_cb), (gpointer) wd);
 					g_signal_connect (G_OBJECT (entry), "key-press-event", G_CALLBACK (_wd::s_key_press_event_cb), (gpointer) wd);
@@ -1106,6 +1197,7 @@ bool EV_UnixToolbar::synthesize(void)
 			case EV_TBIT_ColorFore:
 			case EV_TBIT_ColorBack:
 			{
+#if HAVE_GOFFICE
 				GdkPixbuf 		*pixbuf;
 				GtkWidget		*combo;
 				GOColorGroup 	*cg;
@@ -1139,7 +1231,11 @@ bool EV_UnixToolbar::synthesize(void)
 				pixbuf
 					= gtk_icon_theme_load_icon(gtk_icon_theme_get_default(),
 											   abi_stock_get_gtk_stock_id(abi_stock_id),
+#if GTK_CHECK_VERSION(3,96,0)
+											   GTK_ICON_SIZE_LARGE,
+#else
 											   GTK_ICON_SIZE_LARGE_TOOLBAR,
+#endif
 											   GTK_ICON_LOOKUP_USE_BUILTIN,
 											   &err);
 				if (err) {
@@ -1170,6 +1266,9 @@ bool EV_UnixToolbar::synthesize(void)
 				g_object_set_data(G_OBJECT(wwd),
 								  "wd_pointer",
 								  wd);
+#else
+#warning Find a replacement for GOffice on Gtk4...
+#endif
 			}
 			break;
 				
@@ -1240,12 +1339,15 @@ bool EV_UnixToolbar::synthesize(void)
 
 	GtkBox * wBox = _getContainer();
 
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(wBox), m_wToolbar);
+#else
 	// show the complete thing
 	gtk_widget_show(m_wToolbar);
 
 	// put it in the vbox
 	gtk_box_pack_start(wBox, m_wToolbar, FALSE, FALSE, 0);
-
+#endif
 	setDetachable(getDetachable());
 
 	return true;

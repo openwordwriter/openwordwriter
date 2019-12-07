@@ -38,7 +38,11 @@ XAP_UnixFontPreview::XAP_UnixFontPreview(XAP_Frame * pFrame, UT_sint32 left, UT_
 	g_object_set(G_OBJECT(m_pDrawingArea), "expand", TRUE, NULL);
 
 	gtk_widget_show_all(m_pPreviewWindow);
+#if GTK_CHECK_VERSION(3,96,0)
+	gdk_surface_move(gtk_widget_get_surface(m_pPreviewWindow), m_left, m_top);
+#else
 	gtk_window_move(GTK_WINDOW(m_pPreviewWindow), m_left, m_top);
+#endif
 	UT_DEBUGMSG(("gtk_window_move left %d top %d \n",m_left,m_top));
 
 	XAP_App *pApp = XAP_App::getApp();

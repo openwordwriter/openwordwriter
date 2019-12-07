@@ -142,8 +142,8 @@ void AP_UnixDialog_Background::_constructWindowContents (GtkWidget * parent)
 	GtkWidget *colorsel;
 
 	GtkWidget * vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-	gtk_widget_show (vbox);
 	XAP_gtk_widget_set_margin(vbox, 5);
+	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER(parent), vbox);
 
 	colorsel = gtk_color_chooser_widget_new();
@@ -184,8 +184,13 @@ void AP_UnixDialog_Background::_constructWindowContents (GtkWidget * parent)
 		  = gtk_widget_new(GTK_TYPE_BUTTON, "label", s.c_str(),
 				   "xalign", 1.0, "yalign", 0.5, NULL);
 		GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#if GTK_CHECK_VERSION(3,96,0)
+		gtk_container_add(GTK_CONTAINER(hbox), clearColor);
+		gtk_container_add(GTK_CONTAINER(vbox), hbox);
+#else
 		gtk_box_pack_end(GTK_BOX(hbox), clearColor, FALSE, FALSE, 0);
 		gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+#endif
 		g_signal_connect(G_OBJECT(clearColor), "clicked",
 						G_CALLBACK(s_color_cleared),
 						(gpointer) this);

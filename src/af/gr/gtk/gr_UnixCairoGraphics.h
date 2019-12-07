@@ -26,7 +26,7 @@
 #include "ut_compiler.h"
 
 ABI_W_NO_CONST_QUAL
-#include <gdk/gdk.h>
+#include <gtk/gtk.h>
 ABI_W_POP
 #include "gr_CairoGraphics.h"
 
@@ -75,8 +75,12 @@ public:
 
 	static const char *    graphicsDescriptor(){return "Unix Cairo Pango";}
 	static GR_Graphics *   graphicsAllocator(GR_AllocInfo&);
+#if GTK_CHECK_VERSION(3,96,0)
+	// XXX rename eventually
+	GdkSurface *  getWindow () {return m_pWin;}
+#else
 	GdkWindow *  getWindow () {return m_pWin;}
-
+#endif
 	virtual GR_Font * getGUIFont(void) override;
 
 	virtual void		setCursor(GR_Graphics::Cursor c) override;
@@ -108,14 +112,23 @@ protected:
 	static void		widget_destroy (GtkWidget        *widget,
 									  GR_UnixCairoGraphics *me);
 	GR_UnixCairoGraphics(GtkWidget* win = nullptr);
+#if GTK_CHECK_VERSION(3,96,0)
+	virtual GdkSurface * _getWindow(void)
+	{  return m_pWin;}
+#else
 	virtual GdkWindow * _getWindow(void)
 	{  return m_pWin;}
+#endif
 
 	virtual void _beginPaint() override;
 	virtual void _endPaint() override;
 
 private:
+#if GTK_CHECK_VERSION(3,96,0)
+	GdkSurface *m_pWin;
+#else
 	GdkWindow *m_pWin;
+#endif
 	GdkDrawingContext* m_context;
 	bool m_CairoCreated;
 	bool m_Painting;

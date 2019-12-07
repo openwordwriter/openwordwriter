@@ -151,19 +151,31 @@ void XAP_UnixDialog_ClipArt::runModal(XAP_Frame * pFrame)
 	connectFocus(GTK_WIDGET(this->dlg), pFrame);
 
 	GtkWidget *vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 10);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(this->dlg))), vbox);
+#else
 	gtk_box_pack_start(GTK_BOX (gtk_dialog_get_content_area(GTK_DIALOG(this->dlg))), vbox, TRUE,TRUE,0);
+#endif
 
 	pSS->getValueUTF8(XAP_STRING_ID_DLG_CLIPART_Loading, s);
 	this->progress = gtk_progress_bar_new ();
 	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (this->progress), s.c_str());
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(vbox), this->progress);
+#else
 	gtk_box_pack_start (GTK_BOX (vbox), this->progress, FALSE, FALSE, 0);
+#endif
 
 	scroll = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll), GTK_SHADOW_ETCHED_IN);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll),
 									GTK_POLICY_AUTOMATIC,
 									GTK_POLICY_AUTOMATIC);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(vbox), scroll);
+#else
 	gtk_box_pack_start (GTK_BOX (vbox), scroll, TRUE, TRUE, 0);
+#endif
 
 	this->store = create_store ();
 

@@ -177,7 +177,7 @@ AP_UnixDialog_InsertXMLID::_setList(void)
 	// GtkEntry *entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(m_combo)));
 	// if (getBookmark() && strlen(getBookmark()) > 0)
 	// {
-	//     gtk_entry_set_text(entry, getBookmark());
+	//     XAP_gtk_entry_set_text(entry, getBookmark());
 	// }
 	// else
 	// {
@@ -185,7 +185,7 @@ AP_UnixDialog_InsertXMLID::_setList(void)
 	//     if (suggestion.size()>0)
 	// 	{
 	// 		UT_UTF8String utf8 (suggestion);
-	// 		gtk_entry_set_text (entry, utf8.utf8_str());
+	// 		XAP_gtk_entry_set_text (entry, utf8.utf8_str());
 	// 	}
 	// }
 }
@@ -201,13 +201,18 @@ AP_UnixDialog_InsertXMLID::_constructWindowContents(GtkWidget * container )
     pSS->getValueUTF8(msgid,s);
     label1 = gtk_label_new (s.c_str());
     gtk_widget_show (label1);
-    gtk_box_pack_start (GTK_BOX (container), label1, FALSE, FALSE, 0);
 
     // m_combo = gtk_combo_box_text_new_with_entry();
     // doesn't yet work as a combo box!
     m_combo = gtk_entry_new();
     gtk_widget_show (m_combo);
+#if GTK_CHECK_VERSION(3,96,0)
+    gtk_container_add(GTK_CONTAINER(container), label1);
+    gtk_container_add(GTK_CONTAINER(container), m_combo);
+#else
+    gtk_box_pack_start (GTK_BOX (container), label1, FALSE, FALSE, 0);
     gtk_box_pack_start (GTK_BOX (container), m_combo, FALSE, FALSE, 0);
+#endif
 
     // GtkEntry *entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(m_combo)));
 

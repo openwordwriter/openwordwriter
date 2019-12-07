@@ -1280,14 +1280,19 @@ int AP_UnixApp::main(const char * szAppName, int argc, char ** argv)
 		// Step 1: Initialize GTK and create the APP.
 		// hack needed to intialize gtk before ::initialize
 		setlocale(LC_ALL, "");
-		gboolean have_display = gtk_init_check(&argc, &argv);
+		gboolean have_display = gtk_init_check(
+#if !GTK_CHECK_VERSION(3,96,0)
+            &argc, &argv
+#endif
+            );
 #ifdef LOGFILE
 		fprintf(logfile,"Got display %d \n",have_display);
 		fprintf(logfile,"Really display %d \n",have_display);
 #endif
-		// gtk_init_check() modifies argv/argc if --display is specified
+		// On Gtk 3.x gtk_init_check() modifies argv/argc if --display is specified
 		XAP_Args XArgs = XAP_Args(argc, argv);
 		std::unique_ptr<AP_Args> Args(new AP_Args(&XArgs, szAppName, pMyUnixApp));
+#if !GTK_CHECK_VERSION(3,96,0)
 		if (have_display > 0) {
 			Args->addOptions(gtk_get_option_group(TRUE));
 			Args->parseOptions();
@@ -1297,6 +1302,7 @@ int AP_UnixApp::main(const char * szAppName, int argc, char ** argv)
 			Args->addOptions(gtk_get_option_group(FALSE));
 			Args->parseOptions();
 		}
+#endif
 
 		// if the initialize fails, we don't have icons, fonts, etc.
 		if (!pMyUnixApp->initialize(have_display))

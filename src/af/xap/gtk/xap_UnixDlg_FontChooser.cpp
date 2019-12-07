@@ -1,5 +1,4 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
-
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t -*- */
 /* AbiSource Application Framework
  * Copyright (C) 1998-2000 AbiSource, Inc.
  * Copyright (C) 2009 Hubert Figuiere
@@ -502,7 +501,11 @@ GtkWidget * XAP_UnixDialog_FontChooser::constructWindow(void)
 	vboxOuter = gtk_dialog_get_content_area(GTK_DIALOG(windowFontSelection));
 
 	vboxMain = constructWindowContents(vboxOuter);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(vboxOuter), vboxMain);
+#else
 	gtk_box_pack_start (GTK_BOX (vboxOuter), vboxMain, TRUE, TRUE, 0);
+#endif
 
 	pSS->getValueUTF8(XAP_STRING_ID_DLG_Cancel, s);
 	abiAddButton ( GTK_DIALOG(windowFontSelection), s, BUTTON_CANCEL ) ;
@@ -552,7 +555,11 @@ GtkWidget * XAP_UnixDialog_FontChooser::constructWindowContents(GtkWidget *)
 
 	notebookMain = gtk_notebook_new ();
 	gtk_widget_show (notebookMain);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(vboxMain), notebookMain);
+#else
 	gtk_box_pack_start (GTK_BOX (vboxMain), notebookMain, 1, 1, 0);
+#endif
 	XAP_gtk_widget_set_margin(notebookMain, 8);
 
 	GtkWidget *grid1;
@@ -694,7 +701,11 @@ GtkWidget * XAP_UnixDialog_FontChooser::constructWindowContents(GtkWidget *)
 	XAP_gtk_widget_set_margin(colorSelector, 6);
 	gtk_color_chooser_set_use_alpha(GTK_COLOR_CHOOSER(colorSelector), FALSE);
 	gtk_widget_show (colorSelector);
-	gtk_box_pack_start (GTK_BOX (hbox1), colorSelector, TRUE, TRUE, 0);
+#if GTK_CHECK_VERSION(3,96,0)
+    gtk_container_add(GTK_CONTAINER(hbox1), colorSelector);
+#else
+    gtk_box_pack_start (GTK_BOX (hbox1), colorSelector, TRUE, TRUE, 0);
+#endif
 
 	/*Notebook page for Background Color Selector*/
 
@@ -715,7 +726,11 @@ GtkWidget * XAP_UnixDialog_FontChooser::constructWindowContents(GtkWidget *)
 	XAP_gtk_widget_set_margin(colorBGSelector, 6);
 	gtk_color_chooser_set_use_alpha(GTK_COLOR_CHOOSER(colorBGSelector), FALSE);
 	gtk_widget_show (colorBGSelector);
+#if GTK_CHECK_VERSION(3,96,0)
+    gtk_container_add(GTK_CONTAINER(vboxBG), colorBGSelector);
+#else
 	gtk_box_pack_start (GTK_BOX (vboxBG), colorBGSelector, TRUE, TRUE, 0);
+#endif
 
 //
 // Make a toggle button to set hightlight color transparent
@@ -724,21 +739,31 @@ GtkWidget * XAP_UnixDialog_FontChooser::constructWindowContents(GtkWidget *)
 	GtkWidget * checkbuttonTrans = gtk_check_button_new_with_label (s.c_str());
 	XAP_gtk_widget_set_margin(checkbuttonTrans, 6);
 	gtk_widget_show (checkbuttonTrans);
+#if GTK_CHECK_VERSION(3,96,0)
+    gtk_container_add(GTK_CONTAINER(vboxBG), checkbuttonTrans);
+#else
 	gtk_box_pack_start (GTK_BOX (vboxBG), checkbuttonTrans, TRUE, TRUE, 0);
+#endif
 
 	/* frame with preview */
 
 	frame4 = gtk_frame_new (NULL);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame4), GTK_SHADOW_NONE);
 	gtk_widget_show (frame4);
+#if GTK_CHECK_VERSION(3,96,0)
+    gtk_container_add(GTK_CONTAINER(vboxMain), frame4);
+#else
 	gtk_box_pack_start (GTK_BOX (vboxMain), frame4, FALSE, FALSE, PREVIEW_BOX_BORDER_WIDTH_PIXELS);
+#endif
 	// setting the height takes into account the border applied on all
 	// sides, so we need to double the single border width
 	gtk_widget_set_size_request (frame4, -1, PREVIEW_BOX_HEIGHT_PIXELS + (PREVIEW_BOX_BORDER_WIDTH_PIXELS * 2));
 	XAP_gtk_widget_set_margin(frame4, PREVIEW_BOX_BORDER_WIDTH_PIXELS);
 
 	entryArea = gtk_drawing_area_new();
+#if !GTK_CHECK_VERSION(3,96,0)
 	gtk_widget_set_events(entryArea, GDK_EXPOSURE_MASK);
+#endif
 	g_signal_connect(G_OBJECT(entryArea), "draw",
 					   G_CALLBACK(s_drawing_area_draw), NULL);
 	gtk_widget_set_size_request (entryArea, -1, PREVIEW_BOX_HEIGHT_PIXELS);
@@ -835,6 +860,7 @@ GtkWidget * XAP_UnixDialog_FontChooser::constructWindowContents(GtkWidget *)
 	gtk_widget_set_can_focus(listStyles, true);
 	gtk_widget_set_can_focus(listSizes, true);
 
+#if !GTK_CHECK_VERSION(3,96,0)
 	// Make the tab focus list more sensible
 	// font -> syle -> size -> other options ...
 	GList* focusList = NULL;
@@ -845,6 +871,7 @@ GtkWidget * XAP_UnixDialog_FontChooser::constructWindowContents(GtkWidget *)
 	focusList = g_list_append(focusList, grEffectRows);
 	gtk_container_set_focus_chain(GTK_CONTAINER(grid1), focusList);
 	g_list_free(focusList);
+#endif
 	gtk_widget_grab_focus(scrolledwindow1);
 
 	

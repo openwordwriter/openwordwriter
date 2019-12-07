@@ -540,8 +540,12 @@ void AP_UnixDialog_Columns::_constructWindowContents(GtkWidget * windowColumns)
 	             "column-spacing", 12,
 	             "border-width", 5,
 	             NULL);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(windowColumns), grid);
+#else
 	gtk_widget_show (grid);
 	gtk_box_pack_start(GTK_BOX (windowColumns), grid, FALSE, FALSE, 6);
+#endif
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Column_Number,s);
 	s = "<b>" + s + "</b>";
@@ -553,7 +557,9 @@ void AP_UnixDialog_Columns::_constructWindowContents(GtkWidget * windowColumns)
 	wToggleOne = gtk_toggle_button_new();
 	gtk_widget_show(wToggleOne );
         label_button_with_abi_pixmap(wToggleOne, "tb_1column_xpm");
+#if !GTK_CHECK_VERSION(3,96,0)
 	gtk_widget_set_can_default(wToggleOne, true);
+#endif
 	gtk_widget_set_margin_start(wToggleOne, 18);
 	gtk_grid_attach(GTK_GRID(grid), wToggleOne, 0, 1, 1, 1);
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Column_One,s);
@@ -565,7 +571,9 @@ void AP_UnixDialog_Columns::_constructWindowContents(GtkWidget * windowColumns)
 	wToggleTwo = gtk_toggle_button_new ();
 	gtk_widget_show(wToggleTwo);
         label_button_with_abi_pixmap(wToggleTwo, "tb_2column_xpm");
+#if !GTK_CHECK_VERSION(3,96,0)
 	gtk_widget_set_can_default(wToggleTwo, true);
+#endif
 	gtk_widget_set_margin_start(wToggleTwo, 18);
 	gtk_grid_attach(GTK_GRID(grid), wToggleTwo, 0, 2, 1, 1);
 
@@ -578,7 +586,9 @@ void AP_UnixDialog_Columns::_constructWindowContents(GtkWidget * windowColumns)
 	wToggleThree = gtk_toggle_button_new ();
 	gtk_widget_show(wToggleThree);
         label_button_with_abi_pixmap(wToggleThree, "tb_3column_xpm");
+#if !GTK_CHECK_VERSION(3,96,0)
 	gtk_widget_set_can_default(wToggleThree, true);
+#endif
 	gtk_widget_set_margin_start(wToggleThree, 18);
 	gtk_grid_attach(GTK_GRID(grid), wToggleThree, 0, 3, 1, 1);
 

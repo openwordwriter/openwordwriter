@@ -65,7 +65,11 @@ protected:
         static void unrealize(AP_UnixRuler *self);
         static gint button_press_event(GtkWidget * w, GdkEventButton * e);
         static gint button_release_event(GtkWidget * w, GdkEventButton * e);
+#if GTK_CHECK_VERSION(3,96,0)
+		static void size_changed(GdkSurface*, gint w, gint h, gpointer);
+#else
         static gint configure_event(GtkWidget* w, GdkEventConfigure *e);
+#endif
         static gint motion_notify_event(GtkWidget* w, GdkEventMotion* e);
         static gint key_press_event(GtkWidget* w, GdkEventKey* e);
         static gint delete_event(GtkWidget * w, GdkEvent * /*event*/, gpointer /*data*/);

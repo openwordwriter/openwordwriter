@@ -622,7 +622,11 @@ void XAP_UnixDialog_FileOpenSaveAs::runModal(XAP_Frame * pFrame)
 		// place the preview area inside a container to get a nice border
 		GtkWidget * preview_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		XAP_gtk_widget_set_margin(preview_hbox, 4);
+#if GTK_CHECK_VERSION(3,96,0)
+		gtk_container_add(GTK_CONTAINER(preview_hbox), preview);
+#else
 		gtk_box_pack_start(GTK_BOX(preview_hbox), preview, TRUE, TRUE, 0);
+#endif
 		
 		// attach the preview area to the dialog
 		gtk_file_chooser_set_preview_widget (m_FC, preview_hbox);
@@ -647,12 +651,20 @@ void XAP_UnixDialog_FileOpenSaveAs::runModal(XAP_Frame * pFrame)
                          "xalign", 1.0,  "yalign", 0.5,
                          "justify", GTK_JUSTIFY_RIGHT, NULL);
 
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(pulldown_hbox), filetypes_label);
+#else
 	gtk_box_pack_start(GTK_BOX(pulldown_hbox), filetypes_label, TRUE, TRUE, 0);
+#endif
 
 	// pulldown menu
 	filetypes_pulldown = gtk_combo_box_new();
 	gtk_widget_show(filetypes_pulldown);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(pulldown_hbox), filetypes_pulldown);
+#else
 	gtk_box_pack_end(GTK_BOX(pulldown_hbox), filetypes_pulldown, TRUE, TRUE, 0);
+#endif
     gtk_label_set_mnemonic_widget(GTK_LABEL(filetypes_label), filetypes_pulldown);
 	//
 	// add the filters to the dropdown list

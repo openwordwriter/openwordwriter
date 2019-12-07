@@ -218,7 +218,11 @@ GtkWidget * AP_UnixDialog_SplitCells::_constructWindow(void)
 	vboxMain = gtk_dialog_get_content_area(GTK_DIALOG(windowSplitCells));
 	XAP_gtk_widget_set_margin(vboxMain, 10);
 	_constructWindowContents();
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(vboxMain), m_wContents);
+#else
 	gtk_box_pack_start (GTK_BOX (vboxMain), m_wContents, FALSE, FALSE, 0);
+#endif
 	abiAddButton(GTK_DIALOG(windowSplitCells),
                      pSS->getValue(XAP_STRING_ID_DLG_Close), BUTTON_CLOSE);
 

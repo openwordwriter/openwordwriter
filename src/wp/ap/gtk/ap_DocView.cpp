@@ -54,8 +54,12 @@ ap_DocView_class_init(GtkWidgetClass *widget_class, gpointer)
 	
 	// Disable focus handlers because they emit superfluous expose
 	// events, causing flicker.
+#if GTK_CHECK_VERSION(3,96,0)
+	UT_UNUSED(widget_class);
+#else
 	widget_class->focus_in_event = NULL;
 	widget_class->focus_out_event = NULL;
+#endif
 #if 0
 	GType factory_type = AT_DocView_factory_get_type();
 	if (factory_type)	// will return NULL if unable to find gail

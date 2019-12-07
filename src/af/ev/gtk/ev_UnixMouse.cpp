@@ -20,6 +20,8 @@
 // TODO see if we need to do the GTK absolute-to-relative coordinate
 // TODO trick like we did in the top ruler.
 
+#include <gtk/gtk.h>
+
 #include "ut_assert.h"
 #include "ut_debugmsg.h"
 #include "ut_types.h"
@@ -157,8 +159,12 @@ void EV_UnixMouse::mouseClick(AV_View* pView, GdkEventButton* e)
 
 	if (ev_type == GDK_BUTTON_PRESS)
 		mop = EV_EMO_SINGLECLICK;
+#if GTK_CHECK_VERSION(3,96,0)
+#warning TODO handle double click
+#else
 	else if (ev_type == GDK_DOUBLE_BUTTON_PRESS)
 		mop = EV_EMO_DOUBLECLICK;
+#endif
 	else
 	{
 		// TODO decide something better to do here....

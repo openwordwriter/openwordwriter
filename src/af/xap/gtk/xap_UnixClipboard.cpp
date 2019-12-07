@@ -25,13 +25,18 @@
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 
-GtkClipboard * XAP_UnixClipboard::gtkClipboardForTarget(XAP_UnixClipboard::_T_AllowGet get) const
+#if GTK_CHECK_VERSION(3,96,0)
+GdkClipboard*
+#else
+GtkClipboard*
+#endif
+XAP_UnixClipboard::gtkClipboardForTarget(XAP_UnixClipboard::_T_AllowGet get) const
 {
 	if (XAP_UnixClipboard::TAG_ClipboardOnly == get)
 		return m_clip;
 	else if (XAP_UnixClipboard::TAG_PrimaryOnly == get)
 		return m_primary;
-	return 0;
+	return nullptr;
 }
 
 static AV_View * viewFromApp(XAP_App * pApp)
@@ -48,8 +53,14 @@ static AV_View * viewFromApp(XAP_App * pApp)
 XAP_UnixClipboard::XAP_UnixClipboard(XAP_UnixApp * pUnixApp)
 	: m_pUnixApp(pUnixApp), m_Targets(nullptr), m_nTargets(0)
 {
+#if GTK_CHECK_VERSION(3,96,0)
+	GdkDisplay* display = gdk_display_get_default();
+	m_clip = gdk_display_get_clipboard(display);
+	m_primary = gdk_display_get_clipboard(display);
+#else
 	m_clip = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	m_primary = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+#endif
 }
 
 XAP_UnixClipboard::~XAP_UnixClipboard()
@@ -65,7 +76,9 @@ void XAP_UnixClipboard::AddFmt(const char * szFormat)
 {
 	UT_return_if_fail(szFormat && strlen(szFormat));
 	m_vecFormat_AP_Name.push_back(szFormat);
+#if !GTK_CHECK_VERSION(3,96,0)
 	m_vecFormat_GdkAtom.push_back(gdk_atom_intern(szFormat,FALSE));
+#endif
 }
 
 void XAP_UnixClipboard::deleteFmt(const char * szFormat)
@@ -75,29 +88,34 @@ void XAP_UnixClipboard::deleteFmt(const char * szFormat)
 	if (item != m_vecFormat_AP_Name.end()) {
 		m_vecFormat_AP_Name.erase(item);
 	}
+#if !GTK_CHECK_VERSION(3,96,0)
 	auto item2 = std::find(m_vecFormat_GdkAtom.begin(), m_vecFormat_GdkAtom.end(),
 						   gdk_atom_intern(szFormat, FALSE));
 	if (item2 != m_vecFormat_GdkAtom.end()) {
 		m_vecFormat_GdkAtom.erase(item2);
 	}
+#endif
 }
 
 void XAP_UnixClipboard::initialize()
 {
 	m_nTargets = m_vecFormat_AP_Name.size();
+#if !GTK_CHECK_VERSION(3,96,0)
 	m_Targets  = g_new0(GtkTargetEntry, m_nTargets);
-	
+
 	for (int k = 0, kLimit = m_nTargets; (k < kLimit); k++)
     {
 		GtkTargetEntry * target = &(m_Targets[k]);
 		target->target = (gchar*)m_vecFormat_AP_Name[k];
 		target->info = k;
     }
+#endif
 }
 
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 
+#if !GTK_CHECK_VERSION(3,96,0)
 void XAP_UnixClipboard::common_get_func(GtkClipboard * /*clipboard*/,
 										GtkSelectionData *selection_data,
 										guint /*info*/, T_AllowGet which)
@@ -160,22 +178,26 @@ void XAP_UnixClipboard::clipboard_get_func(GtkClipboard *clipboard,
 {
 	common_get_func(clipboard, selection_data, info, TAG_ClipboardOnly);
 }
-
+#endif
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
-
 bool XAP_UnixClipboard::assertSelection()
 {
+#if !GTK_CHECK_VERSION(3,96,0)
   return (gtk_clipboard_set_with_data (gtkClipboardForTarget(TAG_PrimaryOnly),
 										 m_Targets,
 										 m_nTargets,
 										 s_primary_get_func,
 										 s_primary_clear_func,
 										 this) == TRUE); 
+#else
+  return false;
+#endif
 }
 
 bool XAP_UnixClipboard::addData(T_AllowGet tFrom, const char* format, const void* pData, UT_sint32 iNumBytes)
 {
+#if !GTK_CHECK_VERSION(3,96,0)
 	if(tFrom == TAG_PrimaryOnly)
 		return m_fakePrimaryClipboard.addData(format,pData,iNumBytes);
 	else 
@@ -185,10 +207,13 @@ bool XAP_UnixClipboard::addData(T_AllowGet tFrom, const char* format, const void
 		
 		return true;
     }
+#endif
+	return true;
 }
 
 void XAP_UnixClipboard::finishedAddingData(void)
 {
+#if !GTK_CHECK_VERSION(3,96,0)
   gtk_clipboard_set_with_data (gtkClipboardForTarget(TAG_ClipboardOnly),
 			       m_Targets,
 			       m_nTargets,
@@ -197,10 +222,12 @@ void XAP_UnixClipboard::finishedAddingData(void)
 			       this);
 
   gtk_clipboard_set_can_store (gtkClipboardForTarget(TAG_ClipboardOnly), m_Targets, m_nTargets);
+#endif
 }
 
 void XAP_UnixClipboard::clearData(bool bClipboard, bool bPrimary)
 {
+#if !GTK_CHECK_VERSION(3,96,0)
 	if (bClipboard)
     {
 		gtk_clipboard_clear (gtkClipboardForTarget (TAG_ClipboardOnly));
@@ -212,6 +239,7 @@ void XAP_UnixClipboard::clearData(bool bClipboard, bool bPrimary)
 		gtk_clipboard_clear(gtkClipboardForTarget (TAG_PrimaryOnly));
 		m_fakePrimaryClipboard.clearClipboard();
     }
+#endif
 }
 
 bool XAP_UnixClipboard::getData(T_AllowGet tFrom, const char** formatList,
@@ -237,6 +265,19 @@ bool XAP_UnixClipboard::getTextData(T_AllowGet tFrom, void ** ppData,
 	// start out pessimistic
 	*ppData = NULL;
 	*pLen = 0;
+#if GTK_CHECK_VERSION(3,96,0)
+	GdkClipboard* clippy = gtkClipboardForTarget (tFrom);
+	auto formats = gdk_clipboard_get_formats(clippy);
+	if (gdk_content_formats_contain_mime_type(formats, "text/plain")) {
+		auto provider = gdk_clipboard_get_content(clippy);
+		GValue value = G_VALUE_INIT;
+		GError* error;
+		if (!gdk_content_provider_get_value(provider, &value, &error)) {
+			UT_DEBUGMSG(("Error get clipboard: %s", error->message));
+			g_error_free(error);
+		}
+	}
+#else
 	
 	GtkClipboard * clippy = gtkClipboardForTarget (tFrom);
 	
@@ -264,11 +305,13 @@ bool XAP_UnixClipboard::getTextData(T_AllowGet tFrom, void ** ppData,
 	};
 	
 	return _getDataFromFakeClipboard(tFrom, txtFormatList, ppData, pLen, &pszFormatFound);
+#endif
 }
 	
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 
+#if !GTK_CHECK_VERSION(3,96,0)
 bool XAP_UnixClipboard::_getDataFromFakeClipboard(T_AllowGet tFrom, const char** formatList,
 												  void ** ppData, UT_uint32 * pLen,
 												  const char **pszFormatFound)
@@ -302,12 +345,14 @@ static void allTargets(GtkClipboard * /*clipboard*/,
   }
 }
 #endif
+#endif
 
 bool XAP_UnixClipboard::_getDataFromServer(T_AllowGet tFrom, const char** formatList,
 										   void ** ppData, UT_uint32 * pLen,
 										   const char **pszFormatFound)
 {
 	bool rval = false;
+#if !GTK_CHECK_VERSION(3,96,0)
 	if(formatList == NULL)
 	  return false;
 
@@ -346,6 +391,7 @@ bool XAP_UnixClipboard::_getDataFromServer(T_AllowGet tFrom, const char** format
 			gtk_selection_data_free(selection);
 		}
     }
+#endif
 
 	return rval;
 }

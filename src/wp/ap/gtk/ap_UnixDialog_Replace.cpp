@@ -334,10 +334,9 @@ GtkWidget * AP_UnixDialog_Replace::_constructWindow(void)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(m_checkbuttonMatchCase), getMatchCase());
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(m_checkbuttonWholeWord), getWholeWord());
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(m_checkbuttonReverseFind), getReverseFind());
-	
+
 	gtk_widget_show_all (m_windowMain);
 
-	
 	if (m_id != AP_DIALOG_ID_REPLACE){
 		// todo: get rid of this code once bug # 5085 is closed
 		gtk_widget_hide (labelReplace);

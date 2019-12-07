@@ -64,7 +64,11 @@ FV_UnixSelectionHandles::FV_UnixSelectionHandles(FV_View *view, FV_Selection sel
 		{
 			m_text_handle = _fv_text_handle_new (pWidget);
 			_fv_text_handle_set_relative_to (m_text_handle,
+#if GTK_CHECK_VERSION(3,96,0)
+							 gtk_widget_get_surface(pWidget));
+#else
 							 gtk_widget_get_window (pWidget));
+#endif
 			g_signal_connect (m_text_handle, "handle-dragged",
 					  G_CALLBACK(handle_dragged_cb), this);
 		}

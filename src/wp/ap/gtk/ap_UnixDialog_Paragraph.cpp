@@ -325,13 +325,21 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindow(void)
 	XAP_gtk_widget_set_margin(vboxMain, 10);
 
 	windowContents = _constructWindowContents(windowParagraph);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(vboxMain), windowContents);
+#else
 	gtk_box_pack_start (GTK_BOX (vboxMain), windowContents, FALSE, TRUE, 5);
+#endif
 	pSS->getValueUTF8(XAP_STRING_ID_DLG_Cancel, s);
 	buttonCancel = abiAddButton(GTK_DIALOG(windowParagraph), s, BUTTON_CANCEL);
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_ButtonTabs,s);
 	buttonTabs = abiAddButton (GTK_DIALOG(windowParagraph), s, BUTTON_TABS);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_button_set_icon_name(GTK_BUTTON(buttonTabs), "go-last");
+#else
 	GtkWidget *img = gtk_image_new_from_icon_name("go-last", GTK_ICON_SIZE_BUTTON);
 	gtk_button_set_image(GTK_BUTTON(buttonTabs), img);
+#endif
 	pSS->getValueUTF8(XAP_STRING_ID_DLG_OK, s);
 	buttonOK = abiAddButton(GTK_DIALOG(windowParagraph), s, BUTTON_OK);
 
@@ -396,9 +404,12 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 	gtk_widget_show (vboxContents);
 
 	tabMain = gtk_notebook_new ();
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(vboxContents), tabMain);
+#else
 	gtk_widget_show (tabMain);
 	gtk_box_pack_start (GTK_BOX (vboxContents), tabMain, FALSE, TRUE, 0);
-
+#endif
 
 	// "Indents and Spacing" page
 	boxSpacing = gtk_grid_new();
@@ -431,8 +442,12 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 	listAlignment = GTK_COMBO_BOX(gtk_combo_box_new ());
 	XAP_makeGtkComboBoxText(listAlignment, G_TYPE_INT);
 	/**/ g_object_set_data(G_OBJECT(listAlignment), WIDGET_ID_TAG, (gpointer) id_MENU_ALIGNMENT);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(hboxAlignment), GTK_WIDGET(listAlignment));
+#else
 	gtk_widget_show (GTK_WIDGET(listAlignment));
 	gtk_box_pack_start (GTK_BOX (hboxAlignment), GTK_WIDGET(listAlignment), FALSE, FALSE, 0);
+#endif
 	gtk_grid_attach(GTK_GRID(boxSpacing), hboxAlignment, 1, 0, 1, 1);
 
 	XAP_appendComboBoxTextAndInt(listAlignment, " ", 0); // add an empty menu option to fix bug 594
@@ -464,9 +479,12 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
                                            "justify", GTK_JUSTIFY_LEFT,
                                            "xpad", 0, "ypad", 3,
                                            NULL);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(hboxIndentation), labelIndentation);
+#else
 	gtk_widget_show (labelIndentation);
 	gtk_box_pack_start (GTK_BOX (hboxIndentation), labelIndentation, FALSE, FALSE, 0);
-
+#endif
 	gtk_grid_attach(GTK_GRID(boxSpacing), hboxIndentation, 0, 1, 4, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_LabelLeft,s);
@@ -552,7 +570,11 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
                                        "xalign", 0.0, "yalign", 0.5,
                                        "xpad", 0, "ypad", 3,
                                        NULL);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(hboxSpacing), labelSpacing);
+#else
 	gtk_box_pack_start (GTK_BOX (hboxSpacing), labelSpacing, FALSE, FALSE, 0);
+#endif
 	gtk_label_set_justify (GTK_LABEL (labelSpacing), GTK_JUSTIFY_LEFT);
 
 	gtk_grid_attach(GTK_GRID(boxSpacing), hboxSpacing, 0, 4, 1, 1);
@@ -663,9 +685,12 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 	labelPagination = gtk_widget_new(GTK_TYPE_LABEL, "label", unixstr.c_str(),
                                           "xpad", 0, "ypad", 3,
                                           NULL);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(hboxPagination), labelPagination);
+#else
 	gtk_widget_show (labelPagination);
 	gtk_box_pack_start (GTK_BOX (hboxPagination), labelPagination, FALSE, FALSE, 0);
-
+#endif
 	gtk_grid_attach(GTK_GRID(boxBreaks), hboxPagination, 0, 0, 2, 1);
 
 
@@ -734,20 +759,28 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
                                        "xalign", 0.0, "yalign", 0.5,
                                        "xpad", 0, "ypad", 8,
                                        NULL);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(hboxPreview), labelPreview);
+	gtk_container_add(GTK_CONTAINER(vboxContents), hboxPreview);
+#else
 	gtk_widget_show (labelPreview);
 	gtk_box_pack_start (GTK_BOX (hboxPreview), labelPreview, FALSE, TRUE, 0);
-
 	gtk_box_pack_start (GTK_BOX (vboxContents), hboxPreview, TRUE, TRUE, 0);
-
+#endif
 
 	hboxPreviewFrame = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_widget_show (hboxPreviewFrame);
 
 	framePreview = gtk_frame_new (NULL);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(hboxPreviewFrame), framePreview);
+	gtk_container_add(GTK_CONTAINER(vboxContents), hboxPreviewFrame);
+#else
 	gtk_widget_show (framePreview);
 
 	gtk_box_pack_start (GTK_BOX (hboxPreviewFrame), framePreview, TRUE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (vboxContents), hboxPreviewFrame, FALSE, TRUE, 0);
+#endif
 	gtk_widget_set_size_request (framePreview, 400, 150);
 	gtk_frame_set_shadow_type (GTK_FRAME (framePreview), GTK_SHADOW_NONE);
 

@@ -102,7 +102,11 @@ protected:
 
 	void _createTopLevelWindow(void) override;
 	bool _updateTitle() override;
+#if GTK_CHECK_VERSION(3,96,0)
+	void _createIMContext(GdkSurface* w);
+#else
 	void _createIMContext(GdkWindow* w);
+#endif
 	UT_sint32 _setInputMode(const char * szName);
 	virtual void _setCursor(GR_Graphics::Cursor cursor) override;
 
@@ -141,7 +145,11 @@ protected:
 		  public:
 			static gint button_press_event(GtkWidget * w, GdkEventButton * e);
 			static gint button_release_event(GtkWidget * w, GdkEventButton * e);
+#if GTK_CHECK_VERSION(3,96,0)
+			static void size_changed(GdkSurface*, gint ev_width, gint ev_height, gpointer);
+#else
 			static gint configure_event(GtkWidget* w, GdkEventConfigure *e);
+#endif
 			static gint motion_notify_event(GtkWidget* w, GdkEventMotion* e);
 			static gint scroll_notify_event(GtkWidget* w, GdkEventScroll* e);
 			static gint key_press_event(GtkWidget* w, GdkEventKey* e);
@@ -164,6 +172,7 @@ protected:
 	friend class _fe;
 
  private:
+	gint _handleResize(gint x, gint y, gint width, gint height);
 	bool                        m_bDoZoomUpdate;
 	UT_sint32                   m_iNewX;
 	UT_sint32                   m_iNewY;

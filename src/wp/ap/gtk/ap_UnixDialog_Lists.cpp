@@ -578,7 +578,11 @@ GtkWidget * AP_UnixDialog_Lists::_constructWindow(void)
 
 	contents = _constructWindowContents();
 	gtk_widget_show (contents);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(vbox1), contents);
+#else
 	gtk_box_pack_start (GTK_BOX (vbox1), contents, FALSE, TRUE, 0);
+#endif
 
 	const XAP_StringSet* pSS = XAP_App::getApp()->getStringSet();
 	std::string s;
@@ -597,7 +601,9 @@ GtkWidget * AP_UnixDialog_Lists::_constructWindow(void)
 		m_wClose = abiAddButton ( GTK_DIALOG(m_windowMain), s, BUTTON_CANCEL ) ;
 	}
 
+#if !GTK_CHECK_VERSION(3,96,0)
 	gtk_widget_grab_default (m_wClose);
+#endif
 	_connectSignals ();
 
 	return (m_windowMain);
@@ -858,9 +864,13 @@ GtkWidget *AP_UnixDialog_Lists::_constructWindowContents (void)
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Lists_SetDefault,s);
 	customized_cb = gtk_dialog_add_button (GTK_DIALOG(m_windowMain), s.c_str(), BUTTON_RESET);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_button_set_icon_name(GTK_BUTTON(customized_cb), "document-revert");
+#else
 	GtkWidget *img = gtk_image_new_from_icon_name("document-revert", GTK_ICON_SIZE_BUTTON);
 	gtk_button_set_image(GTK_BUTTON(customized_cb), img);
 	gtk_widget_show (customized_cb);
+#endif
 
 	/* todo
 	gtk_grid_attach(GTK_GRID(grid1), customized_cb, 0, 2, 1, 1);
@@ -980,20 +990,32 @@ GtkWidget *AP_UnixDialog_Lists::_constructWindowContents (void)
 	action_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (apply_list_rb));
 	if(!isModal())
 		gtk_widget_show (apply_list_rb);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(hbox1), apply_list_rb);
+#else
 	gtk_box_pack_start (GTK_BOX (hbox1), apply_list_rb, FALSE, FALSE, 0);
+#endif
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (apply_list_rb), TRUE);
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Lists_Start_New,s);
 	start_list_rb = gtk_radio_button_new_with_label (action_group, s.c_str());
 	action_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (start_list_rb));
 	if(!isModal())
 		gtk_widget_show (start_list_rb);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(hbox1), start_list_rb);
+#else
 	gtk_box_pack_start (GTK_BOX (hbox1), start_list_rb, FALSE, FALSE, 0);
+#endif
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Lists_Resume,s);
 	resume_list_rb = gtk_radio_button_new_with_label (action_group, s.c_str());
 	action_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (resume_list_rb));
 	if(!isModal())
 		gtk_widget_show (resume_list_rb);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(hbox1), resume_list_rb);
+#else
 	gtk_box_pack_start (GTK_BOX (hbox1), resume_list_rb, FALSE, FALSE, 0);
+#endif
 
 	// Save useful widgets in member variables
 	if(isModal())

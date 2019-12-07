@@ -43,9 +43,11 @@ ABI_W_NO_CONST_QUAL
 #include <gdk/gdk.h>
 ABI_W_POP
 #include <gdk/gdkkeysyms.h>
+#if HAVE_GOFFICE
 ABI_W_NO_DEPRECATED
 #include <goffice/gtk/goffice-gtk.h>
 ABI_W_POP
+#endif
 
 #include "ut_debugmsg.h"
 #include "ut_assert.h"
@@ -348,8 +350,10 @@ void centerDialog(GtkWidget * parent, GtkWidget * child, bool set_transient_for)
 	UT_return_if_fail(parent);
 	UT_return_if_fail(child);
 
+#if HAVE_GOFFICE
 	if (GTK_IS_DIALOG(child))
-	  go_dialog_guess_alternative_button_order(GTK_DIALOG(child));
+		go_dialog_guess_alternative_button_order(GTK_DIALOG(child));
+#endif
 	if(GTK_IS_WINDOW(parent) != TRUE)
 		parent  = gtk_widget_get_parent(parent);
 	xxx_UT_DEBUGMSG(("center IS WIDGET_TOP_LEVL %d \n",(GTK_WIDGET_TOPLEVEL(parent))));
@@ -359,11 +363,18 @@ void centerDialog(GtkWidget * parent, GtkWidget * child, bool set_transient_for)
 	  gtk_window_set_transient_for(GTK_WINDOW(child),
 				       GTK_WINDOW(parent));
 
-	GdkPixbuf * icon = gtk_window_get_icon(GTK_WINDOW(parent));	
+#if GTK_CHECK_VERSION(3,96,0)
+	const char* icon_name = gtk_window_get_icon_name(GTK_WINDOW(parent));
+	if (icon_name) {
+		gtk_window_set_icon_name(GTK_WINDOW(child), icon_name);
+	}
+#else
+	GdkPixbuf * icon = gtk_window_get_icon(GTK_WINDOW(parent));
 	if ( NULL != icon )
 	{
 		gtk_window_set_icon(GTK_WINDOW(child), icon);
 	}
+#endif
 }
 
 void abiSetupModalDialog(GtkDialog * dialog, XAP_Frame *pFrame, XAP_Dialog * pDlg, gint defaultResponse)
@@ -489,8 +500,10 @@ void abiSetupModelessDialog(GtkDialog * me, XAP_Frame * pFrame, XAP_Dialog * pDl
 GtkWidget * abiDialogNew(const char * role, gboolean resizable)
 {
   GtkWidget * dlg = gtk_dialog_new () ;
+#if !GTK_CHECK_VERSION(3,96,0)
   if ( role )
     gtk_window_set_role ( GTK_WINDOW(dlg), role ) ;
+#endif
   gtk_window_set_resizable ( GTK_WINDOW(dlg), resizable ) ;
   XAP_gtk_widget_set_margin(dlg, 5);
   gtk_box_set_spacing ( GTK_BOX ( gtk_dialog_get_content_area(GTK_DIALOG (dlg))), 2 ) ;
@@ -767,9 +780,12 @@ void messageBoxOK(const char * message)
 						   "%s", message ) ;
 
 	gtk_window_set_title(GTK_WINDOW(msg), "AbiWord");
+#if !GTK_CHECK_VERSION(3,96,0)
 	gtk_window_set_role(GTK_WINDOW(msg), "message dialog");
 
 	gtk_widget_show ( msg ) ;
+#endif
+
 	gtk_dialog_run ( GTK_DIALOG(msg) ) ;
 	gtk_widget_destroy ( msg ) ;
 }

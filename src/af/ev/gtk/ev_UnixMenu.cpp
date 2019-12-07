@@ -974,9 +974,13 @@ bool EV_UnixMenuBar::synthesizeMenuBar()
 	synthesizeMenu(m_wMenuBar, false);
 	gtk_widget_show_all(m_wMenuBar);
 
-#ifdef EMBEDDED_TARGET
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(wVBox), m_wMenuBar);
 #else
+# ifdef EMBEDDED_TARGET
+# else
 	gtk_box_pack_start(GTK_BOX(wVBox), m_wMenuBar, FALSE, TRUE, 0);
+# endif
 #endif
 
 	return true;
@@ -1000,8 +1004,13 @@ bool EV_UnixMenuBar::rebuildMenuBar()
 	// show up the properly connected menu structure
 	gtk_widget_show(m_wMenuBar);
 
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(wVBox), m_wMenuBar);
+	gtk_box_reorder_child_after(GTK_BOX(wVBox), m_wMenuBar, nullptr);
+#else
 	gtk_box_pack_start(GTK_BOX(wVBox), m_wMenuBar, FALSE, TRUE, 0);
 	gtk_box_reorder_child(GTK_BOX(wVBox), m_wMenuBar, 0);
+#endif
 
 	return true;
 }

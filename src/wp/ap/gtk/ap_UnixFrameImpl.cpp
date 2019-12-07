@@ -207,6 +207,7 @@ GtkWidget * AP_UnixFrameImpl::_createDocumentWindow()
 	UT_DEBUGMSG(("!!! drawing area m_dArea created! %p for %p \n",m_dArea,this));
 	gtk_widget_set_can_focus(m_dArea, true);	// allow it to be focussed
 
+#if !GTK_CHECK_VERSION(3,96,0)
 	gtk_widget_set_events(GTK_WIDGET(m_dArea), (GDK_EXPOSURE_MASK |
 						    GDK_BUTTON_PRESS_MASK |
 						    GDK_POINTER_MOTION_MASK |
@@ -218,6 +219,7 @@ GtkWidget * AP_UnixFrameImpl::_createDocumentWindow()
 						    GDK_LEAVE_NOTIFY_MASK |
 						    GDK_SCROLL_MASK |
 						    GDK_SMOOTH_SCROLL_MASK));
+#endif
 	g_signal_connect(G_OBJECT(m_dArea), "draw",
 					   G_CALLBACK(XAP_UnixFrameImpl::_fe::draw), NULL);
 
@@ -239,8 +241,13 @@ GtkWidget * AP_UnixFrameImpl::_createDocumentWindow()
 	g_signal_connect(G_OBJECT(m_dArea), "scroll_event",
 					   G_CALLBACK(XAP_UnixFrameImpl::_fe::scroll_notify_event), NULL);
 
+#if GTK_CHECK_VERSION(3,96,0)
+	g_signal_connect(G_OBJECT(gtk_widget_get_surface(m_dArea)),
+		     "size-changed", G_CALLBACK(_fe::size_changed), this);
+#else
 	g_signal_connect(G_OBJECT(m_dArea), "configure_event",
 					   G_CALLBACK(XAP_UnixFrameImpl::_fe::configure_event), NULL);
+#endif
 
 	// focus and XIM related
 	g_signal_connect(G_OBJECT(m_dArea), "enter_notify_event", G_CALLBACK(ap_focus_in_event), this);
@@ -379,7 +386,11 @@ void AP_UnixFrameImpl::_setWindowIcon()
 	}
 	if (iconList)
 	{
+#if GTK_CHECK_VERSION(3,96,0)
+		gdk_surface_set_icon_list(gtk_widget_get_surface(window), iconList);
+#else
 		gtk_window_set_icon_list(GTK_WINDOW(window), iconList);
+#endif
 		g_list_free_full(iconList, &g_object_unref);
 	}
 }

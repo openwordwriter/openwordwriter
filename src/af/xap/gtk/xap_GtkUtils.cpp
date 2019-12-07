@@ -24,7 +24,11 @@
 
 void XAP_gtk_window_raise(GtkWidget* w)
 {
+#if GTK_CHECK_VERSION(3,96,0)
+  gdk_surface_raise(gtk_widget_get_surface(w));
+#else
   gdk_window_raise(gtk_widget_get_window(w));
+#endif
 }
 
 void XAP_gtk_widget_set_margin(GtkWidget* w, gint margin)

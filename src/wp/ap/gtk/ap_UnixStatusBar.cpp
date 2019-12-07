@@ -170,10 +170,18 @@ GtkWidget * AP_UnixStatusBar::createWidget(void)
 				gtk_widget_get_preferred_size(pStatusBarElementLabel, &requisition, NULL);
 				gtk_widget_set_size_request(pStatusBarElementLabel, requisition.width, -1);
 
+#if GTK_CHECK_VERSION(3,96,0)
+				gtk_container_add(GTK_CONTAINER(m_wStatusBar), pStatusBarElement);
+#else
 				gtk_box_pack_start(GTK_BOX(m_wStatusBar), pStatusBarElement, FALSE, FALSE, 0);
+#endif
 			}
 			else { // fill
+#if GTK_CHECK_VERSION(3,96,0)
+				gtk_container_add(GTK_CONTAINER(m_wStatusBar), pStatusBarElement);
+#else
 				gtk_box_pack_start(GTK_BOX(m_wStatusBar), pStatusBarElement, TRUE, TRUE, 0);
+#endif
 			}
 
 			gtk_label_set_label(GTK_LABEL(pStatusBarElementLabel), ""); 
@@ -187,7 +195,11 @@ GtkWidget * AP_UnixStatusBar::createWidget(void)
 			gtk_widget_set_size_request(pStatusBarElement, -1, requisition.height);
 			gtk_frame_set_shadow_type(GTK_FRAME(pStatusBarElement), GTK_SHADOW_IN);
 
+#if GTK_CHECK_VERSION(3,96,0)
+			gtk_container_add(GTK_CONTAINER(m_wStatusBar), pStatusBarElement);
+#else
 			gtk_box_pack_start(GTK_BOX(m_wStatusBar), pStatusBarElement, TRUE, TRUE, 0);
+#endif
 			GtkWidget *  pProgress= gtk_progress_bar_new();
 			gtk_container_add(GTK_CONTAINER(pStatusBarElement),pProgress);
 			gtk_progress_bar_set_pulse_step (GTK_PROGRESS_BAR(pProgress),0.01);

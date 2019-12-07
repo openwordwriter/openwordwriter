@@ -66,7 +66,11 @@ public:
 
 	bool canPaste(T_AllowGet tFrom) const;
 
+#if GTK_CHECK_VERSION(3,96,0)
+    GdkContentFormats* getTargets() const { return m_Targets ; }
+#else
 	GtkTargetEntry * getTargets () const { return m_Targets ; }
+#endif
 	UT_uint32 getNumTargets () const { return m_nTargets; }
 
 protected:
@@ -76,7 +80,12 @@ protected:
 
  private:
 
-	GtkClipboard * gtkClipboardForTarget(XAP_UnixClipboard::_T_AllowGet get) const;
+#if GTK_CHECK_VERSION(3,96,0)
+	GdkClipboard *
+#else
+	GtkClipboard *
+#endif
+	gtkClipboardForTarget(XAP_UnixClipboard::_T_AllowGet get) const;
 
 	bool				_getDataFromServer(T_AllowGet tFrom, const char** formatList,
 							   void ** ppData, UT_uint32 * pLen,
@@ -134,7 +143,9 @@ protected:
 			     guint info, T_AllowGet which);
 
 	std::vector<const char*>  m_vecFormat_AP_Name;
+#if !GTK_CHECK_VERSION(3,96,0)
 	std::vector<GdkAtom>  m_vecFormat_GdkAtom;
+#endif
 
 	UT_ByteBuf m_databuf; // for gets only
 
@@ -142,11 +153,17 @@ protected:
 	XAP_FakeClipboard	m_fakeClipboard;		// internal clipboard to short-circut the XServer.
 
 	XAP_FakeClipboard       m_fakePrimaryClipboard;
+#if GTK_CHECK_VERSION(3,96,0)
+	GdkContentFormats* m_Targets;
+	GdkClipboard* m_clip;
+	GdkClipboard* m_primary;
+#else
 	GtkTargetEntry * m_Targets ;
-	UT_uint32 m_nTargets;
-
 	GtkClipboard * m_clip;
 	GtkClipboard * m_primary;
+#endif
+	UT_uint32 m_nTargets;
+
 };
 
 #endif /* XAP_UNIXCLIPBOARD_H */

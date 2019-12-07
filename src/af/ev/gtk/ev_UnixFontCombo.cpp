@@ -76,7 +76,11 @@ static GtkCellRendererTextClass *abi_cell_renderer_font_parent_class = NULL;
 
 void
 abi_cell_renderer_font_render (GtkCellRenderer      *cell,
+#if GTK_CHECK_VERSION(3,96,0)
+			       GtkSnapshot* cr,
+#else
 			       cairo_t              *cr,
+#endif
 			       GtkWidget            *widget,
 			       const GdkRectangle         *background_area,
 			       const GdkRectangle         *cell_area,
@@ -90,7 +94,11 @@ abi_cell_renderer_font_render (GtkCellRenderer      *cell,
 	self = ABI_CELL_RENDERER_FONT (cell);
 	text = NULL;
 
+#if GTK_CHECK_VERSION(3,96,0)
+	GTK_CELL_RENDERER_CLASS (abi_cell_renderer_font_parent_class)->snapshot(
+#else
 	GTK_CELL_RENDERER_CLASS (abi_cell_renderer_font_parent_class)->render (
+#endif
 					cell, cr, widget, background_area, 
 					cell_area,flags);
 
@@ -107,7 +115,11 @@ abi_cell_renderer_font_render (GtkCellRenderer      *cell,
 				/* open_popup (self->parent_widget); */
 				self->is_popped_up = TRUE;
 
+#if GTK_CHECK_VERSION(3,96,0)
+				gdk_surface_get_origin(gtk_widget_get_surface(widget), &x, &y);
+#else
 				gdk_window_get_origin(gtk_widget_get_window(widget), &x, &y);
+#endif
 				gtk_widget_get_allocation(widget, &allocation);
 				area.x = background_area->x + x + allocation.width;
 				area.y = background_area->y + y;
@@ -163,7 +175,11 @@ abi_cell_renderer_font_class_init (AbiCellRendererFontClass *klass, gpointer)
 
 	abi_cell_renderer_font_parent_class = (GtkCellRendererTextClass*) g_type_class_ref (GTK_TYPE_CELL_RENDERER_TEXT);
 
+#if GTK_CHECK_VERSION(3,96,0)
+	cell_renderer_class->snapshot = abi_cell_renderer_font_render;
+#else
 	cell_renderer_class->render = abi_cell_renderer_font_render;
+#endif
 
 	cell_renderer_font_signals[RENDERER_POPUP_OPENED] =
 		g_signal_new ("renderer-popup-opened",

@@ -25,9 +25,12 @@
 #include "xap_UnixFrameImpl.h"
 #include "xap_UnixApp.h"
 
+#if GTK_CHECK_VERSION(3,96,0)
+static const char* targets[] = { "text/uri-list" };
+#else
 static const GtkTargetEntry targets[] = {
   { (gchar*)"text/uri-list",0,0}};
-
+#endif
 
 FV_UnixFrameEdit::FV_UnixFrameEdit (FV_View * pView)
 	: FV_FrameEdit(pView) 
@@ -97,13 +100,19 @@ void FV_UnixFrameEdit::mouseDrag(UT_sint32 x, UT_sint32 y)
 	     XAP_Frame * pFrame = static_cast<XAP_Frame*>(getView()->getParentData());
 	     XAP_UnixFrameImpl * pFrameImpl =static_cast<XAP_UnixFrameImpl *>( pFrame->getFrameImpl());
 	     GtkWidget * pWindow = pFrameImpl->getTopLevelWindow();
+#if GTK_CHECK_VERSION(3,96,0)
+	     GdkContentFormats* formats = gdk_content_formats_new(targets, 1);
+	     GdkDrag* context = gtk_drag_begin(pWindow, nullptr, formats, GDK_ACTION_COPY, x, y);
+
+	     gdk_content_formats_unref(formats);
+#else
 	     GtkTargetList *target_list = gtk_target_list_new(targets, G_N_ELEMENTS(targets));
 	     GdkDragContext *context = gtk_drag_begin_with_coordinates(
                pWindow, target_list,
                (GdkDragAction)(GDK_ACTION_COPY ), 1, NULL, x, y);
-
 	     gdk_drag_status(context, GDK_ACTION_COPY, 0);
 	     gtk_target_list_unref(target_list);
+#endif
 	     *pszTmpName = g_strdup(sTmpF.utf8_str());  
 	     UT_DEBUGMSG(("Created Tmp File %s XApp %s \n",sTmpF.utf8_str(),*pXApp->getTmpFile()));
 

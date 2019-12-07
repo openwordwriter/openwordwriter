@@ -20,8 +20,13 @@
 #pragma once
 #include <gtk/gtk.h>
 
+#if GTK_CHECK_VERSION(3,96,0)
+#define XAP_HAS_NATIVE_WINDOW(w) \
+  (gtk_widget_get_surface(w) != nullptr)
+#else
 #define XAP_HAS_NATIVE_WINDOW(w) \
   (gtk_widget_get_window(w) != nullptr)
+#endif
 
 /// Convenience to raise the widget window.
 void XAP_gtk_window_raise(GtkWidget*);
@@ -45,3 +50,11 @@ void XAP_gtk_entry_set_text(GtkEntry* entry, const gchar* text)
 }
 
 void XAP_gtk_keyboard_ungrab(GtkWidget *widget);
+
+#if GTK_CHECK_VERSION(3,96,0)
+// It's a no-op on Gtk4
+inline
+void gtk_widget_show_all(GtkWidget*)
+{
+}
+#endif

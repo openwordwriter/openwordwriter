@@ -24,10 +24,8 @@ void XAP_UnixCustomWidget::queueDraw(const UT_Rect *clip)
 	GtkWidget *widget = getWidget();
 	UT_ASSERT(widget);
 
-	if (!clip)
-		gtk_widget_queue_draw(widget);
-	else
-	{
+#if !GTK_CHECK_VERSION(3,96,0)
+	if (!clip) {
 		gtk_widget_queue_draw_area(
 				widget,
 				clip->left,
@@ -35,7 +33,10 @@ void XAP_UnixCustomWidget::queueDraw(const UT_Rect *clip)
 				clip->width,
 				clip->height
 			);
+		return;
 	}
+#endif
+	gtk_widget_queue_draw(widget);
 }
 
 void XAP_UnixCustomWidget::_fe::draw(XAP_UnixCustomWidget *self, cairo_t *cr)

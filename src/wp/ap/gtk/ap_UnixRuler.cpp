@@ -72,13 +72,14 @@ GtkWidget* AP_UnixRuler::_createWidget(gint w, gint h)
     gtk_widget_show(m_wRuler);
     gtk_widget_set_size_request(m_wRuler, w, h);
 
+#if !GTK_CHECK_VERSION(3,96,0)
     gtk_widget_set_events(GTK_WIDGET(m_wRuler), (GDK_EXPOSURE_MASK |
                                                  GDK_BUTTON_PRESS_MASK |
                                                  GDK_POINTER_MOTION_MASK |
                                                  GDK_BUTTON_RELEASE_MASK |
                                                  GDK_KEY_PRESS_MASK |
                                                  GDK_KEY_RELEASE_MASK));
-
+#endif
     g_signal_connect_swapped(G_OBJECT(m_wRuler), "realize",
                              G_CALLBACK(_fe::realize), this);
 
@@ -98,9 +99,13 @@ GtkWidget* AP_UnixRuler::_createWidget(gint w, gint h)
     g_signal_connect(G_OBJECT(m_wRuler), "motion_notify_event",
                      G_CALLBACK(_fe::motion_notify_event), NULL);
 
+#if GTK_CHECK_VERSION(3,96,0)
+	g_signal_connect(G_OBJECT(gtk_widget_get_surface(m_wRuler)),
+					 "size-changed", G_CALLBACK(_fe::size_changed), this);
+#else
     g_signal_connect(G_OBJECT(m_wRuler), "configure_event",
                      G_CALLBACK(_fe::configure_event), NULL);
-
+#endif
     return m_wRuler;
 }
 
@@ -117,7 +122,11 @@ void AP_UnixRuler::_setView(AV_View* pView, GR_UnixCairoGraphics* pG)
 
 void AP_UnixRuler::getWidgetPosition(gint& x, gint& y) const
 {
+#if GTK_CHECK_VERSION(3,96,0)
+	gdk_surface_get_position(gtk_widget_get_surface(m_wRuler), &x, &y);
+#else
     gdk_window_get_position(gtk_widget_get_window(m_wRuler), &x, &y);
+#endif
 }
 
 void AP_UnixRuler::_fe::realize(AP_UnixRuler* self)
@@ -242,6 +251,19 @@ gint AP_UnixRuler::_fe::button_release_event(GtkWidget* w, GdkEventButton* e)
     return 1;
 }
 
+#if GTK_CHECK_VERSION(3,96,0)
+void AP_UnixRuler::_fe::size_changed(GdkSurface*, gint width,
+                                     gint height, gpointer user_data)
+{
+    AP_UnixRuler* pRuler = static_cast<AP_UnixRuler*>(user_data);
+    AP_Ruler* ruler = dynamic_cast<AP_Ruler*>(pRuler);
+    UT_ASSERT(ruler);
+
+    // nb: we'd convert here, but we can't: have no graphics class!
+    ruler->setHeight(height);
+    ruler->setWidth(width);
+}
+#else
 gint AP_UnixRuler::_fe::configure_event(GtkWidget* w, GdkEventConfigure * e)
 {
     AP_UnixRuler* pRuler = static_cast<AP_UnixRuler*>(g_object_get_data(G_OBJECT(w), "user_data"));
@@ -254,6 +276,7 @@ gint AP_UnixRuler::_fe::configure_event(GtkWidget* w, GdkEventConfigure * e)
 
     return 1;
 }
+#endif
 
 gint AP_UnixRuler::_fe::motion_notify_event(GtkWidget* w, GdkEventMotion* e)
 {

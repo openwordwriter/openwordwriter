@@ -38,7 +38,9 @@ ABI_W_POP
 ABI_W_NO_DEPRECATED
 #include <gsf/gsf.h>
 ABI_W_POP
+#if HAVE_GOFFICE
 #include <goffice/goffice.h>
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -159,7 +161,9 @@ bool XAP_UnixApp::initialize(const char * szKeyBindingsKey, const char * szKeyBi
 	
 	XAP_App::initialize(szKeyBindingsKey, szKeyBindingsDefaultValue);
 
+#if HAVE_GOFFICE
 	libgoffice_init();
+#endif
 
 	// do any thing we need here...
 
@@ -168,7 +172,9 @@ bool XAP_UnixApp::initialize(const char * szKeyBindingsKey, const char * szKeyBi
 
 void XAP_UnixApp::shutdown()
 {
+#if HAVE_GOFFICE
 	libgoffice_shutdown();
+#endif
 }
 
 void XAP_UnixApp::reallyExit()

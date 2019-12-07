@@ -85,7 +85,11 @@ void            _fv_text_handle_set_visible  (FvTextHandle          *handle,
                                               gboolean               visible);
 
 void            _fv_text_handle_set_relative_to (FvTextHandle  *handle,
+#if GTK_CHECK_VERSION(3,96,0)
+                                                 GdkSurface *window);
+#else
                                                  GdkWindow     *window);
+#endif
 
 gboolean        _fv_text_handle_get_is_dragged (FvTextHandle         *handle,
                                                 FvTextHandlePosition  pos);

@@ -74,7 +74,11 @@ GR_UnixCairoGraphicsBase::GR_UnixCairoGraphicsBase(cairo_t *cr, UT_uint32 iDevic
 
 GR_UnixCairoGraphics::GR_UnixCairoGraphics(GtkWidget * win)
 	: GR_UnixCairoGraphicsBase(),
+#if GTK_CHECK_VERSION(3,96,0)
+	  m_pWin(win ? gtk_widget_get_surface(win) : nullptr),
+#else
 	  m_pWin(win ? gtk_widget_get_window(win) : nullptr),
+#endif
 	  m_context(nullptr),
 	  m_CairoCreated(false),
 	  m_Painting(false),
@@ -180,7 +184,11 @@ void GR_UnixCairoGraphics::init3dColors(GtkWidget* /*w*/)
 		g_object_unref(m_styleHighlight);
 	}
 	m_styleHighlight = XAP_GtkStyle_get_style(NULL, "GtkTreeView.view"); // "textview.view"
-	gtk_style_context_get_color (m_styleHighlight, GTK_STATE_FLAG_NORMAL, &rgba1);
+	gtk_style_context_get_color (m_styleHighlight,
+#if !GTK_CHECK_VERSION(3,96,0)
+								 GTK_STATE_FLAG_NORMAL,
+#endif
+								 &rgba1);
 	m_3dColors[CLR3D_Highlight] = _convertGdkRGBA(rgba1);
 
 	// guess colours.
@@ -204,7 +212,11 @@ void GR_UnixCairoGraphics::init3dColors(GtkWidget* /*w*/)
 
 
 	GtkStyleContext *text_style = XAP_GtkStyle_get_style(NULL, "GtkLabel.view"); // "label.view"
-	gtk_style_context_get_color (text_style, GTK_STATE_FLAG_NORMAL, &rgba2);
+	gtk_style_context_get_color (text_style,
+#if !GTK_CHECK_VERSION(3,96,0)
+								 GTK_STATE_FLAG_NORMAL,
+#endif
+								 &rgba2);
 	m_3dColors[CLR3D_Foreground]	= _convertGdkRGBA(rgba2);
 	g_object_unref(text_style);
 
@@ -224,7 +236,11 @@ GR_Font * GR_UnixCairoGraphics::getGUIFont(void)
 		gtk_style_context_set_path(tempCtxt, path);
 		gtk_widget_path_free(path);
 		PangoFontDescription* fontDesc;
-		gtk_style_context_get(tempCtxt, GTK_STATE_FLAG_NORMAL, "font", &fontDesc, NULL);
+		gtk_style_context_get(tempCtxt,
+#if !GTK_CHECK_VERSION(3,96,0)
+							  GTK_STATE_FLAG_NORMAL,
+#endif
+							  "font", &fontDesc, NULL);
 		const char *guiFontName = pango_font_description_get_family(fontDesc);
 
 		if (!guiFontName)
@@ -376,12 +392,20 @@ void GR_UnixCairoGraphics::setCursor(GR_Graphics::Cursor c)
 	const char* cursor_name = _getCursor(c);
 	m_cursor = c;
 	xxx_UT_DEBUGMSG(("cursor set to %d	gdk %s \n", c, cursor_name));
+#if GTK_CHECK_VERSION(3,96,0)
+	GdkCursor * cursor = gdk_cursor_new_from_name(cursor_name, nullptr);
+	if (m_Widget) {
+		gtk_widget_set_cursor(m_Widget, cursor);
+	} else {
+		gdk_surface_set_cursor(m_pWin, cursor);
+	}
+#else
 	GdkCursor * cursor = gdk_cursor_new_from_name(
-		gdk_window_get_display(m_pWin), cursor_name);
+		gdk_surface_get_display(m_pWin), cursor_name);
 	gdk_window_set_cursor(m_pWin, cursor);
+#endif
 	g_object_unref(cursor);
 }
-
 
 void GR_UnixCairoGraphics::scroll(UT_sint32 dx, UT_sint32 dy)
 {
@@ -404,6 +428,9 @@ void GR_UnixCairoGraphics::scroll(UT_sint32 dx, UT_sint32 dy)
 	UT_sint32 iddy = labs(ddy);
 	bool bEnableSmooth = XAP_App::getApp()->isSmoothScrollingEnabled();
 	bEnableSmooth = bEnableSmooth && (iddy < 30) && (ddx == 0);
+#if GTK_CHECK_VERSION(3,96,0)
+	#warning scrolling needs to be fixed on Gtk4
+#else
 	if(bEnableSmooth)
 	{
 		if(ddy < 0)
@@ -427,6 +454,7 @@ void GR_UnixCairoGraphics::scroll(UT_sint32 dx, UT_sint32 dy)
 	{
 		gdk_window_scroll(m_pWin,ddx,ddy);
 	}
+#endif
 	enableAllCarets();
 }
 
@@ -449,6 +477,11 @@ void GR_UnixCairoGraphics::_resetClip(void)
  */
 GR_Image * GR_UnixCairoGraphics::genImageFromRectangle(const UT_Rect &rec)
 {
+#if GTK_CHECK_VERSION(3,96,0)
+#warning fix genImageFromRectangle()
+	UT_UNUSED(rec);
+	return nullptr;
+#else
 	UT_sint32 idx = _tduX(rec.left);
 	UT_sint32 idy = _tduY(rec.top);
 	UT_sint32 idw = _tduR(rec.width);
@@ -464,6 +497,7 @@ GR_Image * GR_UnixCairoGraphics::genImageFromRectangle(const UT_Rect &rec)
 	pImg->setData(pix);
 	pImg->setDisplaySize(idw,idh);
 	return pImg;
+#endif
 }
 
 void GR_UnixCairoGraphics::_beginPaint()
@@ -473,12 +507,14 @@ void GR_UnixCairoGraphics::_beginPaint()
 
 	if (m_cr == NULL)
 	{
+#if !GTK_CHECK_VERSION(3,96,0)
 		UT_ASSERT(m_pWin);
 		auto region = cairo_region_create();
 		m_context = gdk_window_begin_draw_frame(m_pWin, region);
 		cairo_region_destroy(region);
 		m_cr = gdk_drawing_context_get_cairo_context(m_context);
 		m_CairoCreated = true;
+#endif
 	}
 
 	UT_ASSERT(m_cr);
@@ -490,7 +526,9 @@ void GR_UnixCairoGraphics::_endPaint()
 {
 	if (m_CairoCreated)
 	{
+#if !GTK_CHECK_VERSION(3,96,0)
 		gdk_window_end_draw_frame(m_pWin, m_context);
+#endif
 	}
 	m_context = nullptr;
 	m_cr = NULL;

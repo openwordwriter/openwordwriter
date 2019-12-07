@@ -363,6 +363,15 @@ on_leave_event (GtkWidget *area,
 	return TRUE;
 }
 
+#if GTK_CHECK_VERSION(3,96,0)
+static gboolean
+popup_grab_on_surface(GdkSurface* surface)
+{
+	GdkSeat *seat = gdk_display_get_default_seat(gdk_surface_get_display(surface));
+	return gdk_seat_grab(seat, surface, GDK_SEAT_CAPABILITY_ALL,
+						 FALSE, nullptr, nullptr, nullptr, nullptr) == GDK_GRAB_SUCCESS;
+}
+#else
 static gboolean
 popup_grab_on_window (GdkWindow *window)
 {
@@ -370,6 +379,7 @@ popup_grab_on_window (GdkWindow *window)
 	return gdk_seat_grab(seat, window, GDK_SEAT_CAPABILITY_ALL,
 						 FALSE, nullptr, nullptr, nullptr, nullptr) == GDK_GRAB_SUCCESS;
 }
+#endif
 
 static void
 on_pressed(GtkButton* button, gpointer user_data)
@@ -383,15 +393,26 @@ on_pressed(GtkButton* button, gpointer user_data)
 	 * events generated when the window is mapped, such as enter
 	 * notify events on subwidgets. If the grab fails, bail out.
 	 */
+#if GTK_CHECK_VERSION(3,96,0)
+	if (!popup_grab_on_surface(gtk_widget_get_surface(GTK_WIDGET(button))))
+		return;
+#else
 	if (!popup_grab_on_window(gtk_widget_get_window(GTK_WIDGET(button))))
 		return;
+#endif
 
 	auto toplevel = gtk_widget_get_toplevel(GTK_WIDGET(table));
 	gtk_window_set_transient_for(table->window, GTK_WINDOW(toplevel));
-	gdk_window_get_origin (gtk_widget_get_window(GTK_WIDGET(table)), &left, &top);
 	gtk_widget_get_allocation(GTK_WIDGET(table), &alloc);
+#if GTK_CHECK_VERSION(3,96,0)
+	GdkSurface* surface = gtk_widget_get_surface(GTK_WIDGET(table));
+	gdk_surface_get_origin(surface, &left, &top);
+	gdk_surface_move(surface, left + alloc.x, top + alloc.y + alloc.height);
+#else
+	gdk_window_get_origin (gtk_widget_get_window(GTK_WIDGET(table)), &left, &top);
 	gtk_window_move(table->window,
 	                left + alloc.x,	top + alloc.y + alloc.height);
+#endif
 	abi_table_resize(table);
 
 	gtk_widget_show(GTK_WIDGET(table->window));
@@ -400,7 +421,11 @@ on_pressed(GtkButton* button, gpointer user_data)
 	/* Now transfer our grabs to the popup window; this
 	 * should always succeed.
 	 */
+#if GTK_CHECK_VERSION(3,96,0)
+	popup_grab_on_surface(gtk_widget_get_surface(GTK_WIDGET(table->area)));
+#else
 	popup_grab_on_window (gtk_widget_get_window(GTK_WIDGET(table->area)));
+#endif
 }
 
 gboolean
@@ -588,9 +613,13 @@ abi_table_init (AbiTable* table, gpointer)
 	table->szTable = NULL;
 	table->szCancel = NULL;
 	gtk_container_add(GTK_CONTAINER(table->window), GTK_WIDGET(table->window_vbox));
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(table->window_vbox), GTK_WIDGET(table->window_label));
+	gtk_container_add(GTK_CONTAINER(table->window_vbox), GTK_WIDGET(table->area));
+#else
 	gtk_box_pack_end(GTK_BOX(table->window_vbox), GTK_WIDGET(table->window_label), FALSE, FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(table->window_vbox), GTK_WIDGET(table->area), TRUE, TRUE, 0);
-
+#endif
 	gtk_widget_show_all(GTK_WIDGET(table->window_vbox));
 
 	table->selected_rows = init_rows;
@@ -609,8 +638,12 @@ abi_table_init (AbiTable* table, gpointer)
 		g_object_unref(pixbuf);
 	}
 
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(table->button_box), table->icon);
+#else
 	gtk_widget_show(table->icon);
 	gtk_box_pack_end(GTK_BOX(table->button_box), table->icon, FALSE, FALSE, 0);
+#endif
 	UT_DEBUGMSG(("abi-table icon loaded %p !\n",table->icon));
 
 	gtk_container_add(GTK_CONTAINER(table), GTK_WIDGET(table->button_box));
@@ -630,6 +663,7 @@ abi_table_init (AbiTable* table, gpointer)
 	g_signal_connect(G_OBJECT(table->window), "key_press_event",
 			 G_CALLBACK(on_key_event), static_cast<gpointer>(table));
 
+#if !GTK_CHECK_VERSION(3,96,0)
 	gtk_widget_set_events (GTK_WIDGET(table->area), GDK_EXPOSURE_MASK
 						   | GDK_LEAVE_NOTIFY_MASK
 						   | GDK_BUTTON_PRESS_MASK
@@ -637,6 +671,7 @@ abi_table_init (AbiTable* table, gpointer)
 						   | GDK_POINTER_MOTION_MASK
 						   | GDK_KEY_PRESS_MASK
 						   | GDK_KEY_RELEASE_MASK);
+#endif
 
 	gtk_button_set_relief (GTK_BUTTON (table), GTK_RELIEF_NORMAL);
 }

@@ -34,7 +34,11 @@ enum {
 
 struct _HandleWindow
 {
+#if GTK_CHECK_VERSION(3,96,0)
+  GdkSurface *window;
+#else
   GdkWindow *window;
+#endif
   GdkRectangle pointing_to;
   gint dx;
   gint dy;
@@ -48,7 +52,11 @@ struct FvTextHandlePrivate
 {
   HandleWindow windows[2];
   GtkWidget *parent;
+#if GTK_CHECK_VERSION(3,96,0)
+  GdkSurface *relative_to;
+#else
   GdkWindow *relative_to;
+#endif
   GtkStyleContext *style_context;
 
   gulong draw_signal_id;
@@ -73,10 +81,15 @@ _fv_text_handle_get_size (FvTextHandle *handle,
 
   priv = handle->priv;
 
+#if GTK_CHECK_VERSION(3,96,0)
+  w = 16;
+  h = 20;
+#else
   gtk_widget_style_get (priv->parent,
                         "text-handle-width", &w,
                         "text-handle-height", &h,
                         NULL);
+#endif
 
   if (width)
     *width = w;
@@ -125,7 +138,11 @@ _fv_text_handle_draw (FvTextHandle         *handle,
 
 static void
 _fv_text_handle_update_shape (FvTextHandle         *handle,
+#if GTK_CHECK_VERSION(3,96,0)
+                              GdkSurface *window,
+#else
                               GdkWindow            *window,
+#endif
                               FvTextHandlePosition  pos)
 {
   cairo_surface_t *surface;
@@ -133,10 +150,17 @@ _fv_text_handle_update_shape (FvTextHandle         *handle,
   cairo_t *cr;
 
   surface =
+#if GTK_CHECK_VERSION(3,96,0)
+    gdk_surface_create_similar_surface(window,
+                                       CAIRO_CONTENT_COLOR_ALPHA,
+                                       gdk_surface_get_width(window),
+                                       gdk_surface_get_height(window));
+#else
     gdk_window_create_similar_surface (window,
                                        CAIRO_CONTENT_COLOR_ALPHA,
                                        gdk_window_get_width (window),
                                        gdk_window_get_height (window));
+#endif
 
   cr = cairo_create (surface);
   _fv_text_handle_draw (handle, cr, pos);
@@ -144,40 +168,59 @@ _fv_text_handle_update_shape (FvTextHandle         *handle,
 
   region = gdk_cairo_region_create_from_surface (surface);
 
+#if GTK_CHECK_VERSION(3,96,0)
+  gdk_surface_input_shape_combine_region(window, region, 0, 0);
+#else
   if (gdk_screen_is_composited(gdk_window_get_screen(window)))
     gdk_window_shape_combine_region (window, NULL, 0, 0);
   else
     gdk_window_shape_combine_region (window, region, 0, 0);
 
   gdk_window_input_shape_combine_region (window, region, 0, 0);
+#endif
 
   cairo_surface_destroy (surface);
   cairo_region_destroy (region);
 }
 
+#if GTK_CHECK_VERSION(3,96,0)
+static GdkSurface *
+#else
 static GdkWindow *
+#endif
 _fv_text_handle_create_window (FvTextHandle         *handle,
                                FvTextHandlePosition  pos)
 {
   FvTextHandlePrivate *priv;
-  GdkWindowAttr attributes;
+#if GTK_CHECK_VERSION(3,96,0)
+  GdkSurface *window;
+#else
   GdkWindow *window;
-  GdkVisual *visual;
-  gint mask;
-
+#endif
   priv = handle->priv;
 
+
+#if GTK_CHECK_VERSION(3,96,0)
+  int w, h;
+
+  _fv_text_handle_get_size (handle, &w, &h);
+#else
+  GdkVisual *visual;
+
+  gint mask;
+  GdkWindowAttr attributes;
   attributes.x = 0;
   attributes.y = 0;
   _fv_text_handle_get_size (handle, &attributes.width, &attributes.height);
+
+  mask = GDK_WA_X | GDK_WA_Y;
+  attributes.window_type = GDK_WINDOW_TEMP;
   attributes.window_type = GDK_WINDOW_CHILD;
   attributes.wclass = GDK_INPUT_OUTPUT;
   attributes.event_mask = (GDK_EXPOSURE_MASK |
                            GDK_BUTTON_PRESS_MASK |
                            GDK_BUTTON_RELEASE_MASK |
                            GDK_BUTTON1_MOTION_MASK);
-
-  mask = GDK_WA_X | GDK_WA_Y;
 
   visual = gdk_screen_get_rgba_visual (gtk_widget_get_screen (priv->parent));
 
@@ -186,9 +229,14 @@ _fv_text_handle_create_window (FvTextHandle         *handle,
       attributes.visual = visual;
       mask |= GDK_WA_VISUAL;
     }
+#endif
 
-  window = gdk_window_new (gtk_widget_get_window(priv->parent), &attributes, mask);
+#if GTK_CHECK_VERSION(3,96,0)
+  window = gdk_surface_new_temp(gtk_widget_get_display(priv->parent));
+#else
+  window = gdk_window_new (gtk_widget_get_parent_window(widget), &attributes, mask);
   gdk_window_set_user_data (window, priv->parent);
+#endif
 
   _fv_text_handle_update_shape (handle, window, pos);
 
@@ -208,12 +256,14 @@ fv_text_handle_widget_draw (GtkWidget    * /*widget*/,
   if (!priv->realized)
     return FALSE;
 
+#if !GTK_CHECK_VERSION(3,96,0)
   if (gtk_cairo_should_draw_window (cr, priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_START].window))
     pos = FV_TEXT_HANDLE_POSITION_SELECTION_START;
   else if (gtk_cairo_should_draw_window (cr, priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_END].window))
     pos = FV_TEXT_HANDLE_POSITION_SELECTION_END;
   else
     return FALSE;
+#endif
 
   _fv_text_handle_draw (handle, cr, pos);
   return TRUE;
@@ -229,7 +279,12 @@ fv_text_handle_widget_event (GtkWidget    * /*widget*/,
 
   priv = handle->priv;
 
-  auto window = gdk_event_get_window(event);
+  auto window =
+#if GTK_CHECK_VERSION(3,96,0)
+    gdk_event_get_surface(event);
+#else
+    gdk_event_get_window(event);
+#endif
   if (window == priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_START].window)
     pos = FV_TEXT_HANDLE_POSITION_SELECTION_START;
   else if (window == priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_END].window)
@@ -258,7 +313,11 @@ fv_text_handle_widget_event (GtkWidget    * /*widget*/,
       gint x, y, width, height;
 
       _fv_text_handle_get_size (handle, &width, &height);
+#if GTK_CHECK_VERSION(3,96,0)
+      gdk_surface_get_origin (priv->relative_to, &x, &y);
+#else
       gdk_window_get_origin (priv->relative_to, &x, &y);
+#endif
 
       gdouble ev_x_root, ev_y_root;
       ev_x_root = ev_y_root = 0;
@@ -304,11 +363,21 @@ _fv_text_handle_update_window_state (FvTextHandle         *handle,
 
       x -= width / 2;
 
+#if GTK_CHECK_VERSION(3,96,0)
+      gdk_surface_move_resize(handle_window->window, x, y, width, height);
+      gdk_surface_show(handle_window->window);
+#else
       gdk_window_move_resize (handle_window->window, x, y, width, height);
       gdk_window_show (handle_window->window);
+#endif
     }
-  else
+  else {
+#if GTK_CHECK_VERSION(3,96,0)
+    gdk_surface_hide(handle_window->window);
+#else
     gdk_window_hide (handle_window->window);
+#endif
+  }
 }
 
 static void
@@ -327,7 +396,11 @@ _fv_text_handle_update_window (FvTextHandle         *handle,
 
   if (recreate)
     {
+#if GTK_CHECK_VERSION(3,96,0)
+      gdk_surface_destroy(handle_window->window);
+#else
       gdk_window_destroy (handle_window->window);
+#endif
       handle_window->window = _fv_text_handle_create_window (handle, pos);
     }
 
@@ -385,10 +458,17 @@ fv_text_handle_finalize (GObject *object)
     g_object_unref (priv->relative_to);
 
   if (priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_START].window)
+#if GTK_CHECK_VERSION(3,96,0)
+    gdk_surface_destroy(priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_START].window);
+#else
     gdk_window_destroy (priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_START].window);
-
+#endif
   if (priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_END].window)
+#if GTK_CHECK_VERSION(3,96,0)
+    gdk_surface_destroy(priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_END].window);
+#else
     gdk_window_destroy (priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_END].window);
+#endif
 
   if (g_signal_handler_is_connected (priv->parent, priv->draw_signal_id))
     g_signal_handler_disconnect (priv->parent, priv->draw_signal_id);
@@ -427,7 +507,11 @@ fv_text_handle_set_property (GObject      *object,
       break;
     case PROP_RELATIVE_TO:
       _fv_text_handle_set_relative_to (handle,
+#if GTK_CHECK_VERSION(3,96,0)
+                                       GDK_SURFACE(g_value_get_object(value)));
+#else
                                        GDK_WINDOW(g_value_get_object (value)));
+#endif
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -495,9 +579,15 @@ _fv_text_handle_class_init (FvTextHandleClass *klass)
   g_object_class_install_property (object_class,
                                    PROP_RELATIVE_TO,
                                    g_param_spec_object ("relative-to",
+#if GTK_CHECK_VERSION(3,96,0)
+                                                        "Surface",
+                                                        "Surface the coordinates are based upon",
+                                                        GDK_TYPE_SURFACE,
+#else
                                                         "Window",
                                                         "Window the coordinates are based upon",
                                                         GDK_TYPE_WINDOW,
+#endif
                                                         (GParamFlags)G_PARAM_READWRITE));
 }
 
@@ -527,25 +617,43 @@ _fv_text_handle_new (GtkWidget *parent)
 
 void
 _fv_text_handle_set_relative_to (FvTextHandle *handle,
+#if GTK_CHECK_VERSION(3,96,0)
+                                 GdkSurface *window)
+#else
                                  GdkWindow    *window)
+#endif
 {
   FvTextHandlePrivate *priv;
 
   g_return_if_fail (FV_IS_TEXT_HANDLE (handle));
+#if GTK_CHECK_VERSION(3,96,0)
+  g_return_if_fail (!window || GDK_IS_SURFACE(window));
+#else
   g_return_if_fail (!window || GDK_IS_WINDOW (window));
+#endif
 
   priv = handle->priv;
 
   if (priv->relative_to)
     {
+#if GTK_CHECK_VERSION(3,96,0)
+      gdk_surface_destroy (priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_START].window);
+      gdk_surface_destroy (priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_END].window);
+#else
       gdk_window_destroy (priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_START].window);
       gdk_window_destroy (priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_END].window);
+#endif
       g_object_unref (priv->relative_to);
     }
 
   if (window)
     {
-      priv->relative_to = GDK_WINDOW(g_object_ref (window));
+      priv->relative_to =
+#if GTK_CHECK_VERSION(3,96,0)
+        GDK_SURFACE(g_object_ref(window));
+#else
+        GDK_WINDOW(g_object_ref (window));
+#endif
       priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_START].window =
         _fv_text_handle_create_window (handle, FV_TEXT_HANDLE_POSITION_SELECTION_START);
       priv->windows[FV_TEXT_HANDLE_POSITION_SELECTION_END].window =
@@ -637,7 +745,12 @@ _fv_text_handle_set_position (FvTextHandle         *handle,
 
   handle_window->pointing_to = *rect;
   handle_window->has_point = TRUE;
-  gdk_window_get_root_coords (priv->relative_to,
+#if GTK_CHECK_VERSION(3,96,0)
+  gdk_surface_get_root_coords (
+#else
+  gdk_window_get_root_coords (
+#endif
+                              priv->relative_to,
                               rect->x, rect->y,
                               &handle_window->pointing_to.x,
                               &handle_window->pointing_to.y);
@@ -651,7 +764,11 @@ _fv_text_handle_set_visible (FvTextHandle         *handle,
                              gboolean              visible)
 {
   FvTextHandlePrivate *priv;
+#if GTK_CHECK_VERSION(3,96,0)
+  GdkSurface *window;
+#else
   GdkWindow *window;
+#endif
 
   g_return_if_fail (FV_IS_TEXT_HANDLE (handle));
 

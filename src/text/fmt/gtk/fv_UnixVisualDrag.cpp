@@ -31,10 +31,17 @@
 #include "ie_imp.h"
 #include "ie_imp_RTF.h"
 
+#if GTK_CHECK_VERSION(3,96,0)
+static const char* targets[] = {
+  "text/rtf",
+  "text/uri-list"
+};
+#else
 static const GtkTargetEntry targets[] = {
   { (gchar*)"text/rtf", 0, 0},
   { (gchar*)"text/uri-list",0,0}
 };
+#endif
 
 FV_UnixVisualDrag::FV_UnixVisualDrag (FV_View * pView)
   :  FV_VisualDragText (pView),m_bDragOut(false)
@@ -143,6 +150,12 @@ void FV_UnixVisualDrag::mouseDrag(UT_sint32 x, UT_sint32 y)
          XAP_Frame * pFrame = static_cast<XAP_Frame*>(m_pView->getParentData());
 	 XAP_UnixFrameImpl * pFrameImpl =static_cast<XAP_UnixFrameImpl *>( pFrame->getFrameImpl());
 	 GtkWidget * pWindow = pFrameImpl->getTopLevelWindow();
+#if GTK_CHECK_VERSION(3,96,0)
+	 GdkContentFormats* formats = gdk_content_formats_new(targets, 2);
+	 GdkDrag* context = gtk_drag_begin(pWindow, nullptr, formats, GDK_ACTION_COPY, x, y);
+
+	 gdk_content_formats_unref(formats);
+#else
 	 GtkTargetList *target_list = gtk_target_list_new(targets, G_N_ELEMENTS(targets));
 	 GdkDragContext *context = gtk_drag_begin_with_coordinates(
            pWindow, target_list,
@@ -150,6 +163,7 @@ void FV_UnixVisualDrag::mouseDrag(UT_sint32 x, UT_sint32 y)
 
 	 gdk_drag_status(context, GDK_ACTION_COPY, 0);
 	 gtk_target_list_unref(target_list);
+#endif
 	 m_bDragOut = true;
 	 getGraphics()->setClipRect(getCurFrame());
 	 m_pView->updateScreen(false);

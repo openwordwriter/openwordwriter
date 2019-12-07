@@ -218,9 +218,14 @@ void AP_UnixDialog_PageSetup::event_LandscapeChanged(void)
 	} else {
 		customPreview = create_pixmap(orient_vertical_xpm);
 	}
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(m_PageHbox), customPreview);
+	gtk_box_reorder_child_after(GTK_BOX (m_PageHbox), customPreview, nullptr);
+#else
 	gtk_widget_show(customPreview);
-	gtk_box_pack_start(GTK_BOX (m_PageHbox), customPreview, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (m_PageHbox), customPreview, FALSE, FALSE, 0);
 	gtk_box_reorder_child(GTK_BOX (m_PageHbox), customPreview, 0);
+#endif
 }
 
 void AP_UnixDialog_PageSetup::doWidthEntry(void)
@@ -393,7 +398,7 @@ void AP_UnixDialog_PageSetup::event_PageSizeChanged (fp_PageSize::Predefined pd)
 	  g_free (val);
   }
   else
-  {																	
+  {
 	  UT_Dimension dim = (UT_Dimension)XAP_comboBoxGetActiveInt(GTK_COMBO_BOX(m_optionPageUnits));
 	  ps.Set(atof(XAP_gtk_entry_get_text(GTK_ENTRY(m_entryPageWidth))),
 			 atof(XAP_gtk_entry_get_text(GTK_ENTRY(m_entryPageHeight))),
@@ -658,9 +663,14 @@ GtkWidget * AP_UnixDialog_PageSetup::_constructWindow (void)
 
 		customPreview = create_pixmap(orient_horizontal_xpm);
 	}
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(m_PageHbox), customPreview);
+	gtk_box_reorder_child_after(GTK_BOX(m_PageHbox), customPreview, nullptr);
+#else
 	gtk_widget_show(customPreview);
 	gtk_box_pack_start(GTK_BOX(m_PageHbox), customPreview, FALSE, FALSE, 0);
 	gtk_box_reorder_child(GTK_BOX(m_PageHbox), customPreview, 0);
+#endif
 
 	std::string s;
 	pSS->getValueUTF8(XAP_STRING_ID_DLG_Cancel, s);

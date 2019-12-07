@@ -122,7 +122,6 @@ void XAP_UnixDialog_Insert_Symbol::runModeless(XAP_Frame * pFrame)
 	//UT_ASSERT(unixapp);
 	
 	UT_ASSERT(m_SymbolMap && XAP_HAS_NATIVE_WINDOW(m_SymbolMap));
-
 	// make a new Unix GC
 	DELETEP (m_unixGraphics);
 	
@@ -140,7 +139,6 @@ void XAP_UnixDialog_Insert_Symbol::runModeless(XAP_Frame * pFrame)
 	
 	// *** Re use the code to draw into the selected symbol area.
 	UT_ASSERT(m_areaCurrentSym && XAP_HAS_NATIVE_WINDOW(m_areaCurrentSym));
-	
 	// make a new Unix GC
 	DELETEP (m_unixarea);
     {
@@ -533,7 +531,11 @@ void XAP_UnixDialog_Insert_Symbol::SymbolMap_clicked( GdkEvent * event)
 		iDrawSymbol->drawarea(m_CurrentSymbol, m_PreviousSymbol);
 
 		// double click should also insert the symbol
+#if GTK_CHECK_VERSION(3,96,0)
+		if (gdk_event_get_event_type(event) == GDK_BUTTON_PRESS)
+#else
 		if (gdk_event_get_event_type(event) == GDK_DOUBLE_BUTTON_PRESS)
+#endif
 			event_Insert();
 	}
 }
@@ -544,6 +546,7 @@ GtkWidget *XAP_UnixDialog_Insert_Symbol::_previewNew (int w, int h)
 	gtk_widget_show (pre);
 	gtk_widget_set_size_request (pre, w, h);
 
+#if !GTK_CHECK_VERSION(3,96,0)
 	// Enable button press events
 	gtk_widget_add_events(pre, GDK_BUTTON_PRESS_MASK);
 	gtk_widget_add_events(pre, GDK_BUTTON_RELEASE_MASK);
@@ -553,6 +556,7 @@ GtkWidget *XAP_UnixDialog_Insert_Symbol::_previewNew (int w, int h)
 	gtk_widget_add_events(pre, GDK_ENTER_NOTIFY_MASK);
 	gtk_widget_add_events(pre, GDK_LEAVE_NOTIFY_MASK);
 	gtk_widget_add_events(pre, GDK_SCROLL_MASK);
+#endif
 	return pre;
 }
 
@@ -594,35 +598,58 @@ GtkWidget * XAP_UnixDialog_Insert_Symbol::_constructWindow(void)
 	GtkWidget * vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	GtkWidget * hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show (hbox);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(hbox), vbox1);
+	gtk_container_add(GTK_CONTAINER(hbox), vbox2);
+	gtk_container_add(GTK_CONTAINER(tmp), hbox);
+#else
 	gtk_box_pack_start(GTK_BOX(hbox), vbox1, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox2, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tmp), hbox, FALSE, FALSE, 0);
-
+#endif
 	// Finally construct the combo box
 	m_fontcombo = _createComboboxWithFonts ();
 
 	// Now put the font combo box at the top of the dialog 
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(vbox1), m_fontcombo);
+#else
 	gtk_box_pack_start(GTK_BOX(vbox1), m_fontcombo, FALSE, FALSE, 0);
+#endif
 
 	// Now the Symbol Map. 
 	// TODO: 32 * x (19) = 608, 7 * y (21) = 147  FIXME!
 	//
 	GtkWidget * hbox1 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show (hbox1);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(tmp), hbox1);
+#else
 	gtk_box_pack_start(GTK_BOX(tmp), hbox1, TRUE, TRUE, 4);
+#endif
 
-
-		
 	m_SymbolMap = _previewNew (608, 147);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(hbox1), m_SymbolMap);
+#else
 	gtk_box_pack_start (GTK_BOX (hbox1), m_SymbolMap, TRUE, TRUE, 0);
+#endif
 
 	m_vadjust = GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 7, 0, 0, 7));
 	GtkWidget *vscroll = gtk_scrollbar_new (GTK_ORIENTATION_VERTICAL, m_vadjust);
 	gtk_widget_show (vscroll);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(hbox1), vscroll);
+#else
 	gtk_box_pack_start (GTK_BOX (hbox1), vscroll, FALSE, FALSE, 0);
+#endif
 
 	m_areaCurrentSym = _previewNew (60, 45);
+#if GTK_CHECK_VERSION(3,96,0)
+	gtk_container_add(GTK_CONTAINER(vbox2), m_areaCurrentSym);
+#else
 	gtk_box_pack_start(GTK_BOX(vbox2), m_areaCurrentSym, TRUE, FALSE, 0);
+#endif
 
 	gtk_widget_show_all (hbox);
 
