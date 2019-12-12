@@ -1961,9 +1961,11 @@ void XAP_UnixFrameImpl::_setGeometry ()
 		geom.min_width   = 100;
 		geom.min_height	 = 100;
 #if GTK_CHECK_VERSION(3,96,0)
-		gdk_surface_set_geometry_hints(
-			gtk_widget_get_surface(m_wTopLevelWindow), &geom,
-			static_cast<GdkSurfaceHints>(GDK_HINT_MIN_SIZE));
+		GdkSurface* surface = gtk_widget_get_surface(m_wTopLevelWindow);
+		if (surface) {
+			gdk_surface_set_geometry_hints(surface, &geom,
+										   static_cast<GdkSurfaceHints>(GDK_HINT_MIN_SIZE));
+		}
 #else
 		gtk_window_set_geometry_hints (GTK_WINDOW(m_wTopLevelWindow), m_wTopLevelWindow, &geom,
 									   static_cast<GdkWindowHints>(GDK_HINT_MIN_SIZE));
