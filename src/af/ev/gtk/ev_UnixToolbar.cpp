@@ -1197,13 +1197,13 @@ bool EV_UnixToolbar::synthesize(void)
 			case EV_TBIT_ColorFore:
 			case EV_TBIT_ColorBack:
 			{
+				GtkWidget		*combo;
+				const gchar		*action_name;
 #if HAVE_GOFFICE
 				GdkPixbuf 		*pixbuf;
-				GtkWidget		*combo;
 				GOColorGroup 	*cg;
 
 				const gchar* abi_stock_id;
-				const gchar		*action_name;
 				XAP_String_Id label_id;
 				const gchar* color_group;
 				GCallback callback;
@@ -1255,6 +1255,12 @@ bool EV_UnixToolbar::synthesize(void)
 					g_object_unref (G_OBJECT (pixbuf));
 				}
 
+#else
+				action_name = "TODO";
+				combo = gtk_button_new();
+				wd->m_widget = combo;
+#warning Find a replacement for GOffice on Gtk4...
+#endif
 				toolbar_append_item_with_proxy (GTK_TOOLBAR(m_wToolbar), combo,
 												szToolTip,
 												TRUE, action_name, wd);
@@ -1266,9 +1272,6 @@ bool EV_UnixToolbar::synthesize(void)
 				g_object_set_data(G_OBJECT(wwd),
 								  "wd_pointer",
 								  wd);
-#else
-#warning Find a replacement for GOffice on Gtk4...
-#endif
 			}
 			break;
 				
