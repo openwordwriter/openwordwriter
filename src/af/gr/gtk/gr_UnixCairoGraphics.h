@@ -77,7 +77,7 @@ public:
 	static GR_Graphics *   graphicsAllocator(GR_AllocInfo&);
 #if GTK_CHECK_VERSION(3,96,0)
 	// XXX rename eventually
-	GdkSurface *  getWindow () {return m_pWin;}
+	GdkSurface*  getWindow () {return m_pWin;}
 #else
 	GdkWindow *  getWindow () {return m_pWin;}
 #endif
@@ -106,14 +106,19 @@ public:
 protected:
 	void _initWidget();
 	virtual void		_resetClip(void) override;
+#if GTK_CHECK_VERSION(3,96,0)
+	static void widget_size_allocate(GtkWidget* /*widget*/, gint, gint, gint,
+									 GR_UnixCairoGraphics* me);
+#else
 	static void		widget_size_allocate (GtkWidget        *widget,
 									  GtkAllocation    *allocation,
 									  GR_UnixCairoGraphics *me);
+#endif
 	static void		widget_destroy (GtkWidget        *widget,
 									  GR_UnixCairoGraphics *me);
 	GR_UnixCairoGraphics(GtkWidget* win = nullptr);
 #if GTK_CHECK_VERSION(3,96,0)
-	virtual GdkSurface * _getWindow(void)
+	virtual GdkSurface* _getWindow(void)
 	{  return m_pWin;}
 #else
 	virtual GdkWindow * _getWindow(void)
@@ -125,11 +130,12 @@ protected:
 
 private:
 #if GTK_CHECK_VERSION(3,96,0)
-	GdkSurface *m_pWin;
+	GdkSurface* m_pWin;
+	GdkCairoContext* m_context;
 #else
 	GdkWindow *m_pWin;
-#endif
 	GdkDrawingContext* m_context;
+#endif
 	bool m_CairoCreated;
 	bool m_Painting;
 	gulong m_Signal, m_DestroySignal;

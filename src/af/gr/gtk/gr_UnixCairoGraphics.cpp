@@ -138,7 +138,11 @@ inline UT_RGBColor _convertGdkRGBA(const GdkRGBA &c)
 	return color;
 }
 
+#if GTK_CHECK_VERSION(3,96,0)
+void GR_UnixCairoGraphics::widget_size_allocate(GtkWidget* /*widget*/, gint, gint, gint, GR_UnixCairoGraphics* me)
+#else
 void GR_UnixCairoGraphics::widget_size_allocate(GtkWidget* /*widget*/, GtkAllocation* /*allocation*/, GR_UnixCairoGraphics* me)
+#endif
 {
 	UT_return_if_fail(me);
 	me->m_clipRectDirty = TRUE;
@@ -507,14 +511,19 @@ void GR_UnixCairoGraphics::_beginPaint()
 
 	if (m_cr == NULL)
 	{
-#if !GTK_CHECK_VERSION(3,96,0)
-		UT_ASSERT(m_pWin);
 		auto region = cairo_region_create();
+#if GTK_CHECK_VERSION(3,96,0)
+		m_context = gdk_surface_create_cairo_context(m_pWin);
+		gdk_draw_context_begin_frame(GDK_DRAW_CONTEXT(m_context), region);
+		m_cr = gdk_cairo_context_cairo_create(m_context);
+		UT_ASSERT(m_cr);
+#else
+		UT_ASSERT(m_pWin);
 		m_context = gdk_window_begin_draw_frame(m_pWin, region);
-		cairo_region_destroy(region);
 		m_cr = gdk_drawing_context_get_cairo_context(m_context);
-		m_CairoCreated = true;
 #endif
+		cairo_region_destroy(region);
+		m_CairoCreated = true;
 	}
 
 	UT_ASSERT(m_cr);
@@ -526,7 +535,9 @@ void GR_UnixCairoGraphics::_endPaint()
 {
 	if (m_CairoCreated)
 	{
-#if !GTK_CHECK_VERSION(3,96,0)
+#if GTK_CHECK_VERSION(3,96,0)
+		gdk_draw_context_end_frame(GDK_DRAW_CONTEXT(m_context));
+#else
 		gdk_window_end_draw_frame(m_pWin, m_context);
 #endif
 	}
