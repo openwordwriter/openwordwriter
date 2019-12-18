@@ -1,4 +1,4 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode:t -*- */
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
  * Copyright (C) 2002 William Lachance
@@ -154,7 +154,11 @@ protected:
 			static gint scroll_notify_event(GtkWidget* w, GdkEventScroll* e);
 			static gint key_press_event(GtkWidget* w, GdkEventKey* e);
 			static gint key_release_event(GtkWidget* w, GdkEventKey* e);
+#if GTK_CHECK_VERSION(3,96,0)
+			static gboolean close_request(GtkWidget * w, gpointer /*data*/);
+#else
 			static gint delete_event(GtkWidget * w, GdkEvent * /*event*/, gpointer /*data*/);
+#endif
 			static gboolean draw(GtkWidget *w, cairo_t *cr, gpointer);
 			static gint do_ZoomUpdate( gpointer /* xap_UnixFrame * */ p);
 			static void vScrollChanged(GtkAdjustment * w, gpointer /*data*/);

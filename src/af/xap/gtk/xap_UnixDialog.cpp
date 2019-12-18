@@ -22,15 +22,24 @@
 #include "xap_UnixDialog.h"
 #include "xap_UnixDialogHelper.h"
 
+#if GTK_CHECK_VERSION(3,96,0)
+static void s_delete_clicked(GtkWidget * widget, gpointer)
+#else
 static void s_delete_clicked(GtkWidget * widget, gpointer, gpointer)
+#endif
 {
   abiDestroyWidget(widget);
 }
 
 void XAP_UnixDialog::connectBasicSignals()
 {
-  g_signal_connect(G_OBJECT(m_windowMain),
-                   "delete_event",
-                   G_CALLBACK(s_delete_clicked),
-                   static_cast<gpointer>(this));
+#if GTK_CHECK_VERSION(3,96,0)
+	g_signal_connect(G_OBJECT(m_windowMain), "close-request",
+					   G_CALLBACK(s_delete_clicked), nullptr);
+#else
+    g_signal_connect(G_OBJECT(m_windowMain),
+                     "delete_event",
+                     G_CALLBACK(s_delete_clicked),
+                     static_cast<gpointer>(this));
+#endif
 }

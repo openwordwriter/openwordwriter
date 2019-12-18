@@ -1302,7 +1302,11 @@ gint XAP_UnixFrameImpl::_fe::key_press_event(GtkWidget* w, GdkEventKey* e)
 	return FALSE;
 }
 
+#if GTK_CHECK_VERSION(3,96,0)
+gboolean XAP_UnixFrameImpl::_fe::close_request(GtkWidget * w, gpointer /*data*/)
+#else
 gint XAP_UnixFrameImpl::_fe::delete_event(GtkWidget * w, GdkEvent * /*event*/, gpointer /*data*/)
+#endif
 {
 	XAP_UnixFrameImpl * pUnixFrameImpl = static_cast<XAP_UnixFrameImpl *>(g_object_get_data(G_OBJECT(w), "user_data"));
 	XAP_Frame* pFrame = pUnixFrameImpl->getFrame();
@@ -1602,8 +1606,13 @@ void XAP_UnixFrameImpl::_createTopLevelWindow(void)
 	g_signal_connect (G_OBJECT (m_wTopLevelWindow), "drag_data_get",
 					  G_CALLBACK (s_drag_data_get_cb), this);
 
+#if GTK_CHECK_VERSION(3,96,0)
+	g_signal_connect(G_OBJECT(m_wTopLevelWindow), "close-request",
+					 G_CALLBACK(_fe::close_request), NULL);
+#else
 	g_signal_connect(G_OBJECT(m_wTopLevelWindow), "delete_event",
 					   G_CALLBACK(_fe::delete_event), NULL);
+#endif
 	// here we connect the "destroy" event to a signal handler.
 	// This event occurs when we call gtk_widget_destroy() on the window,
 	// or if we return 'FALSE' in the "delete_event" callback.
