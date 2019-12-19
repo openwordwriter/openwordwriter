@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkWindow" id="window1">
+    <child>
+      <object class="GtkGrid" id="mainWidget">
+        <property name="column-spacing">4</property>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property name="halign">end</property>
+            <property name="label" translatable="yes">Name</property>
+            <layout>
+              <property name="left-attach">0</property>
+              <property name="top-attach">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label2">
+            <property name="halign">end</property>
+            <property name="label" translatable="yes">Nick</property>
+            <layout>
+              <property name="left-attach">0</property>
+              <property name="top-attach">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkEntry" id="name">
+            <property name="can-focus">1</property>
+            <property name="invisible-char">●</property>
+            <layout>
+              <property name="left-attach">1</property>
+              <property name="top-attach">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkEntry" id="nick">
+            <property name="can-focus">1</property>
+            <property name="invisible-char">●</property>
+            <layout>
+              <property name="left-attach">1</property>
+              <property name="top-attach">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label5">
+            <property name="halign">end</property>
+            <property name="label" translatable="yes">Phone</property>
+            <layout>
+              <property name="left-attach">0</property>
+              <property name="top-attach">5</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label4">
+            <property name="halign">end</property>
+            <property name="label" translatable="yes">Image</property>
+            <layout>
+              <property name="left-attach">0</property>
+              <property name="top-attach">4</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label3">
+            <property name="halign">end</property>
+            <property name="label" translatable="yes">Home Page</property>
+            <layout>
+              <property name="left-attach">0</property>
+              <property name="top-attach">3</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkEntry" id="phone">
+            <property name="can-focus">1</property>
+            <property name="hexpand">1</property>
+            <property name="invisible-char">●</property>
+            <layout>
+              <property name="left-attach">1</property>
+              <property name="top-attach">5</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkEntry" id="imageUrl">
+            <property name="can-focus">1</property>
+            <property name="invisible-char">●</property>
+            <layout>
+              <property name="left-attach">1</property>
+              <property name="top-attach">4</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkEntry" id="homePage">
+            <property name="can-focus">1</property>
+            <property name="invisible-char">●</property>
+            <layout>
+              <property name="left-attach">1</property>
+              <property name="top-attach">3</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label6">
+            <property name="halign">end</property>
+            <property name="label" translatable="yes">EMail</property>
+            <layout>
+              <property name="left-attach">0</property>
+              <property name="top-attach">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkEntry" id="email">
+            <property name="can-focus">1</property>
+            <property name="invisible-char">●</property>
+            <layout>
+              <property name="left-attach">1</property>
+              <property name="top-attach">2</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

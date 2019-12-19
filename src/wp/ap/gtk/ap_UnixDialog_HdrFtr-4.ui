@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100000</property>
+    <property name="value">1</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkDialog" id="ap_UnixDialog_HdrFtr">
+    <property name="visible">1</property>
+    <property name="border-width">5</property>
+    <property name="title" translatable="yes">Format Header/Footers</property>
+    <property name="resizable">0</property>
+    <property name="window-position">center-on-parent</property>
+    <child internal-child="content_area">
+      <object class="GtkBox" id="vbDialog">
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <object class="GtkGrid" id="grContent">
+            <property name="border-width">5</property>
+            <property name="row-spacing">6</property>
+            <property name="column-spacing">12</property>
+            <child>
+              <object class="GtkLabel" id="lbHeaderProperties">
+                <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                <property name="use-markup">1</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">0</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="cbHeaderFacingPages">
+                <property name="label" translatable="yes">Different header on facing pages</property>
+                <property name="can-focus">1</property>
+                <property name="margin-left">18</property>
+                <property name="use-underline">1</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">1</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="cbHeaderFirstPage">
+                <property name="label" translatable="yes">Different header on first page</property>
+                <property name="can-focus">1</property>
+                <property name="margin-left">18</property>
+                <property name="use-underline">1</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">2</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="cbHeaderLastPage">
+                <property name="label" translatable="yes">Different header on last page</property>
+                <property name="can-focus">1</property>
+                <property name="margin-left">18</property>
+                <property name="use-underline">1</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">3</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbFooterProperties">
+                <property name="margin-top">12</property>
+                <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                <property name="use-markup">1</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">4</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="cbFooterFacingPages">
+                <property name="label" translatable="yes">Different footer on facing pages</property>
+                <property name="can-focus">1</property>
+                <property name="margin-left">18</property>
+                <property name="use-underline">1</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">5</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="cbFooterFirstPage">
+                <property name="label" translatable="yes">Different footer on first page</property>
+                <property name="can-focus">1</property>
+                <property name="margin-left">18</property>
+                <property name="use-underline">1</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">6</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="cbFooterLastPage">
+                <property name="label" translatable="yes">Different footer on last page</property>
+                <property name="can-focus">1</property>
+                <property name="margin-left">18</property>
+                <property name="use-underline">1</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">7</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbPageNumberProperties">
+                <property name="margin-top">12</property>
+                <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                <property name="use-markup">1</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">8</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="lbRestartPageNumbers">
+                <property name="label" translatable="yes">Restart page numbers on new sections</property>
+                <property name="can-focus">1</property>
+                <property name="margin-left">18</property>
+                <property name="use-underline">1</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">9</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbRestartNumbering">
+                <property name="margin-left">18</property>
+                <property name="label" translatable="yes">Restart numbering at:</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">10</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSpinButton" id="sbRestartNumberingAt">
+                <property name="width-request">62</property>
+                <property name="can-focus">1</property>
+                <property name="invisible-char">●</property>
+                <property name="adjustment">adjustment1</property>
+                <property name="climb-rate">1</property>
+                <property name="numeric">1</property>
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">10</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-6">btCancel</action-widget>
+      <action-widget response="-5">btOK</action-widget>
+    </action-widgets>
+    <child internal-child="action_area">
+      <object class="GtkButtonBox" id="aaDialog">
+        <property name="visible">1</property>
+        <property name="layout-style">end</property>
+        <child>
+          <object class="GtkButton" id="btCancel">
+            <property name="label">gtk-cancel</property>
+            <property name="can-focus">1</property>
+            <property name="can-default">1</property>
+            <property name="use-stock">1</property>
+          </object>
+          <packing>
+            <property name="fill">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btOK">
+            <property name="label">gtk-ok</property>
+            <property name="can-focus">1</property>
+            <property name="can-default">1</property>
+            <property name="use-stock">1</property>
+          </object>
+          <packing>
+            <property name="fill">0</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

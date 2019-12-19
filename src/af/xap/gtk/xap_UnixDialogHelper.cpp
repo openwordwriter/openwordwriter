@@ -185,7 +185,11 @@ GtkBuilder * newDialogBuilder(const char * name)
 GtkBuilder* newDialogBuilderFromResource(const char* name)
 {
     UT_ASSERT(name);
+#if GTK_CHECK_VERSION(3,96,0)
+	std::string ui_path = std::string("/com/abisource/AbiWord/gtk4/") + name;
+#else
 	std::string ui_path = std::string("/com/abisource/AbiWord/") + name;
+#endif
 
 	// load the dialog from the UI file
 	GtkBuilder* builder = gtk_builder_new_from_resource(ui_path.c_str());

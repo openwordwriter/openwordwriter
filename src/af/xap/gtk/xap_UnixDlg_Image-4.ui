@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="value">1</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="upper">100</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkDialog" id="xap_UnixDlg_Image">
+    <property name="title" translatable="yes">Image Properties</property>
+    <property name="type-hint">dialog</property>
+    <child internal-child="content_area">
+      <object class="GtkBox" id="dialog-vbox1">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkNotebook" id="notebook1">
+            <property name="can-focus">1</property>
+            <child>
+              <object class="GtkNotebookPage">
+                <property name="child">
+                  <object class="GtkGrid" id="grDescTab">
+                    <property name="row-spacing">6</property>
+                    <property name="column-spacing">12</property>
+                    <child>
+                      <object class="GtkLabel" id="lbSize">
+                        <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                        <property name="use-markup">1</property>
+                        <property name="xalign">0</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">0</property>
+                          <property name="column-span">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbHeight">
+                        <property name="margin-start">18</property>
+                        <property name="label" translatable="yes">Height:</property>
+                        <property name="xalign">0</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbWidth">
+                        <property name="margin-start">18</property>
+                        <property name="label" translatable="yes">Width:</property>
+                        <property name="xalign">0</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkCheckButton" id="cbAspect">
+                        <property name="label" translatable="yes">Preserve aspect ratio</property>
+                        <property name="margin-start">18</property>
+                        <property name="can-focus">1</property>
+                        <property name="use-underline">1</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">3</property>
+                          <property name="column-span">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="edHeight">
+                        <property name="can-focus">1</property>
+                        <property name="invisible-char">•</property>
+                        <layout>
+                          <property name="left-attach">1</property>
+                          <property name="top-attach">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="edWidth">
+                        <property name="can-focus">1</property>
+                        <property name="invisible-char">•</property>
+                        <layout>
+                          <property name="left-attach">1</property>
+                          <property name="top-attach">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSpinButton" id="sbHeight">
+                        <property name="can-focus">1</property>
+                        <property name="adjustment">adjustment2</property>
+                        <property name="climb-rate">1</property>
+                        <layout>
+                          <property name="left-attach">2</property>
+                          <property name="top-attach">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSpinButton" id="sbWidth">
+                        <property name="can-focus">1</property>
+                        <property name="adjustment">adjustment1</property>
+                        <property name="climb-rate">1</property>
+                        <layout>
+                          <property name="left-attach">2</property>
+                          <property name="top-attach">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbImageDescription">
+                        <property name="margin-top">12</property>
+                        <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                        <property name="use-markup">1</property>
+                        <property name="xalign">0</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">4</property>
+                          <property name="column-span">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbTitle">
+                        <property name="margin-start">18</property>
+                        <property name="label" translatable="yes">Title:</property>
+                        <property name="xalign">0</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">5</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="edTitle">
+                        <property name="can-focus">1</property>
+                        <property name="invisible-char">•</property>
+                        <layout>
+                          <property name="left-attach">1</property>
+                          <property name="top-attach">5</property>
+                          <property name="column-span">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbDescription">
+                        <property name="margin-start">18</property>
+                        <property name="label" translatable="yes">Description:</property>
+                        <property name="xalign">0</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">6</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="edDescription">
+                        <property name="can-focus">1</property>
+                        <property name="invisible-char">•</property>
+                        <layout>
+                          <property name="left-attach">1</property>
+                          <property name="top-attach">6</property>
+                          <property name="column-span">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+                <property name="tab">
+                  <object class="GtkLabel" id="lbDescTab">
+                    <property name="label" translatable="yes">Description</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkNotebookPage">
+                <property name="position">1</property>
+                <property name="child">
+                  <object class="GtkGrid" id="grWrapping">
+                    <property name="row-spacing">6</property>
+                    <child>
+                      <object class="GtkLabel" id="lbTextWrapping">
+                        <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                        <property name="use-markup">1</property>
+                        <property name="xalign">0</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRadioButton" id="rbInLine">
+                        <property name="label" translatable="yes">Image placed in line</property>
+                        <property name="margin-start">18</property>
+                        <property name="can-focus">1</property>
+                        <property name="use-underline">1</property>
+                        <property name="active">1</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRadioButton" id="rbNone">
+                        <property name="label" translatable="yes">No Text wrapping</property>
+                        <property name="margin-start">18</property>
+                        <property name="can-focus">1</property>
+                        <property name="use-underline">1</property>
+                        <property name="group">rbInLine</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRadioButton" id="rbWrappedRight">
+                        <property name="label" translatable="yes">Text wrapped to the right of Image</property>
+                        <property name="margin-start">18</property>
+                        <property name="can-focus">1</property>
+                        <property name="use-underline">1</property>
+                        <property name="group">rbInLine</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRadioButton" id="rbWrappedLeft">
+                        <property name="label" translatable="yes">Text wrapped to Left of Image</property>
+                        <property name="margin-start">18</property>
+                        <property name="can-focus">1</property>
+                        <property name="use-underline">1</property>
+                        <property name="group">rbInLine</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">4</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRadioButton" id="rbWrappedBoth">
+                        <property name="label" translatable="yes">Text wrapped on both sizes of the image</property>
+                        <property name="margin-start">18</property>
+                        <property name="can-focus">1</property>
+                        <property name="use-underline">1</property>
+                        <property name="group">rbInLine</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">5</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbImagePlacement">
+                        <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                        <property name="margin-top">12</property>
+                        <property name="use-markup">1</property>
+                        <property name="xalign">0</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">6</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRadioButton" id="rbPlaceParagraph">
+                        <property name="label" translatable="yes">Position relative to nearest paragraph</property>
+                        <property name="margin-start">18</property>
+                        <property name="can-focus">1</property>
+                        <property name="use-underline">1</property>
+                        <property name="active">1</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">7</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRadioButton" id="rbPlaceColumn">
+                        <property name="label" translatable="yes">Position relative to its column</property>
+                        <property name="margin-start">18</property>
+                        <property name="can-focus">1</property>
+                        <property name="use-underline">1</property>
+                        <property name="group">rbPlaceParagraph</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">8</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRadioButton" id="rbPlacePage">
+                        <property name="label" translatable="yes">Position relative to its Page</property>
+                        <property name="margin-start">18</property>
+                        <property name="can-focus">1</property>
+                        <property name="use-underline">1</property>
+                        <property name="group">rbPlaceParagraph</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">9</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbWrapType">
+                        <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                        <property name="margin-top">12</property>
+                        <property name="use-markup">1</property>
+                        <property name="xalign">0</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">10</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRadioButton" id="rbTightWrap">
+                        <property name="label" translatable="yes">Tight Wrap</property>
+                        <property name="margin-start">18</property>
+                        <property name="can-focus">1</property>
+                        <property name="use-underline">1</property>
+                        <property name="active">1</property>
+                        <property name="group">rbSquareWrap</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">12</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRadioButton" id="rbSquareWrap">
+                        <property name="label" translatable="yes">Square Wrap</property>
+                        <property name="margin-start">18</property>
+                        <property name="can-focus">1</property>
+                        <property name="use-underline">1</property>
+                        <layout>
+                          <property name="left-attach">0</property>
+                          <property name="top-attach">11</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+                <property name="tab">
+                  <object class="GtkLabel" id="lbWrapTab">
+                    <property name="label" translatable="yes">Wrapping</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-6">btCancel</action-widget>
+      <action-widget response="-5">btOK</action-widget>
+    </action-widgets>
+    <child internal-child="action_area">
+      <object class="GtkBox" id="dialog-action_area1">
+        <property name="visible">1</property>
+        <child>
+          <object class="GtkButton" id="btCancel">
+            <property name="label">gtk-cancel</property>
+            <property name="can-focus">1</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="btOK">
+            <property name="label">gtk-ok</property>
+            <property name="can-focus">1</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

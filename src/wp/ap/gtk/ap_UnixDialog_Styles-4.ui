@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkDialog" id="ap_UnixDialog_Styles">
+    <property name="type-hint">dialog</property>
+    <child internal-child="content_area">
+      <object class="GtkBox" id="dialog-vbox1">
+        <property name="visible">0</property>
+        <property name="vexpand">1</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <object class="GtkBox" id="hbox1">
+            <property name="border-width">6</property>
+            <property name="spacing">12</property>
+            <child>
+              <object class="GtkGrid" id="grid1">
+                <property name="row-spacing">6</property>
+                <child>
+                  <object class="GtkLabel" id="lbStyles">
+                    <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                    <property name="use-markup">1</property>
+                    <property name="xalign">0</property>
+                    <layout>
+                      <property name="left-attach">0</property>
+                      <property name="top-attach">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="scrolledwindow2">
+                    <property name="can-focus">1</property>
+                    <property name="vexpand">1</property>
+                    <property name="shadow-type">in</property>
+                    <child>
+                      <object class="GtkTreeView" id="tvStyles">
+                        <property name="can-focus">1</property>
+                        <property name="hscroll-policy">natural</property>
+                        <property name="vscroll-policy">natural</property>
+                        <property name="headers-visible">0</property>
+                        <child internal-child="selection">
+                          <object class="GtkTreeSelection" id="treeview-selection"/>
+                        </child>
+                      </object>
+                    </child>
+                    <layout>
+                      <property name="left-attach">0</property>
+                      <property name="top-attach">1</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="lbList">
+                    <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                    <property name="use-markup">1</property>
+                    <property name="selectable">1</property>
+                    <property name="xalign">0</property>
+                    <layout>
+                      <property name="left-attach">0</property>
+                      <property name="top-attach">2</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="rbList1">
+                    <property name="label" translatable="yes">radiobutton1</property>
+                    <property name="can-focus">1</property>
+                    <property name="use-underline">1</property>
+                    <property name="active">1</property>
+                    <layout>
+                      <property name="left-attach">0</property>
+                      <property name="top-attach">3</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="rbList2">
+                    <property name="label" translatable="yes">radiobutton1</property>
+                    <property name="can-focus">1</property>
+                    <property name="use-underline">1</property>
+                    <property name="group">rbList1</property>
+                    <layout>
+                      <property name="left-attach">0</property>
+                      <property name="top-attach">4</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="rbList3">
+                    <property name="label" translatable="yes">radiobutton1</property>
+                    <property name="can-focus">1</property>
+                    <property name="use-underline">1</property>
+                    <property name="group">rbList1</property>
+                    <layout>
+                      <property name="left-attach">0</property>
+                      <property name="top-attach">5</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkGrid" id="grid5">
+                <property name="row-spacing">6</property>
+                <child>
+                  <object class="GtkFrame" id="frameParagraph">
+                    <property name="label-yalign">0</property>
+                    <property name="shadow-type">none</property>
+                    <layout>
+                      <property name="left-attach">0</property>
+                      <property name="top-attach">1</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="lbCharacter">
+                    <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                    <property name="use-markup">1</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">0</property>
+                    <layout>
+                      <property name="left-attach">0</property>
+                      <property name="top-attach">2</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkFrame" id="frameCharacter">
+                    <property name="label-yalign">0</property>
+                    <property name="shadow-type">none</property>
+                    <layout>
+                      <property name="left-attach">0</property>
+                      <property name="top-attach">3</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="lbParagraph">
+                    <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                    <property name="use-markup">1</property>
+                    <property name="xalign">0</property>
+                    <layout>
+                      <property name="left-attach">0</property>
+                      <property name="top-attach">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="lbAttributes">
+                    <property name="vexpand">1</property>
+                    <property name="wrap">1</property>
+                    <property name="selectable">1</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">0</property>
+                    <layout>
+                      <property name="left-attach">0</property>
+                      <property name="top-attach">6</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="lbDescription">
+                    <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                    <property name="use-markup">1</property>
+                    <property name="xalign">0</property>
+                    <layout>
+                      <property name="left-attach">0</property>
+                      <property name="top-attach">5</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButtonBox" id="hbuttonbox1">
+                    <property name="visible">1</property>
+                    <property name="layout-style">spread</property>
+                    <child>
+                      <object class="GtkButton" id="btNew">
+                        <property name="label">gtk-new</property>
+                        <property name="can-focus">1</property>
+                        <property name="can-default">1</property>
+                        <property name="use-stock">1</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="btModify">
+                        <property name="can-focus">1</property>
+                        <property name="can-default">1</property>
+                        <child>
+                          <object class="GtkAlignment" id="alignment1">
+                            <property name="visible">1</property>
+                            <child>
+                              <object class="GtkBox" id="hbox5">
+                                <property name="spacing">2</property>
+                                <child>
+                                  <object class="GtkImage" id="image1">
+                                    <property name="stock">gtk-properties</property>
+                                  </object>
+                                  <packing>
+                                    <property name="fill">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="label14">
+                                    <property name="label" translatable="yes">Modify</property>
+                                    <property name="use-underline">1</property>
+                                  </object>
+                                  <packing>
+                                    <property name="fill">0</property>
+                                  </packing>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="btDelete">
+                        <property name="label">gtk-delete</property>
+                        <property name="can-focus">1</property>
+                        <property name="can-default">1</property>
+                        <property name="use-stock">1</property>
+                      </object>
+                      <packing>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <layout>
+                      <property name="left-attach">0</property>
+                      <property name="top-attach">4</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">1</property>
+            <property name="padding">3</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="7">btClose</action-widget>
+      <action-widget response="-10">btApply</action-widget>
+    </action-widgets>
+    <child internal-child="action_area">
+      <object class="GtkButtonBox" id="dialog-action_area1">
+        <property name="visible">1</property>
+        <property name="layout-style">end</property>
+        <child>
+          <object class="GtkButton" id="btClose">
+            <property name="label">gtk-close</property>
+            <property name="can-focus">1</property>
+            <property name="can-default">1</property>
+            <property name="use-stock">1</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="btApply">
+            <property name="label">gtk-apply</property>
+            <property name="can-focus">1</property>
+            <property name="can-default">1</property>
+            <property name="use-stock">1</property>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="ap_UnixDialog_Styles_Modify">
+    <property name="title" translatable="yes">window2</property>
+  </object>
+</interface>

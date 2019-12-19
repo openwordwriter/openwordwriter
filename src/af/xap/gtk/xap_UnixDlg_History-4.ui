@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkDialog" id="xap_UnixDlg_History">
+    <property name="visible">1</property>
+    <property name="modal">1</property>
+    <property name="default-width">380</property>
+    <property name="default-height">450</property>
+    <child internal-child="content_area">
+      <object class="GtkBox" id="dialog-vbox1">
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <object class="GtkGrid" id="grContent">
+            <property name="hexpand">1</property>
+            <property name="vexpand">1</property>
+            <property name="row-spacing">6</property>
+            <property name="column-spacing">12</property>
+            <child>
+              <object class="GtkScrolledWindow" id="wListWindow">
+                <property name="margin-start">18</property>
+                <property name="can-focus">1</property>
+                <property name="hexpand">1</property>
+                <property name="vexpand">1</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">8</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbVersionHistory">
+                <property name="margin-top">12</property>
+                <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                <property name="use-markup">1</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">7</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbDocumentDetails">
+                <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                <property name="use-markup">1</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">0</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbDocumentName">
+                <property name="margin-start">18</property>
+                <property name="label" translatable="yes">%s</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbVersion">
+                <property name="margin-start">18</property>
+                <property name="label" translatable="yes">%s</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbCreated">
+                <property name="margin-start">18</property>
+                <property name="label" translatable="yes">%s</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbSaved">
+                <property name="margin-start">18</property>
+                <property name="label" translatable="yes">%s</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">4</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbEditTime">
+                <property name="margin-start">18</property>
+                <property name="label" translatable="yes">%s</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">5</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbDocNameVal">
+                <property name="hexpand">1</property>
+                <property name="label" translatable="yes">%s</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbVersionVal">
+                <property name="label" translatable="yes">%s</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbCreatedVal">
+                <property name="label" translatable="yes">%s</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbSavedVal">
+                <property name="label" translatable="yes">%s</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">4</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbEditTimeVal">
+                <property name="label" translatable="yes">%s</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">5</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbIdentifier">
+                <property name="margin-start">18</property>
+                <property name="label" translatable="yes">%s</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">6</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbIdentifierVal">
+                <property name="label" translatable="yes">%s</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">6</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-6">cancelbutton1</action-widget>
+      <action-widget response="-5">okbutton1</action-widget>
+    </action-widgets>
+    <child internal-child="action_area">
+      <object class="GtkBox" id="dialog-action_area1">
+        <property name="visible">1</property>
+        <child>
+          <object class="GtkButton" id="cancelbutton1">
+            <property name="label">gtk-cancel</property>
+            <property name="can-focus">1</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="okbutton1">
+            <property name="can-focus">1</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

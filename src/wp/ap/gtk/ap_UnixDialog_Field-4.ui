@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkDialog" id="ap_UnixDialog_Field">
+    <property name="height-request">351</property>
+    <property name="border-width">5</property>
+    <property name="title" translatable="yes">Insert Field</property>
+    <property name="modal">1</property>
+    <property name="window-position">center-on-parent</property>
+    <child internal-child="content_area">
+      <object class="GtkBox" id="vbxDialog">
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <object class="GtkGrid" id="grContent">
+            <property name="vexpand">1</property>
+            <property name="border-width">5</property>
+            <property name="row-spacing">6</property>
+            <property name="column-spacing">12</property>
+            <child>
+              <object class="GtkLabel" id="lbTypes">
+                <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                <property name="use-markup">1</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbFields">
+                <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                <property name="use-markup">1</property>
+                <property name="xalign">0</property>
+                <property name="yalign">1</property>
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="swTypes">
+                <property name="can-focus">1</property>
+                <property name="margin-left">18</property>
+                <property name="vexpand">1</property>
+                <property name="hscrollbar-policy">never</property>
+                <property name="shadow-type">in</property>
+                <child>
+                  <object class="GtkTreeView" id="tvTypes">
+                    <property name="width-request">180</property>
+                    <property name="can-focus">1</property>
+                    <property name="headers-visible">0</property>
+                    <property name="rules-hint">1</property>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection" id="treeview-selection1"/>
+                    </child>
+                  </object>
+                </child>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">1</property>
+                  <property name="row-span">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkTreeView" id="tvFields">
+                <property name="width-request">180</property>
+                <property name="can-focus">1</property>
+                <property name="margin-left">18</property>
+                <property name="vexpand">1</property>
+                <property name="headers-visible">0</property>
+                <property name="rules-hint">1</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection" id="treeview-selection2"/>
+                </child>
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbExtraParameters">
+                <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                <property name="use-markup">1</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkEntry" id="edExtraParameters">
+                <property name="can-focus">1</property>
+                <property name="margin-left">18</property>
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">3</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-6">btCancel</action-widget>
+      <action-widget response="1">btInsert</action-widget>
+    </action-widgets>
+    <child internal-child="action_area">
+      <object class="GtkButtonBox" id="aaDialog">
+        <property name="visible">1</property>
+        <property name="layout-style">end</property>
+        <child>
+          <object class="GtkButton" id="btCancel">
+            <property name="label">gtk-cancel</property>
+            <property name="can-focus">1</property>
+            <property name="can-default">1</property>
+            <property name="use-stock">1</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="btInsert">
+            <property name="label" translatable="yes">_Insert</property>
+            <property name="can-focus">1</property>
+            <property name="can-default">1</property>
+            <property name="has-default">1</property>
+            <property name="use-underline">1</property>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

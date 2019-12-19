@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkDialog" id="xap_UnixDlg_WindowMore">
+    <property name="visible">1</property>
+    <property name="title" translatable="yes">View Document</property>
+    <property name="modal">1</property>
+    <property name="default-width">350</property>
+    <property name="default-height">210</property>
+    <child internal-child="content_area">
+      <object class="GtkBox" id="vbDialog">
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <object class="GtkGrid" id="grContent">
+            <property name="vexpand">1</property>
+            <property name="row-spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="lbAvailableDocuments">
+                <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                <property name="use-markup">1</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="swAvailableDocuments">
+                <property name="can-focus">1</property>
+                <property name="hexpand">1</property>
+                <property name="vexpand">1</property>
+                <property name="shadow-type">in</property>
+                <child>
+                  <object class="GtkTreeView" id="tvAvailableDocuments">
+                    <property name="can-focus">1</property>
+                    <property name="headers-visible">0</property>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection" id="treeview-selection1"/>
+                    </child>
+                  </object>
+                </child>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">1</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-6">btCancel</action-widget>
+      <action-widget response="1">btView</action-widget>
+    </action-widgets>
+    <child internal-child="action_area">
+      <object class="GtkBox" id="aaDialog">
+        <property name="visible">1</property>
+        <child>
+          <object class="GtkButton" id="btCancel">
+            <property name="label">gtk-cancel</property>
+            <property name="can-focus">1</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="btView">
+            <property name="label" translatable="yes">_View</property>
+            <property name="can-focus">1</property>
+            <property name="use-underline">1</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

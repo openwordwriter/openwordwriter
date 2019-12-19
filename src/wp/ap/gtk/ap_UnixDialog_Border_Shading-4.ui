@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkDialog" id="ap_UnixDialog_Border_Shading">
+    <property name="visible">1</property>
+    <property name="border-width">5</property>
+    <property name="title" translatable="yes">Format Table</property>
+    <property name="resizable">0</property>
+    <property name="window-position">mouse</property>
+    <property name="type-hint">dialog</property>
+    <child internal-child="content_area">
+      <object class="GtkBox" id="vbDialog">
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <object class="GtkGrid" id="grContent">
+            <property name="vexpand">1</property>
+            <property name="border-width">5</property>
+            <property name="row-spacing">6</property>
+            <property name="column-spacing">12</property>
+            <child>
+              <object class="GtkLabel" id="lbBorder">
+                <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                <property name="use-markup">1</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">0</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbPreview">
+                <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                <property name="use-markup">1</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">2</property>
+                  <property name="top-attach">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbBorderColor">
+                <property name="margin-left">18</property>
+                <property name="label" translatable="yes">Color:</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkColorButton" id="cbtBorderColorButton">
+                <property name="can-focus">1</property>
+                <signal name="color-set" handler="on_cbtBorderColorButton_color_set" swapped="no"/>
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbBorderThickness">
+                <property name="margin-left">18</property>
+                <property name="label" translatable="yes">Thickness:</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="omBorderThickness">
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lblBorderStyle">
+                <property name="margin-left">18</property>
+                <property name="label" translatable="yes">Style
+</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="cmbBorderStyle">
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbShading">
+                <property name="margin-top">12</property>
+                <property name="label" translatable="yes">&lt;b&gt;%s&lt;/b&gt;</property>
+                <property name="use-markup">1</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">4</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="cbShadingEnable">
+                <property name="label" translatable="yes">Enable Shading</property>
+                <property name="can-focus">1</property>
+                <property name="margin-left">18</property>
+                <property name="use-underline">1</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">5</property>
+                  <property name="column-span">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lbShadingColor">
+                <property name="margin-left">18</property>
+                <property name="label" translatable="yes">Color:</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">6</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lblShadingOffset">
+                <property name="margin-left">18</property>
+                <property name="label" translatable="yes">Offset
+</property>
+                <property name="xalign">0</property>
+                <layout>
+                  <property name="left-attach">0</property>
+                  <property name="top-attach">7</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkColorButton" id="cbtShadingColorButton">
+                <property name="can-focus">1</property>
+                <property name="receives-default">1</property>
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">6</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="cmbShadingOffset">
+                <layout>
+                  <property name="left-attach">1</property>
+                  <property name="top-attach">7</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkGrid" id="grPreview">
+                <property name="valign">start</property>
+                <property name="margin-left">18</property>
+                <property name="row-spacing">6</property>
+                <property name="column-spacing">6</property>
+                <child>
+                  <object class="GtkToggleButton" id="tbBorderTop">
+                    <property name="width-request">25</property>
+                    <property name="height-request">25</property>
+                    <property name="halign">center</property>
+                    <property name="inconsistent">1</property>
+                    <layout>
+                      <property name="left-attach">1</property>
+                      <property name="top-attach">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkDrawingArea" id="daPreview">
+                    <property name="width-request">146</property>
+                    <property name="height-request">146</property>
+                    <layout>
+                      <property name="left-attach">1</property>
+                      <property name="top-attach">1</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="tbBorderLeft">
+                    <property name="width-request">25</property>
+                    <property name="height-request">25</property>
+                    <property name="valign">center</property>
+                    <property name="inconsistent">1</property>
+                    <layout>
+                      <property name="left-attach">0</property>
+                      <property name="top-attach">1</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="tbBorderBottom">
+                    <property name="width-request">25</property>
+                    <property name="height-request">25</property>
+                    <property name="halign">center</property>
+                    <property name="inconsistent">1</property>
+                    <layout>
+                      <property name="left-attach">1</property>
+                      <property name="top-attach">2</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="tbBorderRight">
+                    <property name="width-request">25</property>
+                    <property name="height-request">25</property>
+                    <property name="valign">center</property>
+                    <property name="inconsistent">1</property>
+                    <layout>
+                      <property name="left-attach">2</property>
+                      <property name="top-attach">1</property>
+                    </layout>
+                  </object>
+                </child>
+                <layout>
+                  <property name="left-attach">2</property>
+                  <property name="top-attach">1</property>
+                  <property name="row-span">7</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-7">btClose</action-widget>
+      <action-widget response="-10">btApply</action-widget>
+    </action-widgets>
+    <child internal-child="action_area">
+      <object class="GtkButtonBox" id="aaDialog">
+        <property name="visible">1</property>
+        <property name="layout-style">end</property>
+        <child>
+          <object class="GtkButton" id="btClose">
+            <property name="label">gtk-close</property>
+            <property name="can-focus">1</property>
+            <property name="can-default">1</property>
+            <property name="use-stock">1</property>
+          </object>
+          <packing>
+            <property name="fill">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btApply">
+            <property name="label">gtk-apply</property>
+            <property name="can-focus">1</property>
+            <property name="can-default">1</property>
+            <property name="has-default">1</property>
+            <property name="use-stock">1</property>
+          </object>
+          <packing>
+            <property name="fill">0</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
