@@ -1,4 +1,4 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode:t -*- */
 
 /* AbiSource Program Utilities
  * Copyright (C) 1998-2000 AbiSource, Inc.
@@ -554,9 +554,16 @@ bool EV_UnixMenu::synthesizeMenu(GtkWidget * wMenuRoot, bool isPopup)
 					_ev_strip_underline(dup, buf);
 					
 					GtkWidget * child = gtk_bin_get_child(GTK_BIN(w));
-					UT_ASSERT(child);					
+					UT_ASSERT(child);
+#if GTK_CHECK_VERSION(3,96,0)
+					if (GTK_IS_ACCEL_LABEL(child)) {
+						gtk_accel_label_set_label(GTK_ACCEL_LABEL(child), dup);
+					} else {
+						gtk_label_set_text_with_mnemonic(GTK_LABEL(child), dup);
+					}
+#else
 					gtk_label_set_text_with_mnemonic(GTK_LABEL(child), dup);
-
+#endif
 					FREEP(dup);
 				}
 
@@ -849,8 +856,15 @@ bool EV_UnixMenu::_refreshMenu(AV_View * pView, GtkWidget * wMenuRoot)
 				  char labelBuf[1024];
 				  // convert label into underscored version
 				  _ev_convert(labelBuf, szLabelName);
+#if GTK_CHECK_VERSION(3,96,0)
+				  if (GTK_IS_ACCEL_LABEL(child)) {
+					  gtk_accel_label_set_label(GTK_ACCEL_LABEL(child), labelBuf);
+				  } else {
+					  gtk_label_set_text_with_mnemonic(GTK_LABEL(child), labelBuf);
+				  }
+#else
 				  gtk_label_set_text_with_mnemonic(GTK_LABEL(child), labelBuf);
-
+#endif
 				  
 				  // bind to parent item's accel group
 
