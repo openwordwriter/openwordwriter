@@ -135,7 +135,7 @@ protected:
 	static void _imPreeditStart_cb (GtkIMContext *context, gpointer data);
 	static void _imPreeditChanged_cb (GtkIMContext *context, gpointer data);
 	static void _imPreeditEnd_cb (GtkIMContext *context, gpointer data);
-	static gint _imRetrieveSurrounding_cb (GtkIMContext *context, gpointer data);
+	static gboolean _imRetrieveSurrounding_cb (GtkIMContext *context, gpointer data);
 	static gint _imDeleteSurrounding_cb (GtkIMContext *slave, gint offset, gint n_chars, gpointer data);
 
 

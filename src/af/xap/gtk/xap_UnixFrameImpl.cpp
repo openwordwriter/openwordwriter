@@ -1764,12 +1764,17 @@ void XAP_UnixFrameImpl::_imPreeditChanged_cb (GtkIMContext *context,
 				 text, len, pImpl->m_iPreeditLen));
 }
 
-gint XAP_UnixFrameImpl::_imRetrieveSurrounding_cb (GtkIMContext *context,
+gboolean XAP_UnixFrameImpl::_imRetrieveSurrounding_cb (GtkIMContext *context,
 												   gpointer data)
 {
 	XAP_UnixFrameImpl * pImpl = static_cast<XAP_UnixFrameImpl*>(data);
 	FV_View * pView =
 		static_cast<FV_View*>(pImpl->getFrame()->getCurrentView ());
+
+	if (pView == nullptr) {
+        UT_DEBUGMSG(("XAP_UnixFrameImpl::_imRetrieveSurrounding_cb(): No current view.\n"));
+		return TRUE;
+	}
 
 	PT_DocPosition begin_p, end_p, here;
 
