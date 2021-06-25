@@ -3,7 +3,7 @@
 set -x
 
 BRANCH="ABI-3-0-0-STABLE"
-RELEASE="3.0.4"
+RELEASE="3.0.5"
 RELEASE_BASE_DIR=~/tmp
 RELEASE_DIR="$RELEASE_BASE_DIR/abiword-release-dir-$RELEASE"
 
