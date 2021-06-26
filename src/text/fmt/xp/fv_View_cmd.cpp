@@ -5971,12 +5971,12 @@ UT_Error FV_View::cmdInsertGraphicAtStrux(FG_Graphic* pFG, PT_DocPosition iPos, 
 
 #ifdef ENABLE_SPELL
 void FV_View::cmdContextSuggest(UT_uint32 ndx, fl_BlockLayout * ppBL,
-								fl_PartOfBlock * ppPOB)
+								const fl_PartOfBlockPtr& ppPOB)
 {
 	// locate the squiggle
 	PT_DocPosition pos = getPoint();
 	fl_BlockLayout* pBL;
-	fl_PartOfBlock* pPOB;
+	fl_PartOfBlockPtr pPOB;
 
 	if (!ppBL)
 		pBL = _findBlockAtPosition(pos);
@@ -6017,7 +6017,7 @@ void FV_View::cmdContextIgnoreAll(void)
 	PT_DocPosition pos = getPoint();
 	fl_BlockLayout* pBL = _findBlockAtPosition(pos);
 	UT_return_if_fail(pBL);
-	fl_PartOfBlock* pPOB = pBL->getSpellSquiggles()->get(pos - pBL->getPosition());
+	const fl_PartOfBlockPtr& pPOB = pBL->getSpellSquiggles()->get(pos - pBL->getPosition());
 	if(!pPOB) // this can happen with very rapid right-clicks
 	{
 		return;
@@ -6064,7 +6064,7 @@ void FV_View::cmdContextAdd(void)
 	PT_DocPosition pos = getPoint();
 	fl_BlockLayout* pBL = _findBlockAtPosition(pos);
 	UT_return_if_fail(pBL);
-	fl_PartOfBlock* pPOB = pBL->getSpellSquiggles()->get(pos - pBL->getPosition());
+	const fl_PartOfBlockPtr& pPOB = pBL->getSpellSquiggles()->get(pos - pBL->getPosition());
 	if(!pPOB) // this can happen with very rapid right-clicks
 	{
 		return;

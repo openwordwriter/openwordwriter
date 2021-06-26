@@ -202,7 +202,6 @@ FL_DocLayout::~FL_DocLayout()
 	}
 
 	DELETEP(m_pBackgroundCheckTimer);
-	DELETEP(m_pPendingWordForSpell);
 
 	if (m_pRedrawUpdateTimer)
 	{
@@ -3573,7 +3572,7 @@ FL_DocLayout::dequeueBlockForBackgroundCheck(fl_BlockLayout *pBlock)
 */
 void
 FL_DocLayout::setPendingWordForSpell(const fl_BlockLayout *pBlock,
-									 fl_PartOfBlock* pWord)
+									 const fl_PartOfBlockPtr& pWord)
 {
 	// Return if matching the existing marked region
 	if ((pBlock == m_pPendingBlockForSpell) &&
@@ -3588,12 +3587,6 @@ FL_DocLayout::setPendingWordForSpell(const fl_BlockLayout *pBlock,
 	if (pBlock && m_pPendingBlockForSpell && m_pPendingWordForSpell)
 	{
 		UT_ASSERT(pWord);
-	}
-
-	if (m_pPendingWordForSpell && (m_pPendingWordForSpell != pWord))
-	{
-		// When clobbering prior POB, make sure we don't leak it
-		DELETEP(m_pPendingWordForSpell);
 	}
 
 	m_pPendingBlockForSpell = pBlock;
