@@ -1,0 +1,9 @@
+3.0.5 - 2021/07/03
+
+- Now require C++11 to build.
+- Fixed crasher with cut & paste. https://bugzilla.abisource.com/show_bug.cgi?id=13947
+- Fix crasher in redrawing: Bug #13882
+- Fix table widget in the toolbar
+- Fix misc build issues
+- Fix crasher 13918
+
