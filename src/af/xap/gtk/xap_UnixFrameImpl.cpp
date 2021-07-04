@@ -1782,6 +1782,12 @@ gboolean XAP_UnixFrameImpl::_imRetrieveSurrounding_cb (GtkIMContext *context,
 	end_p = pView->mapDocPosSimple (FV_DOCPOS_EOB);
 	here = pView->getInsPoint ();
 
+	// here can be 0, in that case it's likely out of bounds
+	// so we tree it as nothing to do, otherwise it's likely to crash.
+	if (here < begin_p) {
+		return TRUE;
+	}
+
 	UT_UCSChar * text = NULL;
 	if (end_p > begin_p)
 		text = pView->getTextBetweenPos (begin_p, end_p);
