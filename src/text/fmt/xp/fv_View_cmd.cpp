@@ -2960,7 +2960,6 @@ UT_Error FV_View::cmdInsertTable(UT_sint32 numRows, UT_sint32 numCols, const gch
 	// Get the current attributes and properties. The user likely does not want the block properties as
 	// the margins and indents might not be right for a much narrower container (the cell).
 	// This is a ugly hack. We will only copy 2 fonts properties, font-family and font-size.
-	const gchar ** props_in = NULL;
 	const gchar * attrsBlock[3] = {"style","Normal",NULL};
 	const gchar * propsBlock[5] = {NULL,NULL,NULL,NULL,NULL};
 	const gchar * propFamily = "font-family";
@@ -2969,11 +2968,16 @@ UT_Error FV_View::cmdInsertTable(UT_sint32 numRows, UT_sint32 numCols, const gch
 	const gchar * szSize = NULL;
 	const gchar * szNormalFamily = NULL;
 	const gchar * szNormalSize = NULL;
-	getCharFormat(&props_in);
-	if (props_in && props_in[0])
+
 	{
-		szFamily = UT_getAttribute(propFamily, props_in);
-		szSize = UT_getAttribute(propSize, props_in);
+		const gchar ** props_in = NULL;
+		if (getCharFormat(&props_in)) {
+			if (props_in[0]) {
+				szFamily = UT_getAttribute(propFamily, props_in);
+				szSize = UT_getAttribute(propSize, props_in);
+			}
+			free(props_in);
+		}
 	}
 	m_pDoc->getStyleProperty(attrsBlock[1],propFamily,szNormalFamily);
 	m_pDoc->getStyleProperty(attrsBlock[1],propSize,szNormalSize);
