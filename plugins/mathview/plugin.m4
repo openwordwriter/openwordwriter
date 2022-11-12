@@ -4,7 +4,7 @@ PKG_CHECK_EXISTS(libgoffice-0.10 >= 0.10.12, , [enable_mathview=no])
 
 if test "$enable_mathview" != "no"; then
   dnl Only 0.4.1, or later will work
-  for ver in 0.6 0.4 ; do
+  for ver in 0.7 0.6 0.4 ; do
     if test "x$lasem" = x; then
       if pkg-config --exists lasem-$ver; then
         lasem="lasem-$ver"
