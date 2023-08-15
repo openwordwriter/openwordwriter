@@ -1,7 +1,8 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode:t; -*- */
 /* AbiWord
  * Copyright (C) 2008 Dominic Lachowicz
- * 
+ * Copryight (C) 2023 Hubert Figuière
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -26,6 +27,7 @@
 #include "gr_CairoGraphics.h"
 
 #include <stdlib.h>
+#include <math.h>
 
 GR_RSVGVectorImage::GR_RSVGVectorImage(const char* name) 
 	: GR_CairoVectorImage(),
@@ -91,7 +93,11 @@ bool GR_RSVGVectorImage::convertFromBuffer(const UT_ConstByteBufPtr & pBB,
 		return false;
 	}
 
-	rsvg_handle_get_dimensions(m_svg, &m_size);
+	double width = 0.0;
+	double height = 0.0;
+	rsvg_handle_get_intrinsic_size_in_pixels(m_svg, &width, &height);
+	m_size.height = round(height);
+	m_size.width = round(width);
 
 	if (!forceScale)
 		setupScale(m_size.width, m_size.height);
@@ -156,7 +162,8 @@ void GR_RSVGVectorImage::setupScale(UT_sint32 w, UT_sint32 h) {
 void GR_RSVGVectorImage::renderToSurface(cairo_surface_t* surf) {
 	cairo_t* cr = cairo_create(surf);
 	cairo_scale(cr, m_scaleX, m_scaleY);
-	rsvg_handle_render_cairo(m_svg, cr);
+	RsvgRectangle rect = { 0, 0, (double)m_size.width, (double)m_size.height };
+	rsvg_handle_render_document(m_svg, cr, &rect, nullptr);
 	//
 	// Setup Raster Image too
 	//
@@ -170,7 +177,8 @@ void GR_RSVGVectorImage::renderToSurface(cairo_surface_t* surf) {
 
 void GR_RSVGVectorImage::renderToCairo(cairo_t* cr) {
 	cairo_scale(cr, m_scaleX, m_scaleY);
-	rsvg_handle_render_cairo(m_svg, cr);
+	RsvgRectangle rect = { 0, 0, (double)m_size.width, (double)m_size.height };
+	rsvg_handle_render_document(m_svg, cr, &rect, nullptr);
 	cairo_new_path(cr);
 }
 
