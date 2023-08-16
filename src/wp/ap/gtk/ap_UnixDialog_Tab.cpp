@@ -257,13 +257,13 @@ AP_UnixDialog_Tab::_constructWindow ()
 	// initialise
 
 	m_sbDefaultTab = GTK_WIDGET(gtk_builder_get_object(m_pBuilder, "sbDefaultTab"));
-	gtk_spin_button_set_digits (GTK_SPIN_BUTTON (m_sbDefaultTab), UT_getDimensionPrecisicion (m_dim));
+	gtk_spin_button_set_digits (GTK_SPIN_BUTTON (m_sbDefaultTab), UT_getDimensionPrecision (m_dim));
  	// FIXME set max that fits on page gtk_spin_button_set_range (GTK_SPIN_BUTTON (m_sbDefaultTab),	0, ...);
 
 	m_btDelete = GTK_WIDGET(gtk_builder_get_object(m_pBuilder, "btDelete"));
 
 	m_sbPosition = GTK_WIDGET(gtk_builder_get_object(m_pBuilder, "sbPosition"));
-	gtk_spin_button_set_digits (GTK_SPIN_BUTTON (m_sbPosition), UT_getDimensionPrecisicion (m_dim));
+	gtk_spin_button_set_digits (GTK_SPIN_BUTTON (m_sbPosition), UT_getDimensionPrecision (m_dim));
  	// FIXME set max that fits on page gtk_spin_button_set_range (GTK_SPIN_BUTTON (m_sbPosition),	0, ...);
 
 	GtkWidget *grNew = GTK_WIDGET(gtk_builder_get_object(m_pBuilder, "grNew"));

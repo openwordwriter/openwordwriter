@@ -147,7 +147,7 @@ const char * UT_convertInchesToDimensionString(UT_Dimension dim, double valueInI
 }
 
 /*!
-* FIXME ROB this should be in sync with UT_getDimensionPrecisicion
+* FIXME ROB this should be in sync with UT_getDimensionPrecision
 */
 const char * UT_formatDimensionString(UT_Dimension dim, double value, const char * szPrecision)
 {
@@ -237,7 +237,7 @@ const char * UT_reformatDimensionString(UT_Dimension dim, const char *sz, const 
 }
 
 /*!
- * This method increments a dimenstioned string by the amount given.
+ * This method increments a dimensionned string by the amount given.
 \param const char * dimString - string to be incremented.
 \param amount of increment.
 */
@@ -252,7 +252,7 @@ const char * UT_incrementDimString(const char * dimString, double inc)
 
 
 /*!
- * This method multiplys a dimenstioned string by the amount given.
+ * This method multiplys a dimensionned string by the amount given.
 \param const char * dimString - string to be incremented.
 \param amount to be multiplied.
 */
@@ -552,26 +552,26 @@ bool UT_isValidDimensionString(const char * sz, size_t max_length)
 }
 
 /*!
-* Returns the user visible precisition (number of decimal digits)
-* for a certain dimension.
+* Returns the user visible precision (number of decimal digits)
+* for a certain dimensions.
 */
-UT_uint32 UT_getDimensionPrecisicion (UT_Dimension dim)
+UT_uint32 UT_getDimensionPrecision (UT_Dimension dim)
 {
 	switch (dim)
 	{
-		case DIM_IN:	
+		case DIM_IN:
 			return 2;
-		case DIM_CM:	
+		case DIM_CM:
 			return 1;
-		case DIM_MM:	
-		case DIM_PI:	
-		case DIM_PT:	
+		case DIM_MM:
+		case DIM_PI:
+		case DIM_PT:
 		case DIM_PX:
 			return 0;
 		default:
 			UT_ASSERT(UT_NOT_IMPLEMENTED);
 			return 1;
-	}	
+	}
 }
 
 /*!
@@ -582,7 +582,7 @@ double UT_getDimensionResolution (UT_Dimension dim)
 {
 	switch (dim)
 	{
-		case DIM_IN:	
+		case DIM_IN:
 			return 0.1;
 		case DIM_CM:	
 			return 0.5;
