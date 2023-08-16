@@ -46,7 +46,6 @@ enum UT_Dimension {
   DIM_PT,
   DIM_PX,
   DIM_PERCENT,
-  DIM_STAR,
   DIM_none
 };
 
