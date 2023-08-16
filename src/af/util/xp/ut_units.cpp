@@ -1,5 +1,6 @@
 /* AbiSource Program Utilities
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (C) 2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -187,8 +188,8 @@ const char * UT_convertInchesToDimensionString(UT_Dimension dim, double valueInI
 
 	case DIM_PX:
 		valueScaled = (valueInInches * 72);
-	  sprintf(bufFormat,"%%%sfpx",((szPrecision && *szPrecision) ? szPrecision : ".0"));
-	  break;
+		sprintf(bufFormat,"%%%sfpx",((szPrecision && *szPrecision) ? szPrecision : ".0"));
+		break;
 
  	case DIM_none:
 		valueScaled = valueInInches;
@@ -197,7 +198,7 @@ const char * UT_convertInchesToDimensionString(UT_Dimension dim, double valueInI
 
 	case DIM_PERCENT:
 		valueScaled = valueInInches;
-		sprintf(bufFormat,"%%%sf%%",((szPrecision && *szPrecision) ? szPrecision : ""));
+		sprintf(bufFormat,"%%%sf%%%%",((szPrecision && *szPrecision) ? szPrecision : ""));
 		break;
 
 	default:
@@ -266,7 +267,7 @@ const char * UT_formatDimensionString(UT_Dimension dim, double value, const char
 		break;
 
 	case DIM_PERCENT:
-		sprintf(bufFormat,"%%%sf%%",((szPrecision && *szPrecision) ? szPrecision : ""));
+		sprintf(bufFormat,"%%%sf%%%%",((szPrecision && *szPrecision) ? szPrecision : ""));
 		break;
 
 	default:
