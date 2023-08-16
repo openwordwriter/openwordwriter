@@ -3,7 +3,7 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
  * Copyright (c) 2001,2002,2003 Tomas Frydrych
- * Copyright (C) 2013-2021 Hubert Figuière
+ * Copyright (C) 2013-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -2231,7 +2231,7 @@ bool PD_Document::getAttributeFromSDH(pf_Frag_Strux* sdh, bool bShowRevisions, U
 	const gchar * pszValue = nullptr;
 
 	bool bHiddenRevision = false;
-	UT_Option<std::unique_ptr<PP_RevisionAttr>> unused;
+	std::optional<std::unique_ptr<PP_RevisionAttr>> unused;
 	getAttrProp(indexAP, &pAP, unused, bShowRevisions, iRevisionLevel, bHiddenRevision);
 
 	UT_return_val_if_fail (pAP, false);
@@ -2282,7 +2282,7 @@ bool PD_Document::getPropertyFromSDH(const pf_Frag_Strux* sdh, bool bShowRevisio
 
 	bool bHiddenRevision = false;
 
-	UT_Option<std::unique_ptr<PP_RevisionAttr>> unused;
+	std::optional<std::unique_ptr<PP_RevisionAttr>> unused;
 	getAttrProp(indexAP, &pAP, unused, bShowRevisions, iRevisionLevel, bHiddenRevision);
 
 	UT_return_val_if_fail (pAP, false);
@@ -8040,7 +8040,7 @@ bool PD_Document::purgeFmtMarks()
 
 
 bool PD_Document::getAttrProp(PT_AttrPropIndex apIndx, const PP_AttrProp ** ppAP,
-							  UT_Option<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
+							  std::optional<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
 							  bool bShowRevisions, UT_uint32 iRevisionId, bool &bHiddenRevision) const
 {
 	bool bRevisionAttrNeeded = !!pRevisions;
@@ -8061,7 +8061,7 @@ bool PD_Document::getAttrProp(PT_AttrPropIndex apIndx, const PP_AttrProp ** ppAP
 
 		if(bRevisionAttrNeeded && pAP->getAttribute("revision", pRevision))
 		{
-			pRevisions.unwrap_ref().reset(new PP_RevisionAttr(pRevision));
+			pRevisions.value().reset(new PP_RevisionAttr(pRevision));
 			UT_return_val_if_fail(pRevisions, false);
 		}
 
@@ -8085,7 +8085,7 @@ bool PD_Document::getAttrProp(PT_AttrPropIndex apIndx, const PP_AttrProp ** ppAP
 
 	if(bRevisionAttrNeeded)
 	{
-		pRevisions.unwrap_ref() = std::move(pRevAttr);
+		pRevisions.value() = std::move(pRevAttr);
 	}
 
 	return true;
@@ -8100,7 +8100,7 @@ bool PD_Document::getAttrProp(PT_AttrPropIndex apIndx, const PP_AttrProp ** ppAP
 */
 bool PD_Document::getSpanAttrProp(pf_Frag_Strux* sdh, UT_uint32 offset, bool bLeftSide,
 								  const PP_AttrProp ** ppAP,
-								  UT_Option<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
+								  std::optional<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
 								  bool bShowRevisions, UT_uint32 iRevisionId,
 								  bool &bHiddenRevision) const
 {
@@ -8122,7 +8122,7 @@ bool PD_Document::getSpanAttrProp(pf_Frag_Strux* sdh, UT_uint32 offset, bool bLe
 		// only do this if the pRevisions pointer is set to nullptr
 		if(bRevisionAttrNeeded && pAP->getAttribute("revision", pRevision))
 		{
-			pRevisions.unwrap_ref().reset(new PP_RevisionAttr(pRevision));
+			pRevisions.value().reset(new PP_RevisionAttr(pRevision));
 			UT_return_val_if_fail(pRevisions, false);
 		}
 
@@ -8145,7 +8145,7 @@ bool PD_Document::getSpanAttrProp(pf_Frag_Strux* sdh, UT_uint32 offset, bool bLe
 
 	if(bRevisionAttrNeeded)
 	{
-		pRevisions.unwrap_ref() = std::move(pRevAttr);
+		pRevisions.value() = std::move(pRevAttr);
 	}
 
 	return true;
@@ -8341,7 +8341,7 @@ PD_XMLIDCreator::createUniqueXMLID( const std::string& desiredID, bool deepCopyR
 
     UT_DEBUGMSG(("createUniqueXMLID() xmlid is in use! desired:%s\n", desiredID.c_str() ));
 	UT_UUID* uuido = XAP_App::getApp()->getUUIDGenerator()->createUUID();
-	std::string uuid = uuido->toString().unwrap_or("");
+	std::string uuid = uuido->toString().value_or("");
     delete uuido;
 
     std::string trimmedID = desiredID;

@@ -1,5 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (C) 2022 Hubert Figuière
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -84,7 +85,7 @@ void fl_Layout::setAttrPropIndex(PT_AttrPropIndex apIndex)
     
 */
 bool fl_Layout::getAttrProp(const PP_AttrProp ** ppAP,
-                            UT_Option<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
+                            std::optional<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
                             bool bShowRevisions, UT_uint32 iRevisionId, bool &bHiddenRevision) const
 {
 	UT_return_val_if_fail(m_pDoc, false);
@@ -95,7 +96,7 @@ bool fl_Layout::getAttrProp(const PP_AttrProp ** ppAP,
     if pRevisions is not needed, set the pointer to nullptr(this speeds up things)
 */
 bool fl_Layout::getSpanAttrProp(UT_uint32 offset, bool bLeftSide, const PP_AttrProp ** ppAP,
-                                UT_Option<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
+                                std::optional<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
                                 bool bShowRevisions, UT_uint32 iRevisionId,
                                 bool &bHiddenRevision) const
 {

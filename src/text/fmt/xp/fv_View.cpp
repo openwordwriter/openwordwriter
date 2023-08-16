@@ -2,7 +2,7 @@
 /* AbiWord
  * Copyright (C) 1998-2000 AbiSource, Inc.
  * Copyright (c) 2001,2002 Tomas Frydrych
- * Copyright (C) 2016 Hubert Figuière
+ * Copyright (C) 2016-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -8240,7 +8240,7 @@ void FV_View::drawPage(int page, dg_DrawArgs* da)
 
 void FV_View::queueDraw(const UT_Rect* pClipRect)
 {
-	m_drawQueue.push(pClipRect ? UT_Option<UT_Rect>(*pClipRect) : UT_Option<UT_Rect>());
+	m_drawQueue.push(pClipRect ? std::optional<UT_Rect>(*pClipRect) : std::nullopt);
 	getGraphics()->queueDraw(pClipRect);
 }
 /*!
@@ -10266,7 +10266,7 @@ EV_EditMouseContext FV_View::_getMouseContext(UT_sint32 xPos, UT_sint32 yPos)
 		{
 			if( fp_Line * pLine = pHyperRun->getLine() )
 			{
-				UT_Rect pRec = pLine->getScreenRect().unwrap();
+				UT_Rect pRec = pLine->getScreenRect().value();
 				UT_sint32 xPosAdj = xPos - pRec.left;
 				xxx_UT_DEBUGMSG(("fv_View::getMouseContext: (x), xPosAdj %ld\n", xPosAdj ));
 				xxx_UT_DEBUGMSG(("fv_View::getMouseContext: (x), yPos    %ld\n", yPos ));
@@ -10302,7 +10302,7 @@ EV_EditMouseContext FV_View::_getMouseContext(UT_sint32 xPos, UT_sint32 yPos)
 		fp_Line * pLine=  pHyperRun->getLine();
 		if(pLine)
 		{
-			UT_Rect pRec = pLine->getScreenRect().unwrap();
+			UT_Rect pRec = pLine->getScreenRect().value();
 			UT_DebugOnly<UT_sint32> xPosAdj = xPos - pRec.left;
 			xxx_UT_DEBUGMSG(("fv_View::getMouseContext: (7), xPosAdj %ld\n", (UT_sint32)xPosAdj ));
 			xxx_UT_DEBUGMSG(("fv_View::getMouseContext: (7), yPos    %ld\n", yPos ));

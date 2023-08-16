@@ -730,13 +730,13 @@ GR_Image* GR_Graphics::createNewImage(const char* pszName, const UT_ConstByteBuf
    return vectorImage;
 }
 
-UT_Option<UT_Rect> GR_Graphics::getClipRectOptional(void) const
+std::optional<UT_Rect> GR_Graphics::getClipRectOptional(void) const
 {
     if (m_pRect) {
-        return UT_Option<UT_Rect>(*m_pRect);
+        return std::optional<UT_Rect>(*m_pRect);
     }
 
-    return UT_Option<UT_Rect>();
+    return std::nullopt;
 }
 
 bool GR_Graphics::_PtInPolygon(const UT_Point * pts, UT_uint32 nPoints,

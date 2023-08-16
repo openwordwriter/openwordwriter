@@ -2,6 +2,7 @@
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (C) 2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -1441,7 +1442,7 @@ void s_AbiWord_1_Listener::_handleHistory(void)
 		UT_uint32 iXID      =  m_pDocument->getHistoryNthTopXID(k);
 
 		UT_UTF8String s;
-		std::string hUid = UID.toString().unwrap_or("");
+		std::string hUid = UID.toString().value_or("");
 
 
 		if (!bWroteOpenSection)

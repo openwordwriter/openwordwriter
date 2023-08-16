@@ -14900,7 +14900,7 @@ Defun(hyperlinkStatusBar)
 	fp_Line * pLine = pHRun->getLine();
 	if(pLine)
 	{
-		UT_Rect pRect = pLine->getScreenRect().unwrap();
+		UT_Rect pRect = pLine->getScreenRect().value();
 		UT_sint32 ioff = pRect.top;
 		pAnnPview->setOffset(pG->tdu(ypos - ioff));
 	}

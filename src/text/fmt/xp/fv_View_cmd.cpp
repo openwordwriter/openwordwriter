@@ -2,7 +2,7 @@
 /* AbiWord
  * Copyright (C) 1998-2000 AbiSource, Inc.
  * Copyright (c) 2001,2002 Tomas Frydrych
- * Copyright (c) 2016 Hubert Figuière
+ * Copyright (c) 2016-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -5161,7 +5161,7 @@ UT_Error FV_View::cmdInsertGraphic(const FG_ConstGraphicPtr& pFG)
 	*/
 	UT_UUIDPtr uuid = m_pDoc->getNewUUID();
 	UT_return_val_if_fail(uuid != nullptr, UT_ERROR);
-	std::string s = uuid->toString().unwrap_or("");
+	std::string s = uuid->toString().value_or("");
 
 	UT_Error errorCode = _insertGraphic(pFG, s.c_str());
 	if(m_FrameEdit.isActive())
@@ -5212,7 +5212,7 @@ UT_Error FV_View::cmdInsertPositionedGraphic(const FG_ConstGraphicPtr& pFG, UT_s
 	*/
 	UT_UUIDPtr uuid = m_pDoc->getNewUUID();
 	UT_return_val_if_fail(uuid != nullptr, UT_ERROR);
-	std::string s = uuid->toString().unwrap_or("");
+	std::string s = uuid->toString().value_or("");
 	//
 	// Find a document position close to the requested position
 	//
@@ -5426,8 +5426,8 @@ bool FV_View::cmdInsertLatexMath(UT_UTF8String & sLatex,
 	UT_UUIDPtr uuid = m_pDoc->getNewUUID();
 	UT_return_val_if_fail(uuid != nullptr, false);
 	auto result = uuid->toString();
-	if (!result.empty()) {
-		std::string s = result.unwrap();
+	if (result.has_value()) {
+		std::string s = result.value();
 		sMathName += s;
 		sLatexName += s;
 	}
@@ -5559,7 +5559,7 @@ bool FV_View::cmdInsertEmbed(const UT_ConstByteBufPtr & pBuf, PT_DocPosition pos
 	UT_return_val_if_fail(uuid != nullptr, false);
 	auto result = uuid->toString();
 	if (result) {
-		sUID += result.unwrap();
+		sUID += result.value();
 	}
 
 	PP_PropertyVector atts = {
@@ -5670,7 +5670,7 @@ bool FV_View::cmdUpdateEmbed(const UT_ConstByteBufPtr & pBuf, const char * szMim
 	UT_return_val_if_fail(uuid != nullptr, false);
 	auto result = uuid->toString();
 	if (result) {
-		sUID += result.unwrap();
+		sUID += result.value();
 	}
 	PP_PropertyVector atts = {
 		"dataid", sUID,
@@ -5741,7 +5741,7 @@ bool FV_View::cmdUpdateEmbed(fp_Run * pRun, const UT_ConstByteBufPtr & pBuf, con
 	UT_return_val_if_fail(uuid != nullptr, false);
 	auto result = uuid->toString();
 	if (result) {
-		sUID += result.unwrap();
+		sUID += result.value();
 	}
 
 	PP_PropertyVector atts = {
@@ -5835,7 +5835,7 @@ UT_Error FV_View::cmdInsertGraphicAtStrux(const FG_ConstGraphicPtr& pFG, PT_DocP
 	*/
 	UT_UUIDPtr uuid = m_pDoc->getNewUUID();
 	UT_return_val_if_fail(uuid != nullptr, UT_ERROR);
-	std::string s = uuid->toString().unwrap_or("");
+	std::string s = uuid->toString().value_or("");
 
 	UT_Error errorCode = pFG->insertAtStrux(m_pDoc,
 											m_pG->getDeviceResolution(),

@@ -3,7 +3,7 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
  * Copyright (c) 2001,2002 Tomas Frydrych
- * Copyright (c) 2016 Hubert Figuière
+ * Copyright (c) 2016-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,10 +24,13 @@
 #pragma once
 
 #include <stdio.h>
-#include <string>
-#include <vector>
-#include <unordered_set>
+#include <list>
 #include <map>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_set>
+#include <vector>
 
 #include "ut_types.h"
 #include "ut_vector.h"
@@ -44,9 +47,6 @@
 #include "ut_misc.h"
 #include "px_ChangeRecord.h"
 #include "pp_Property.h"
-
-#include <list>
-#include <memory>
 
 class UT_ByteBuf;
 class UT_GrowBuf;
@@ -442,12 +442,12 @@ PT_AttrPropIndex            getAPIFromSOH(pf_Frag_Object* odh);
 											const PP_AttrProp ** ppAP) const;
 
 	bool                    getAttrProp(PT_AttrPropIndex apIndx, const PP_AttrProp ** ppAP,
-										UT_Option<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
+										std::optional<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
 										bool bShowRevisions, UT_uint32 iRevisionId, bool &bHiddenRevision) const;
 
 	bool                    getSpanAttrProp(pf_Frag_Strux* sdh, UT_uint32 offset, bool bLeftSide,
 											const PP_AttrProp ** ppAP,
-											UT_Option<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
+											std::optional<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
 											bool bShowRevisions, UT_uint32 iRevisionId,
 											bool &bHiddenRevision) const;
 

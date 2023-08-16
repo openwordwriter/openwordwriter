@@ -1,6 +1,7 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
 /* AbiWord
  * Copyright (C) 1998-2000 AbiSource, Inc.
+ * Copyright (C) 2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -471,8 +472,8 @@ fp_Container * fp_Page::updatePageForWrapping(fp_Column *& pNextCol)
 						  // Look for a gap between lines.
 						  //
 						  UT_Rect recBetween;
-						  UT_Rect pPrevRec = pPrev->getScreenRect().unwrap();
-						  UT_Rect pCurRec = pLine->getScreenRect().unwrap();
+						  UT_Rect pPrevRec = pPrev->getScreenRect().value();
+						  UT_Rect pCurRec = pLine->getScreenRect().value();
 						  recBetween.left = pPrevRec.left + pPrevRec.width;
 						  recBetween.width = pCurRec.left - recBetween.left;
 						  if(pPrevRec.height != pCurRec.height)
@@ -591,8 +592,8 @@ fp_Container * fp_Page::updatePageForWrapping(fp_Column *& pNextCol)
 								  // Look for a gap between lines.
 								  //
 								  UT_Rect recBetween;
-								  UT_Rect pPrevRec = pPrev->getScreenRect().unwrap();
-								  UT_Rect pCurRec = pLine->getScreenRect().unwrap();
+								  UT_Rect pPrevRec = pPrev->getScreenRect().value();
+								  UT_Rect pCurRec = pLine->getScreenRect().value();
 								  recBetween.left = pPrevRec.left + pPrevRec.width;
 								  recBetween.width = pCurRec.left - recBetween.left;
 								  if(pPrevRec.height != pCurRec.height)
@@ -737,7 +738,7 @@ fp_Container * fp_Page::updatePageForWrapping(fp_Column *& pNextCol)
  */
 bool fp_Page::overlapsWrappedFrame(const fp_Line* pLine) const
 {
-	return overlapsWrappedFrame(pLine->getScreenRect().unwrap());
+	return overlapsWrappedFrame(pLine->getScreenRect().value());
 }
 /*!
  * Returns true if the supplied rectangle overlaps with one wrapped frame
@@ -1395,7 +1396,7 @@ void   fp_Page::expandDamageRect(UT_sint32 x, UT_sint32 y,
  */
 bool   fp_Page::intersectsDamagedRect(fp_ContainerObject * pObj) const
 {
-	UT_Rect pRec = pObj->getScreenRect().unwrap();
+	UT_Rect pRec = pObj->getScreenRect().value();
 	bool bIntersects = m_rDamageRect.intersectsRect(&pRec);
 	return bIntersects;
 }
@@ -2897,11 +2898,11 @@ void fp_Page::clearScreenFrames(void)
 void fp_Page::markDirtyOverlappingRuns(fp_FrameContainer * pFrameC)
 {
 	auto result = pFrameC->getScreenRect();
-	if (result.empty()) {
+	if (!result.has_value()) {
 		UT_ASSERT(UT_SHOULD_NOT_HAPPEN);
 		return;
 	}
-	UT_Rect pMyFrameRect = result.unwrap();
+	UT_Rect pMyFrameRect = result.value();
 	// check each column for redraw
 
 	UT_sint32 count = m_vecColumnLeaders.getItemCount();

@@ -1,6 +1,6 @@
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2021 Hubert Figuière
+ * Copyright (C) 2021-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,10 +20,10 @@
 
 #pragma once
 
+#include <optional>
 #include <queue>
 
 #include "ut_types.h"
-#include "ut_option.h"
 #include "ut_misc.h"
 #include "xap_Drawable.h"
 
@@ -51,7 +51,7 @@ public:
 protected:
 	XAP_Preview();
 	GR_Graphics* m_gc;
-	std::queue<UT_Option<UT_Rect>> m_drawQueue;
+	std::queue<std::optional<UT_Rect>> m_drawQueue;
 
 private:
 	// TODO :

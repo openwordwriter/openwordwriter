@@ -240,22 +240,22 @@ void fp_Line::drawBorders(GR_Graphics * pG)
       bDrawBot = true;
 
   auto result = pFirst->getScreenRect();
-  if (result.empty()) {
+  if (!result.has_value()) {
 	  return;
   }
-  UT_Rect pFirstR = result.unwrap();
+  UT_Rect pFirstR = result.value();
 
   result = pLast->getScreenRect();
-  if (result.empty()) {
+  if (!result.has_value()) {
 	  return;
   }
-  UT_Rect pLastR = result.unwrap();
+  UT_Rect pLastR = result.value();
 
   result = getContainer()->getScreenRect();
-  if (result.empty()) {
+  if (!result.has_value()) {
 	  return;
   }
-  UT_Rect pConR = result.unwrap();
+  UT_Rect pConR = result.value();
   UT_sint32 iTop = pFirstR.top;
   UT_sint32 iBot = pLastR.top + pLastR.height;
   UT_sint32 iLeft = pConR.left + getLeftEdge();
@@ -357,7 +357,7 @@ bool    fp_Line::getAbsLeftRight(UT_sint32& left,UT_sint32& right)
 	  return false;
 	if(!getBlock())
 	  return false;
-	UT_Rect pR = pVCon->getScreenRect().unwrap();
+	UT_Rect pR = pVCon->getScreenRect().value();
 	left = pR.left + getLeftEdge();
 	right = pR.left + pVCon->getWidth() - getBlock()->getRightMargin();
 	//
@@ -755,10 +755,10 @@ bool fp_Line::containsOffset(PT_DocPosition blockOffset)
 void fp_Line::genOverlapRects(UT_Rect & recLeft,UT_Rect & recRight)
 {
 	auto result = getScreenRect();
-	if (result.empty()) {
+	if (!result.has_value()) {
 		return;
 	}
-	UT_Rect pRec = result.unwrap();
+	UT_Rect pRec = result.value();
 	recLeft.top = pRec.top;
 	recRight.top = pRec.top;
 	recLeft.height = pRec.height;
@@ -828,7 +828,7 @@ void fp_Line::setSameYAsPrevious(bool bSameAsPrevious)
 /*!
  * return an rectangle that covers this object on the screen
  */
-UT_Option<UT_Rect> fp_Line::getScreenRect(void) const
+std::optional<UT_Rect> fp_Line::getScreenRect(void) const
 {
 	UT_sint32 xoff = 0;
 	UT_sint32 yoff = 0;
@@ -837,7 +837,7 @@ UT_Option<UT_Rect> fp_Line::getScreenRect(void) const
 	{
 		xoff -= getLeftThick();
 	}
-	return UT_Option<UT_Rect>(xoff, yoff, getMaxWidth(), getHeight());
+	return std::optional<UT_Rect>(std::in_place_t(), xoff, yoff, getMaxWidth(), getHeight());
 }
 
 /*!
@@ -847,10 +847,10 @@ UT_Option<UT_Rect> fp_Line::getScreenRect(void) const
 void fp_Line::markDirtyOverlappingRuns(const UT_Rect & recScreen)
 {
 	auto result = getScreenRect();
-	if (result.empty()) {
+	if (!result.has_value()) {
 		return;
 	}
-	UT_Rect pRec = result.unwrap();
+	UT_Rect pRec = result.value();
 	if(recScreen.intersectsRect(&pRec))
 	{
 		fp_Run * pRun = fp_Line::getFirstRun();
@@ -2175,7 +2175,7 @@ void fp_Line::draw(GR_Graphics* pG)
 	    //
 	    // Calculate the region of the fill for a shaded paragraph.
 	    //
-	    UT_Rect pVRec = pVCon->getScreenRect().unwrap();
+	    UT_Rect pVRec = pVCon->getScreenRect().value();
 	    UT_sint32 xs = pVRec.left + getLeftEdge();
 	    UT_sint32 width = getRightEdge() - getLeftEdge(); 
 	    UT_sint32 ys = my_yoff;
@@ -2294,7 +2294,7 @@ void fp_Line::draw(dg_DrawArgs* pDA)
 	      da.yoff += pRun->getY();
 	      UT_Rect runRect(da.xoff, da.yoff - pRun->getAscent(), pRun->getWidth(), pRun->getHeight());
 	      xxx_UT_DEBUGMSG(("fp_Line: Draw run in line at yoff %d pRun->getY() \n",da.yoff,pRun->getY()));
-	      if (!clipRect || clipRect.unwrap_ref().intersectsRect(&runRect))
+	      if (!clipRect || clipRect.value().intersectsRect(&runRect))
 	      {
 		   pRun->draw(&da);
 	      }

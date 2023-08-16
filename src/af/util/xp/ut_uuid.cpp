@@ -162,11 +162,11 @@ std::string UT_UUID::_toString(const uuid &uu) const
 /*!
     convert internal state to string
 */
-UT_Option<std::string>
+std::optional<std::string>
 UT_UUID::toString() const
 {
-    UT_return_val_if_fail(m_bIsValid, UT_Option<std::string>());
-    return UT_Option<std::string>(_toString(m_uuid));
+    UT_return_val_if_fail(m_bIsValid, std::nullopt);
+    return std::optional<std::string>(_toString(m_uuid));
 }
 
 

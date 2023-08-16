@@ -1,5 +1,6 @@
 /* AbiWord
  * Copyright (c) 2003 Martin Sevior <msevior@physics.unimelb.edu.au>
+ * Copyright (c) 2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -656,7 +657,7 @@ void FV_VisualDragText::getImageFromSelection(UT_sint32 x, UT_sint32 y)
 		UT_return_if_fail(pCL->getContainerType() == FL_CONTAINER_CELL);
 		fp_CellContainer * pCCon = static_cast<fp_CellContainer *>(pCL->getFirstContainer());
 		UT_return_if_fail(pCCon);
-		UT_Rect pRect = pCCon->getScreenRect().unwrap();
+		UT_Rect pRect = pCCon->getScreenRect().value();
 		xLow = pRect.left;
 		yLow = pRect.top;
 		m_recCurFrame.left = xLow;
@@ -676,7 +677,7 @@ void FV_VisualDragText::getImageFromSelection(UT_sint32 x, UT_sint32 y)
 		UT_return_if_fail(pCL->getContainerType() == FL_CONTAINER_CELL);
 		pCCon = static_cast<fp_CellContainer *>(pCL->getFirstContainer());
 		UT_return_if_fail(pCCon);
-		pRect = pCCon->getScreenRect().unwrap();
+		pRect = pCCon->getScreenRect().value();
 		xHigh = pRect.left + pRect.width;
 		yHigh = pRect.top + pRect.height;
 		m_recCurFrame.width = xHigh - xLow;
@@ -860,11 +861,11 @@ void FV_VisualDragText::getImageFromSelection(UT_sint32 x, UT_sint32 y)
 		      m_bSelectedRow = true;
 		  }
 		  auto result = pCellConLow->getScreenRect();
-		  UT_return_if_fail(!result.empty());
-		  UT_Rect pLow = result.unwrap();
+		  UT_return_if_fail(result.has_value());
+		  UT_Rect pLow = result.value();
 		  result = pCellConHigh->getScreenRect();
-		  UT_return_if_fail(!result.empty());
-		  UT_Rect pHigh = result.unwrap();
+		  UT_return_if_fail(result.has_value());
+		  UT_Rect pHigh = result.value();
 		  m_recCurFrame.left = pLow.left;
 		  m_recCurFrame.width = pHigh.left + pHigh.width - pLow.left;
 		  m_recCurFrame.top = pLow.top;

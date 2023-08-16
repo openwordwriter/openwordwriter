@@ -3031,9 +3031,9 @@ void fl_BlockLayout::formatWrappedFromHere(fp_Line * pLine, fp_Page * pPage)
 	{
 		m_iLinePosInContainer = 0;
 	}
-	UT_Rect rec =  pLine->getScreenRect().unwrap();
+	UT_Rect rec =  pLine->getScreenRect().value();
 	m_iAccumulatedHeight = rec.top;
-	UT_Rect vertRect = m_pVertContainer->getScreenRect().unwrap();
+	UT_Rect vertRect = m_pVertContainer->getScreenRect().value();
 	UT_sint32 iYBotScreen = vertRect.top + vertRect.height;
 	xxx_UT_DEBUGMSG(("Initial m_iAccumulatedHeight %d iYBotScreen %d \n",m_iAccumulatedHeight,iYBotScreen));
 	m_iAdditionalMarginAfter = 0;
@@ -3338,7 +3338,7 @@ void fl_BlockLayout::getLeftRightForWrapping(UT_sint32 iX, UT_sint32 iHeight,
 			continue;
 		}
 		bIsTight = pFC->isTightWrapped();
-		UT_Rect pRec = pFC->getScreenRect().unwrap();
+		UT_Rect pRec = pFC->getScreenRect().value();
 		xxx_UT_DEBUGMSG(("Frame Left %d Line Left %d \n",pRec->left,iScreenX));
 		fl_FrameLayout * pFL = static_cast<fl_FrameLayout *>(pFC->getSectionLayout());
 		iExpand = pFL->getBoundingSpace() + 2;
@@ -3425,7 +3425,7 @@ void fl_BlockLayout::getLeftRightForWrapping(UT_sint32 iX, UT_sint32 iHeight,
 					continue;
 				}
 				bIsTight = pFC->isTightWrapped();
-				UT_Rect pRec = pFC->getScreenRect().unwrap();
+				UT_Rect pRec = pFC->getScreenRect().value();
 				fl_FrameLayout * pFL = static_cast<fl_FrameLayout *>(pFC->getSectionLayout());
 				iExpand = pFL->getBoundingSpace() + 2;
 				pRec.height += 2 * iExpand;
@@ -3456,7 +3456,7 @@ void fl_BlockLayout::getLeftRightForWrapping(UT_sint32 iX, UT_sint32 iHeight,
 					iRightP = pRightC->getRightPad(m_iAccumulatedHeight, iHeight) - iExpand;
 					xxx_UT_DEBUGMSG(("Projecnt Right %d \n",iRightP));
 				}
-				UT_Rect pRec = pRightC->getScreenRect().unwrap();
+				UT_Rect pRec = pRightC->getScreenRect().value();
 				iMinLeft = pRec.left + pRec.width + iRightP + pG->tlu(1);
 				iMinRight = iMinR + xoff;
 				iMinWidth = iMinRight - iMinLeft;
@@ -3486,7 +3486,7 @@ fp_Line *  fl_BlockLayout::getNextWrappedLine(UT_sint32 iX,
 	fp_Line * pLine = nullptr;
 	UT_sint32 iXDiff = getLeftMargin();
 	UT_sint32 iMinR = m_pVertContainer->getWidth();
-	UT_Rect vertRect = m_pVertContainer->getScreenRect().unwrap();
+	UT_Rect vertRect = m_pVertContainer->getScreenRect().value();
 	UT_sint32 iYBotScreen = vertRect.top + vertRect.height;
 	xxx_UT_DEBUGMSG(("Initial m_iAccumulatedHeight %d iYBotScreen %d \n",m_iAccumulatedHeight,iYBotScreen));
 	if(m_iAccumulatedHeight > iYBotScreen)

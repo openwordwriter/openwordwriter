@@ -2,7 +2,7 @@
 /* AbiWord
  * Copyright (C) 1998-2000 AbiSource, Inc.
  * Copyright (c) 2001,2002 Tomas Frydrych
- * Copyright (C) 2016 Hubert Figuière
+ * Copyright (C) 2016-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -28,13 +28,13 @@
 
 #include <memory>
 #include <string>
+#include <optional>
 #include <queue>
 #include <vector>
 
 #include "xap_Features.h"
 #include "xap_Prefs.h"
 #include "ut_types.h"
-#include "ut_option.h"
 #include "xav_View.h"
 #include "pt_Types.h"
 #include "pp_Property.h"
@@ -1197,5 +1197,5 @@ public:
 private:
 	FV_ViewDoubleBuffering *m_pViewDoubleBufferingObject;
 
-	std::queue<UT_Option<UT_Rect>> m_drawQueue;
+	std::queue<std::optional<UT_Rect>> m_drawQueue;
 };

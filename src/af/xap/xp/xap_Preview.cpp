@@ -44,7 +44,7 @@ XAP_Preview::~XAP_Preview()
 
 void XAP_Preview::queueDraw(const UT_Rect* clip)
 {
-    m_drawQueue.push(clip ? UT_Option<UT_Rect>(*clip) : UT_Option<UT_Rect>());
+    m_drawQueue.push(clip ? std::optional<UT_Rect>(*clip) : std::nullopt);
     getGraphics()->queueDraw(clip);
 }
 

@@ -1,6 +1,7 @@
 /* AbiWord
  * Copyright (C) 1998,1999 AbiSource, Inc.
  * Copyright (c) 2001,2002 Tomas Frydrych
+ * Copyright (c) 2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,8 +19,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef FP_LINE_H
-#define FP_LINE_H
+#pragma once
 
 #ifdef FMT_TEST
 #include <stdio.h>
@@ -151,7 +151,7 @@ public:
 	inline	bool 	isFirstLineInBlock(void) const;
 	bool 	isLastLineInBlock(void) const;
 
-	virtual UT_Option<UT_Rect>   getScreenRect() const override;
+	virtual std::optional<UT_Rect>   getScreenRect() const override;
 	virtual void            markDirtyOverlappingRuns(const UT_Rect& recScreen) override;
 
 	void		remove(void);
@@ -327,7 +327,3 @@ private:
 	UT_sint32       m_iTopThick;
 	UT_sint32       m_iBotThick;
 };
-
-#endif /* FP_LINE_H */
-
-

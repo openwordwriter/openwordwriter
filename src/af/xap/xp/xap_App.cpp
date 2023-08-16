@@ -1695,7 +1695,7 @@ std::string
 XAP_App::createUUIDString() const
 {
     UT_UUIDPtr uuido(getUUIDGenerator()->createUUID());
-    return uuido->toString().unwrap_or("");
+    return uuido->toString().value_or("");
 }
 
 

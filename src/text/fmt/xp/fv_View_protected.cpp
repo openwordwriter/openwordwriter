@@ -2,6 +2,7 @@
 /* AbiWord
  * Copyright (C) 1998-2000 AbiSource, Inc.
  * Copyright (c) 2001,2002 Tomas Frydrych
+ * Copyright (c) 2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -1993,8 +1994,8 @@ void FV_View::_moveInsPtNextPrevLine(bool bNext)
 	}
 	else
 	{
-		UT_Rect pOldRec = pOldLine->getScreenRect().unwrap();
-		UT_Rect pNewRec = pNextLine->getScreenRect().unwrap();
+		UT_Rect pOldRec = pOldLine->getScreenRect().value();
+		UT_Rect pNewRec = pNextLine->getScreenRect().value();
 		yPoint = pNewRec.top + pNewRec.height / 2;
 		xPoint = xPoint + (pNewRec.left - pOldRec.left);
 		pPage = _getPageForXY(xPoint, yPoint, xClick, yClick);

@@ -93,11 +93,11 @@ AD_Document::AD_Document() :
 	m_pOrigUUID =  XAP_App::getApp()->getUUIDGenerator()->createUUID();
 	UT_return_if_fail(m_pOrigUUID);
 	UT_return_if_fail(m_pOrigUUID->isValid());
-	std::string s = m_pUUID->toString().unwrap_or("");
+	std::string s = m_pUUID->toString().value_or("");
 	m_pOrigUUID->setUUID(s);
 	m_pMyUUID->setUUID(s);
-	m_sOrigUUIDString = m_pOrigUUID->toString().unwrap_or("");
-	m_sMyUUIDString = m_pMyUUID->toString().unwrap_or("");
+	m_sOrigUUIDString = m_pOrigUUID->toString().value_or("");
+	m_sMyUUIDString = m_pMyUUID->toString().value_or("");
 	UT_DEBUGMSG(("!!!!!!!!!!----------------- Created string %s \n",s.c_str()));
 	UT_DEBUGMSG(("!!!!!!!!!!----------------- Orig string %s \n", m_sOrigUUIDString.c_str()));
 }
@@ -132,8 +132,8 @@ bool AD_Document::isOrigUUID(void) const
 {
   if((m_pMyUUID== nullptr) || (m_pOrigUUID == nullptr))
 	  return false;
-  std::string sDoc = m_pMyUUID->toString().unwrap_or("");
-  std::string sOrig = m_pOrigUUID->toString().unwrap_or("");
+  std::string sDoc = m_pMyUUID->toString().value_or("");
+  std::string sOrig = m_pOrigUUID->toString().value_or("");
   return (sDoc == sOrig);
 }
 
@@ -519,7 +519,7 @@ void AD_Document::setOrigUUID(const char * s)
 		if(!m_pOrigUUID->isValid())
 			m_pOrigUUID->makeUUID();
 	}
-	m_sOrigUUIDString = m_pOrigUUID->toString().unwrap_or("");
+	m_sOrigUUIDString = m_pOrigUUID->toString().value_or("");
 }
 
 
@@ -541,7 +541,7 @@ void AD_Document::setMyUUID(const char * s)
 		if(!m_pMyUUID->isValid())
 			m_pMyUUID->makeUUID();
 	}
-	m_sMyUUIDString = m_pMyUUID->toString().unwrap_or("");
+	m_sMyUUIDString = m_pMyUUID->toString().value_or("");
 }
 
 /*!
@@ -552,7 +552,7 @@ const char * AD_Document::getDocUUIDString() const
 {
 	UT_return_val_if_fail(m_pUUID, nullptr);
 	static std::string s;
-	s = m_pUUID->toString().unwrap_or("");
+	s = m_pUUID->toString().value_or("");
 	return s.c_str();
 }
 

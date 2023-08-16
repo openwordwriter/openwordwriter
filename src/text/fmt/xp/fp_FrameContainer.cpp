@@ -2,6 +2,7 @@
  * Copyright (C) 1998 AbiSource, Inc.
  * Copyright (C) 2002 Patrick Lam <plam@mit.edu>
  * Copyright (C) 2003 Martin Sevior <msevior@physics.unimelb.edu.au>
+ * Copyright (C) 2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -120,7 +121,7 @@ bool fp_FrameContainer::isAbove(void)
  */
 bool fp_FrameContainer::overlapsRect(const UT_Rect & rec)
 {
-     UT_Rect pMyFrameRec = getScreenRect().unwrap();
+     UT_Rect pMyFrameRec = getScreenRect().value();
      fl_FrameLayout * pFL = static_cast<fl_FrameLayout *>(getSectionLayout());
      UT_sint32 iextra = pFL->getBoundingSpace() -2;
      pMyFrameRec.left -= iextra;
@@ -234,7 +235,7 @@ UT_sint32 fp_FrameContainer::getLeftPad(UT_sint32 y, UT_sint32 height)
 {
   fl_FrameLayout *pFL = static_cast<fl_FrameLayout *>(getSectionLayout());
   UT_sint32 pad = pFL->getBoundingSpace();	
-  UT_Rect pRect = getScreenRect().unwrap();
+  UT_Rect pRect = getScreenRect().value();
   UT_sint32 yC = pRect.top;
   if(!isTightWrapped() || !isWrappingSet())
   {
@@ -267,7 +268,7 @@ UT_sint32 fp_FrameContainer::getRightPad(UT_sint32 y, UT_sint32 height)
 {
   fl_FrameLayout *pFL = static_cast<fl_FrameLayout *>(getSectionLayout());
   UT_sint32 pad = pFL->getBoundingSpace();
-  UT_Rect pRect = getScreenRect().unwrap();
+  UT_Rect pRect = getScreenRect().value();
   UT_sint32 yC = pRect.top;
   if(!isTightWrapped() || !isWrappingSet())
   {
@@ -679,7 +680,7 @@ void fp_FrameContainer::draw(dg_DrawArgs* pDA)
 	xxx_UT_DEBUGMSG(("Number of containers in frame %d \n",count));
 	auto p = pDA->pG->getClipRect();
 	std::unique_ptr<UT_Rect> pPrevRect(p ? new UT_Rect(*p) : nullptr);
-	UT_Rect pRect = getScreenRect().unwrap();
+	UT_Rect pRect = getScreenRect().value();
 	UT_Rect newRect;
 	bool bRemoveRectAfter = false;
 	bool bSetOrigClip = false;

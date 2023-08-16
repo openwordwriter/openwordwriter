@@ -1,5 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (C) 2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,13 +18,11 @@
  * 02110-1301 USA.
  */
 
+#pragma once
 
-
-#ifndef FL_LAYOUT_H
-#define FL_LAYOUT_H
+#include <optional>
 
 #include "ut_types.h"
-#include "ut_option.h"
 #include "pt_Types.h"
 #include "fl_AutoNum.h"
 
@@ -61,12 +60,12 @@ public:
 	void				setAttrPropIndex(PT_AttrPropIndex apIndex);
 
 	bool	getAttrProp(const PP_AttrProp ** ppAP,
-			    UT_Option<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
+			    std::optional<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
 			    bool bShowRevisions, UT_uint32 iRevisionId,
 			    bool &bHiddenRevision) const;
 
 	bool	getSpanAttrProp(UT_uint32 offset, bool bLeftSide, const PP_AttrProp ** ppAP,
-				UT_Option<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
+				std::optional<std::unique_ptr<PP_RevisionAttr>>& pRevisions,
 				bool bShowRevisions, UT_uint32 iRevisionId,
 				bool &bHiddenRevision) const;
 
@@ -88,5 +87,3 @@ private:
 	pf_Frag_Strux*		m_sdh;
 	pf_Frag_Strux*		m_endSdh;
 };
-
-#endif /* FL_LAYOUT_H */

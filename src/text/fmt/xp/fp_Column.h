@@ -1,5 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (C) 2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef COLUMN_H
-#define COLUMN_H
+#pragma once
 
 #ifdef FMT_TEST
 #include <stdio.h>
@@ -127,7 +127,7 @@ public:
                                              UT_sint32& xoff,
                                              UT_sint32& yoff) const;
 
-	virtual UT_Option<UT_Rect>     getScreenRect() const override;
+	virtual std::optional<UT_Rect>     getScreenRect() const override;
 	virtual void        markDirtyOverlappingRuns(const UT_Rect & recScreen) override;
 	UT_sint32           countWrapped(void);
 
@@ -308,5 +308,3 @@ public:
 
 protected:
 };
-
-#endif /* COLUMN_H */

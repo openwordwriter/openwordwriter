@@ -1,5 +1,5 @@
 /* AbiSource Application Framework
- * Copyright (C) 2011-2019 Hubert Figuiere
+ * Copyright (C) 2011-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,8 +24,6 @@
 #include "src/af/util/xp/t/ut_locale.t.cpp"
 #undef TFSUITE
 #include "src/af/util/xp/t/ut_misc.t.cpp"
-#undef TFSUITE
-#include "src/af/util/xp/t/ut_option.t.cpp"
 #undef TFSUITE
 #include "src/af/util/xp/t/ut_vector.t.cpp"
 #undef TFSUITE

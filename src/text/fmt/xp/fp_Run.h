@@ -3,6 +3,7 @@
 /* AbiWord
  * Copyright (C) 1998,1999 AbiSource, Inc.
  * Copyright (c) 2001,2002 Tomas Frydrych
+ * Copyright (c) 2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,10 +21,7 @@
  * 02110-1301 USA.
  */
 
-
-
-#ifndef FP_RUN_H
-#define FP_RUN_H
+#pragma once
 
 #ifdef FMT_TEST
 #include <stdio.h>
@@ -237,7 +235,7 @@ public:
 	virtual void        updateOnDelete(UT_uint32 offset, UT_uint32 iLen);
 	virtual void        updateVerticalMetric();
 
-    virtual UT_Option<UT_Rect>     getScreenRect() const override;
+    virtual std::optional<UT_Rect>     getScreenRect() const override;
     virtual void        markDirtyOverlappingRuns(const UT_Rect& recScreen) override;
 
 	virtual void		_draw(dg_DrawArgs*) = 0;
@@ -1585,15 +1583,3 @@ protected:
 	virtual void			_clearScreen(bool bFullLineHeightRect) override;
 	virtual bool			_letPointPass(void) const override;
 };
-
-#endif /* FP_RUN_H */
-
-
-
-
-
-
-
-
-
-

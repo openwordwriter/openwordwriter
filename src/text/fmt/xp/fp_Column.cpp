@@ -1,6 +1,7 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (C) 2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -529,7 +530,7 @@ void fp_VerticalContainer::getOffsets(const fp_ContainerObject* pContainer, UT_s
  * return an rectangle that covers this object on the screen
  * The calling routine is resposible for deleting the returned struct
  */
-UT_Option<UT_Rect> fp_VerticalContainer::getScreenRect(void) const
+std::optional<UT_Rect> fp_VerticalContainer::getScreenRect(void) const
 {
 	UT_sint32 xoff = 0;
 	UT_sint32 yoff = 0;
@@ -538,22 +539,22 @@ UT_Option<UT_Rect> fp_VerticalContainer::getScreenRect(void) const
 	{
 		fp_Page * pPage = getPage();
 		if (!pPage) {
-			return UT_Option<UT_Rect>();
+			return std::nullopt;
 		}
 		auto pFrameC = static_cast<const fp_FrameContainer *>(this);
 		getView()->getPageScreenOffsets(pPage,xoff,yoff);
 		xoff += pFrameC->getFullX();
 		yoff += pFrameC->getFullY();
-		return UT_Option<UT_Rect>(xoff, yoff, pFrameC->getFullWidth(), pFrameC->getFullHeight());
+		return std::optional<UT_Rect>(std::in_place_t(), xoff, yoff, pFrameC->getFullWidth(), pFrameC->getFullHeight());
 	}
 	auto pCon = static_cast<fp_Container *>(fp_Container::getNthCon(0));
 	if (!pCon) {
-		return UT_Option<UT_Rect>();
+		return std::nullopt;
 	}
 	getScreenOffsets(pCon, xoff, yoff);
 	xoff -= pCon->getX();
 	yoff -= pCon->getY();
-	return UT_Option<UT_Rect>(xoff, yoff, getWidth(), getHeight());
+	return std::optional<UT_Rect>(std::in_place_t(), xoff, yoff, getWidth(), getHeight());
 }
 
 /*!
@@ -563,10 +564,10 @@ UT_Option<UT_Rect> fp_VerticalContainer::getScreenRect(void) const
 void fp_VerticalContainer::markDirtyOverlappingRuns(const UT_Rect & recScreen)
 {
 	auto result = getScreenRect();
-	if (result.empty()) {
+	if (!result.has_value()) {
 		return;
 	}
-	UT_Rect pRec = result.unwrap();
+	UT_Rect pRec = result.value();
 	if(recScreen.intersectsRect(&pRec))
 	{
 		UT_sint32 count = countCons();

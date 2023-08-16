@@ -1,7 +1,7 @@
 /* -*- c-basic-offset: 4; tab-width: 4; indent-tabs-mode: t -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2009 Hubert Figuiere
+ * Copyright (C) 2009-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -2658,7 +2658,7 @@ void	 s_RTF_ListenerWriteDoc::_openTag(const char * szPrefix, const char * szSuf
 			UT_UUIDPtr uuid = m_pDocument->getNewUUID();
 			UT_return_if_fail(uuid != nullptr);
 			sUID = "obj-";
-			s = uuid->toString().unwrap_or("");
+			s = uuid->toString().value_or("");
 			sUID += s;
 			pszDataId = sUID.c_str();
 		}

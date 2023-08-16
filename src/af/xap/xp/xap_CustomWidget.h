@@ -1,6 +1,6 @@
 /* AbiSource Application Framework
  * Copyright (C) 2010 Patrik Fimml
- * Copyright (C) 2021 Hubert Figuière
+ * Copyright (C) 2021-2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,9 +20,9 @@
 
 #pragma once
 
+#include <optional>
 #include <queue>
 
-#include "ut_option.h"
 #include "xap_Drawable.h"
 
 /* utility class for widgets drawing in layout units */
@@ -36,5 +36,5 @@ public:
 
     virtual void drawImmediateLU(const UT_Rect* clip) = 0;
 private:
-    std::queue<UT_Option<UT_Rect>> m_drawQueue;
+    std::queue<std::optional<UT_Rect>> m_drawQueue;
 };

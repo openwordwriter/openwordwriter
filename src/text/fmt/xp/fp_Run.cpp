@@ -3,6 +3,7 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
  * Copyright (c) 2001,2002 Tomas Frydrych
+ * Copyright (c) 2022 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -722,7 +723,7 @@ void fp_Run::getSpanAP(const PP_AttrProp * &pSpanAP)
 	bool bShow     = pView->isShowRevisions();
 	bool bHiddenRevision = false;
 
-	UT_Option<std::unique_ptr<PP_RevisionAttr>> revisions(std::unique_ptr<PP_RevisionAttr>(nullptr));
+	std::optional<std::unique_ptr<PP_RevisionAttr>> revisions(std::unique_ptr<PP_RevisionAttr>(nullptr));
 	if(getType() != FPRUN_FMTMARK && getType() != FPRUN_DUMMY && getType() != FPRUN_DIRECTIONMARKER)
 	{
 		getBlock()->getSpanAttrProp(getBlockOffset(), false, &pSpanAP, revisions, bShow, iId, bHiddenRevision);
@@ -731,7 +732,7 @@ void fp_Run::getSpanAP(const PP_AttrProp * &pSpanAP)
 	{
 		getBlock()->getSpanAttrProp(getBlockOffset(), true, &pSpanAP, revisions, bShow, iId, bHiddenRevision);
 	}
-	m_pRevisions = revisions.unwrap();
+	m_pRevisions = std::move(revisions.value());
 	if(pSpanAP == nullptr)
 	{
 		// FIXME for now lets work around this
@@ -920,7 +921,7 @@ void fp_Run::markAsDirty(void)
  * return an rectangle that covers this object on the screen
  * The calling routine is resposible for deleting the returned struct
  */
-UT_Option<UT_Rect> fp_Run::getScreenRect(void) const
+std::optional<UT_Rect> fp_Run::getScreenRect(void) const
 {
 	UT_sint32 xoff = 0;
 	UT_sint32 yoff = 0;
@@ -928,9 +929,9 @@ UT_Option<UT_Rect> fp_Run::getScreenRect(void) const
 	if(pLine)
 	{
 		pLine->getScreenOffsets(this,xoff,yoff);
-		return UT_Option<UT_Rect>(xoff, yoff, getWidth(), getHeight());
+		return std::optional<UT_Rect>(std::in_place_t(), xoff, yoff, getWidth(), getHeight());
 	}
-	return UT_Option<UT_Rect>();
+	return std::nullopt;
 }
 
 /*!
@@ -940,10 +941,10 @@ UT_Option<UT_Rect> fp_Run::getScreenRect(void) const
 void fp_Run::markDirtyOverlappingRuns(const UT_Rect & recScreen)
 {
 	auto result = getScreenRect();
-	if (result.empty()) {
+	if (!result.has_value()) {
 		return;
 	}
-	UT_Rect pRec = result.unwrap();
+	UT_Rect pRec = result.value();
 	if(recScreen.intersectsRect(&pRec)) {
 		fp_Run::markAsDirty();
 	}

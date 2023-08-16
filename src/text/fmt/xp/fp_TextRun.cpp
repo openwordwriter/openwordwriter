@@ -1568,10 +1568,10 @@ void fp_TextRun::_draw(dg_DrawArgs* pDA)
 // to the correct edge.
 //
 	auto result = getLine()->getScreenRect();
-	if (result.empty()) {
+	if (!result.has_value()) {
 		return;
 	}
-	UT_Rect pLRec = result.unwrap();
+	UT_Rect pLRec = result.value();
 	if((pDA->xoff + iWidth) > (pLRec.left + pLRec.width))
 	{
 		iWidth -=  (pDA->xoff + iWidth) - (pLRec.left + pLRec.width);
@@ -2040,10 +2040,10 @@ void fp_TextRun::_getPartRect(UT_Rect* pRect,
 	if(getLine())
 	{
 		auto result = getLine()->getScreenRect();
-		if (result.empty()) {
+		if (!result.has_value()) {
 			return;
 		}
-		UT_Rect pLRec = result.unwrap();
+		UT_Rect pLRec = result.value();
 		if(getLine()->getContainer() && ((getLine()->getContainer()->getContainerType() == FP_CONTAINER_CELL) ||
 										 (getLine()->getContainer()->getContainerType() == FP_CONTAINER_FRAME))) {
 			return;

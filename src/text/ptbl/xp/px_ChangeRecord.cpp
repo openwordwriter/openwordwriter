@@ -1,5 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (C) 2022 Hubert Figuière
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -113,7 +114,7 @@ bool PX_ChangeRecord::isFromThisDoc(void) const
 {
   if(!m_pDoc)
     return false;
-  std::string sDoc = m_pDoc->getOrigDocUUID()->toString().unwrap_or("");
+  std::string sDoc = m_pDoc->getOrigDocUUID()->toString().value_or("");
   char s[37];
 
   if(!UT_UUID::toStringFromBinary(s, sizeof(s), m_MyDocUUID))

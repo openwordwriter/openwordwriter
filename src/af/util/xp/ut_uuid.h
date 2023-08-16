@@ -1,5 +1,6 @@
 /* AbiSource Program Utilities
  * Copyright (C) 2003-2004 Tomas Frydrych <tomasfrydrych@yahoo.co.uk>
+ * Copyright (C) 2022 Hubert Figuière
  *
  * Based on libuuid
  * Copyright (C) 1996, 1997, 1998 Theodore Ts'o.
@@ -23,22 +24,15 @@
  * 02110-1301 USA.
  */
 
-#ifndef UT_UUID_H
-#define UT_UUID_H
+#pragma once
 
-/* pre-emptive dismissal; ut_types.h is needed by just about everything,
- * so even if it's commented out in-file that's still a lot of work for
- * the preprocessor to do...
- */
-#ifndef UT_TYPES_H
-#include "ut_types.h"
-#endif
 #include <time.h>
 
 #include <memory>
+#include <optional>
 #include <string>
 
-#include "ut_option.h"
+#include "ut_types.h"
 
 /* UUID Variant definitions */
 enum UT_UUIDVariant
@@ -106,7 +100,7 @@ class ABI_EXPORT UT_UUID
 
 	/* translate internal state into string representation; do not change
 	   internal state */
-	UT_Option<std::string> toString() const;
+	std::optional<std::string> toString() const;
 
 	/* get the binary representation of the uuid */
 	bool            toBinary(struct uuid &u) const;
@@ -231,5 +225,3 @@ class ABI_EXPORT UT_UUIDGenerator
 
 	UT_UUID * m_pUUID;
 };
-
-#endif /* UT_UUID_H */
