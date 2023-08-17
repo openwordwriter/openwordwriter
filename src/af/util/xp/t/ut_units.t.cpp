@@ -56,7 +56,6 @@ TFTEST_MAIN("UT_convertInchesToDimensionString works")
   TFPASSEQ(dim, "254.00mm");
   dim = UT_convertInchesToDimensionString(DIM_PERCENT, 1.0, ".0");
   TFPASSEQ(dim, "1%");
-
 }
 
 TFTEST_MAIN("UT_formatDimensionString works")
@@ -107,5 +106,4 @@ TFTEST_MAIN("UT_formatDimensionString works")
   TFPASSEQ(dim, "10.00mm");
   dim = UT_formatDimensionString(DIM_PERCENT, 1.0, ".0");
   TFPASSEQ(dim, "1%");
-
 }

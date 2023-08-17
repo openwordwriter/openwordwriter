@@ -19,8 +19,7 @@
 #ifndef __REALM_CONNECTION__
 #define __REALM_CONNECTION__
 
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
+#include <memory>
 #if defined(HAVE_BOOST_ASIO_HPP)
 # include <boost/asio.hpp>
 #else
@@ -58,14 +57,14 @@ struct PendingDocumentProperties
 };
 
 class UserJoinedPacket;
-typedef boost::shared_ptr<realm::protocolv1::UserJoinedPacket> UserJoinedPacketPtr;
+typedef std::shared_ptr<realm::protocolv1::UserJoinedPacket> UserJoinedPacketPtr;
 
-class RealmConnection : public boost::enable_shared_from_this<RealmConnection>
+class RealmConnection : public std::enable_shared_from_this<RealmConnection>
 {
 public:
 	RealmConnection(const std::string& ca_file, const std::string& address, int port, bool tls,
 					const std::string& cookie, UT_uint64 doc_id, bool master, const std::string& session_id,
-					boost::function<void (boost::shared_ptr<RealmConnection>)> sig);
+					boost::function<void (std::shared_ptr<RealmConnection>)> sig);
 
 	bool								connect();
 	void								disconnect();
@@ -104,7 +103,7 @@ public:
 		UT_return_if_fail(!m_pdp_ptr);
 		m_pdp_ptr.reset(new PendingDocumentProperties(pDlg, pDoc_, pFrame_, filename_, bLocallyOwned_));
 	}
-	boost::shared_ptr<PendingDocumentProperties>
+	std::shared_ptr<PendingDocumentProperties>
 										getPendingDocProps()
 		{ return m_pdp_ptr; }
 	void								loadDocumentEnd()
@@ -119,7 +118,7 @@ private:
 	void								_receive();
 	void								_message(const boost::system::error_code& e,
 												std::size_t bytes_transferred,
-												boost::shared_ptr<std::string> msg_ptr);
+												std::shared_ptr<std::string> msg_ptr);
 
 	void								_complete_packet(realm::protocolv1::PacketPtr packet_ptr);
 	void								_complete(const boost::system::error_code& e, std::size_t bytes_transferred,
@@ -131,7 +130,7 @@ private:
 	int									m_port;
 	int									m_tls;
 	boost::asio::ip::tcp::socket				m_socket;
-	boost::shared_ptr<std::thread>		m_thread_ptr;
+	std::shared_ptr<std::thread>		m_thread_ptr;
 	std::string							m_cookie;
 	UT_uint64							m_user_id; // only valid after login
 	UT_uint8							m_connection_id; // only valid after login
@@ -141,17 +140,17 @@ private:
 	PD_Document*						m_pDoc;
 	realm::GrowBuffer					m_buf;
 	SynchronizedQueue<realm::protocolv1::PacketPtr>		m_packet_queue;
-	boost::function<void (boost::shared_ptr<RealmConnection>)> m_sig;
+	boost::function<void (std::shared_ptr<RealmConnection>)> m_sig;
 	std::vector<RealmBuddyPtr>			m_buddies;
 
-	boost::shared_ptr<PendingDocumentProperties>
+	std::shared_ptr<PendingDocumentProperties>
 										m_pdp_ptr;
-	boost::shared_ptr<tls_tunnel::ClientProxy>
+	std::shared_ptr<tls_tunnel::ClientProxy>
 										m_tls_tunnel_ptr;
 
 	abicollab::mutex					m_mutex;
 };
 
-typedef boost::shared_ptr<RealmConnection> ConnectionPtr;
+typedef std::shared_ptr<RealmConnection> ConnectionPtr;
 
 #endif /* __REALM_CONNECTION__ */

@@ -28,7 +28,7 @@
 #include "InterruptableAsyncWorker.h"
 #include "soa_soup.h"
 
-class ProgressiveSoapCall : public boost::enable_shared_from_this<ProgressiveSoapCall>
+class ProgressiveSoapCall : public std::enable_shared_from_this<ProgressiveSoapCall>
 {
 public:
 	ProgressiveSoapCall(const std::string& uri, soa::function_call& fc, const std::string& ssl_ca_file)
@@ -96,7 +96,7 @@ private:
 	soa::method_invocation				m_mi;
 	std::string							m_ssl_ca_file;
 
-	boost::shared_ptr< InterruptableAsyncWorker<bool> >
+	std::shared_ptr< InterruptableAsyncWorker<bool> >
 										m_worker_ptr;
 
 	std::string							m_result;

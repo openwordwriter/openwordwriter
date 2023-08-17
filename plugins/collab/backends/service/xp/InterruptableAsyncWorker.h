@@ -24,6 +24,7 @@
 #else
 #include <stdint.h>
 #endif
+#include <memory>
 #include <boost/bind.hpp>
 #include "xap_App.h"
 #include "xap_DialogFactory.h"
@@ -35,7 +36,7 @@ class InterruptedException {};
 class InternalErrorException {};
 
 template <class T>
-class InterruptableAsyncWorker : public boost::enable_shared_from_this< InterruptableAsyncWorker<T> >
+class InterruptableAsyncWorker : public std::enable_shared_from_this< InterruptableAsyncWorker<T> >
 {
 public:
 	InterruptableAsyncWorker(boost::function<T ()> async_func)
@@ -150,13 +151,13 @@ private:
 	}
 
 	boost::function<T ()>				m_async_func;
-	boost::shared_ptr< AsyncWorker<T> > m_worker_ptr;
+	std::shared_ptr< AsyncWorker<T> > m_worker_ptr;
 
 	AP_Dialog_GenericProgress*			m_pProgressDlg;
 	uint32_t							m_progress;
 	bool								m_cancelled;
 	bool								m_finished;
-	boost::shared_ptr<Synchronizer>		m_progressSynchronizerPtr;
+	std::shared_ptr<Synchronizer>		m_progressSynchronizerPtr;
 
 	T									m_result;
 };

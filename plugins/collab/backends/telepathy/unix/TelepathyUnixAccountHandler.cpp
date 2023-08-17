@@ -495,7 +495,7 @@ bool TelepathyAccountHandler::hasAccess(const std::vector<std::string>& /*vAcl*/
 	return true;
 
 	/*
-	DTubeBuddyPtr pDTubeBuddy = boost::static_pointer_cast<DTubeBuddy>(pBuddy);
+	DTubeBuddyPtr pDTubeBuddy = std::static_pointer_cast<DTubeBuddy>(pBuddy);
 	TpContact* pGlobalContact = pDTubeBuddy->getGlobalContact();
 	UT_return_val_if_fail(pGlobalContact, false);
 
@@ -517,7 +517,7 @@ void TelepathyAccountHandler::addContact(TpContact* contact)
 	UT_DEBUGMSG(("TelepathyAccountHandler::addContact()\n"));
 	UT_return_if_fail(contact);
 
-	TelepathyBuddyPtr pBuddy = boost::shared_ptr<TelepathyBuddy>(new TelepathyBuddy(this, contact));
+	TelepathyBuddyPtr pBuddy = std::shared_ptr<TelepathyBuddy>(new TelepathyBuddy(this, contact));
 	TelepathyBuddyPtr pExistingBuddy = _getBuddy(pBuddy);
 	if (!pExistingBuddy)
 		addBuddy(pBuddy);
@@ -567,7 +567,7 @@ bool TelepathyAccountHandler::startSession(PD_Document* pDoc, const std::vector<
 	*pSession = pManager->startSession(pDoc, sSessionId, this, true, NULL, "");
 
 	// create a chatroom to hold the session information
-	TelepathyChatroomPtr pChatroom = boost::shared_ptr<TelepathyChatroom>(new TelepathyChatroom(this, NULL, pDoc, sSessionId));
+	TelepathyChatroomPtr pChatroom = std::shared_ptr<TelepathyChatroom>(new TelepathyChatroom(this, NULL, pDoc, sSessionId));
 	m_chatrooms.push_back(pChatroom);
 
 	// add the buddies in the acl list to the room invitee list
@@ -744,7 +744,7 @@ bool TelepathyAccountHandler::send(const Packet* pPacket, BuddyPtr pBuddy)
 	UT_return_val_if_fail(pPacket, false);
 	UT_return_val_if_fail(pBuddy, false);
 
-	DTubeBuddyPtr pDTubeBuddy = boost::static_pointer_cast<DTubeBuddy>(pBuddy);
+	DTubeBuddyPtr pDTubeBuddy = std::static_pointer_cast<DTubeBuddy>(pBuddy);
 	UT_DEBUGMSG(("Sending packet to d-tube buddy on dbus addess: %s\n", pDTubeBuddy->getDBusName().utf8_str()));
 
 	DBusMessage* pMessage = dbus_message_new_method_call (pDTubeBuddy->getDBusName().utf8_str(), "/org/laptop/DTube/Presence/Buddies", INTERFACE, SEND_ONE_METHOD);
@@ -783,7 +783,7 @@ void TelepathyAccountHandler::acceptTube(TpChannel *chan, const char* address)
 	UT_return_if_fail(address);
 
 	// create a new room and make it setup the tube
-	TelepathyChatroomPtr pChatroom = boost::shared_ptr<TelepathyChatroom>(new TelepathyChatroom(this, chan, NULL, ""));
+	TelepathyChatroomPtr pChatroom = std::shared_ptr<TelepathyChatroom>(new TelepathyChatroom(this, chan, NULL, ""));
 	m_chatrooms.push_back(pChatroom);
 
 	pChatroom->acceptTube(address);
@@ -854,7 +854,7 @@ std::vector<TelepathyBuddyPtr> TelepathyAccountHandler::_getBuddies(const std::v
 	{
 		for (std::vector<BuddyPtr>::iterator it = getBuddies().begin(); it != getBuddies().end(); it++)
 		{
-			TelepathyBuddyPtr pBuddy = boost::static_pointer_cast<TelepathyBuddy>(*it);
+			TelepathyBuddyPtr pBuddy = std::static_pointer_cast<TelepathyBuddy>(*it);
 			UT_continue_if_fail(pBuddy);
 			if  (pBuddy->getDescriptor(false).utf8_str() == (*cit))
 			{
@@ -886,7 +886,7 @@ TelepathyBuddyPtr TelepathyAccountHandler::_getBuddy(TelepathyBuddyPtr pBuddy)
 	UT_return_val_if_fail(pBuddy, TelepathyBuddyPtr());
 	for (std::vector<BuddyPtr>::iterator it = getBuddies().begin(); it != getBuddies().end(); it++)
 	{
-		TelepathyBuddyPtr pB = boost::static_pointer_cast<TelepathyBuddy>(*it);
+		TelepathyBuddyPtr pB = std::static_pointer_cast<TelepathyBuddy>(*it);
 		UT_continue_if_fail(pB);
 		if (pBuddy->equals(pB))
 			return pB;

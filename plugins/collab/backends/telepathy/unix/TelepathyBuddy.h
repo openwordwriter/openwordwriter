@@ -29,7 +29,7 @@
 class DocHandle;
 class TelepathyBuddy;
 
-typedef boost::shared_ptr<TelepathyBuddy> TelepathyBuddyPtr;
+typedef std::shared_ptr<TelepathyBuddy> TelepathyBuddyPtr;
 
 class TelepathyBuddy : public Buddy
 {

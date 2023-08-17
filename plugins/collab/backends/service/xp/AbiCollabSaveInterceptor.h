@@ -38,10 +38,10 @@ public:
 
 private:
 	bool _save(std::string uri, bool verify_webapp_host, std::string ssl_ca_file,
-			soa::function_call_ptr fc_ptr, boost::shared_ptr<std::string> result_ptr);
+			soa::function_call_ptr fc_ptr, std::shared_ptr<std::string> result_ptr);
 	void _save_cb(bool success, ServiceAccountHandler* pAccount,
 			AbiCollab* pSession, ConnectionPtr connection_ptr,
-			soa::function_call_ptr fc_ptr, boost::shared_ptr<std::string> result_ptr);
+			soa::function_call_ptr fc_ptr, std::shared_ptr<std::string> result_ptr);
 	void _saveFailed(AbiCollab* pSession);
 
 	EV_EditMethod* m_pOldSaveEM;

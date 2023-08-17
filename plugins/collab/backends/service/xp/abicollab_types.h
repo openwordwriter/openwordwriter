@@ -19,16 +19,17 @@
 #ifndef __ABICOLLAB_TYPES__
 #define __ABICOLLAB_TYPES__
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
+
 #include "soa.h"
 
 namespace abicollab {
 
 class File {
 public:
-	static boost::shared_ptr<File> construct(soa::GenericPtr value) {
+	static std::shared_ptr<File> construct(soa::GenericPtr value) {
 		if (soa::CollectionPtr coll = value->as<soa::Collection>()) {
-			boost::shared_ptr<File> file(new File());
+			std::shared_ptr<File> file(new File());
 			if (soa::IntPtr doc_id = coll->get<soa::Int>("doc_id"))
 				file->doc_id = boost::lexical_cast<std::string>(doc_id->value());
 			else if (soa::StringPtr doc_id_ = coll->get<soa::String>("doc_id"))
@@ -49,7 +50,7 @@ public:
 				file->access = access_->value();
 			return file;
 		}
-		return boost::shared_ptr<File>();
+		return std::shared_ptr<File>();
 	}
 
 	std::string doc_id;
@@ -60,8 +61,8 @@ public:
 	int64_t lastrevision;
 	std::string access;
 };
-typedef boost::shared_ptr<abicollab::File> FilePtr;
-typedef boost::shared_ptr< soa::Array< abicollab::FilePtr > > FileArrayPtr;
+typedef std::shared_ptr<abicollab::File> FilePtr;
+typedef std::shared_ptr< soa::Array< abicollab::FilePtr > > FileArrayPtr;
 
 class Friend : public soa::Collection {
 public:
@@ -69,23 +70,23 @@ public:
 		: soa::Collection(n)
 	{}
 
-	static boost::shared_ptr<Friend> construct(soa::GenericPtr value) {
+	static std::shared_ptr<Friend> construct(soa::GenericPtr value) {
 		if (soa::CollectionPtr coll = value->as<soa::Collection>()) {
-			boost::shared_ptr<Friend> friend_(new Friend(coll->name()));
+			std::shared_ptr<Friend> friend_(new Friend(coll->name()));
 			if (soa::IntPtr friend_id_ = coll->get<soa::Int>("friend_id"))
 				friend_->friend_id = friend_id_->value();
 			if (soa::StringPtr name_ = coll->get<soa::String>("name"))
 				friend_->name = name_->value();
 			return friend_;
 		}
-		return boost::shared_ptr<Friend>();
+		return std::shared_ptr<Friend>();
 	}
 
 	int64_t friend_id;
 	std::string name;
 };
-typedef boost::shared_ptr<abicollab::Friend> FriendPtr;
-typedef boost::shared_ptr< soa::Array< abicollab::FriendPtr > > FriendArrayPtr;
+typedef std::shared_ptr<abicollab::Friend> FriendPtr;
+typedef std::shared_ptr< soa::Array< abicollab::FriendPtr > > FriendArrayPtr;
 
 class Group : public soa::Collection {
 public:
@@ -93,23 +94,23 @@ public:
 		: soa::Collection(n)
 	{}
 
-	static boost::shared_ptr<Group> construct(soa::GenericPtr value) {
+	static std::shared_ptr<Group> construct(soa::GenericPtr value) {
 		if (soa::CollectionPtr coll = value->as<soa::Collection>()) {
-			boost::shared_ptr<Group> group_(new Group(coll->name()));
+			std::shared_ptr<Group> group_(new Group(coll->name()));
 			if (soa::IntPtr group_id_ = coll->get<soa::Int>("group_id"))
 				group_->group_id = group_id_->value();
 			if (soa::StringPtr name_ = coll->get<soa::String>("name"))
 				group_->name = name_->value();
 			return group_;
 		}
-		return boost::shared_ptr<Group>();
+		return std::shared_ptr<Group>();
 	}
 
 	int64_t group_id;
 	std::string name;
 };
-typedef boost::shared_ptr<abicollab::Group> GroupPtr;
-typedef boost::shared_ptr< soa::Array< abicollab::GroupPtr > > GroupArrayPtr;
+typedef std::shared_ptr<abicollab::Group> GroupPtr;
+typedef std::shared_ptr< soa::Array< abicollab::GroupPtr > > GroupArrayPtr;
 
 class FriendFiles : public soa::Collection {
 public:
@@ -117,9 +118,9 @@ public:
 		: soa::Collection(n)
 	{}
 
-	static boost::shared_ptr<FriendFiles> construct(soa::GenericPtr value) {
+	static std::shared_ptr<FriendFiles> construct(soa::GenericPtr value) {
 		if (soa::CollectionPtr coll = value->as<soa::Collection>()) {
-			boost::shared_ptr<FriendFiles> friend_(new FriendFiles(coll->name()));
+			std::shared_ptr<FriendFiles> friend_(new FriendFiles(coll->name()));
 			if (soa::IntPtr friend_id_ = coll->get<soa::Int>("friend_id"))
 				friend_->friend_id = friend_id_->value();
 			if (soa::StringPtr name_ = coll->get<soa::String>("name"))
@@ -129,7 +130,7 @@ public:
 			friend_->files = coll->get< soa::Array<soa::GenericPtr> >("files");
 			return friend_;
 		}
-		return boost::shared_ptr<FriendFiles>();
+		return std::shared_ptr<FriendFiles>();
 	}
 
 	int64_t friend_id;
@@ -137,8 +138,8 @@ public:
 	std::string email;
 	soa::ArrayPtr files;
 };
-typedef boost::shared_ptr<FriendFiles> FriendFilesPtr;
-typedef boost::shared_ptr< soa::Array< FriendFilesPtr > > FriendFilesArrayPtr;
+typedef std::shared_ptr<FriendFiles> FriendFilesPtr;
+typedef std::shared_ptr< soa::Array< FriendFilesPtr > > FriendFilesArrayPtr;
 
 class GroupFiles : public soa::Collection {
 public:
@@ -146,9 +147,9 @@ public:
 		: soa::Collection(n)
 	{}
 
-	static boost::shared_ptr<GroupFiles> construct(soa::GenericPtr value) {
+	static std::shared_ptr<GroupFiles> construct(soa::GenericPtr value) {
 		if (soa::CollectionPtr coll = value->as<soa::Collection>()) {
-			boost::shared_ptr<GroupFiles> group_(new GroupFiles(coll->name()));
+			std::shared_ptr<GroupFiles> group_(new GroupFiles(coll->name()));
 			if (soa::IntPtr group_id_ = coll->get<soa::Int>("group_id"))
 				group_->group_id = group_id_->value();
 			if (soa::StringPtr name_ = coll->get<soa::String>("name"))
@@ -156,15 +157,15 @@ public:
 			group_->files = coll->get< soa::Array<soa::GenericPtr> >("files");
 			return group_;
 		}
-		return boost::shared_ptr<GroupFiles>();
+		return std::shared_ptr<GroupFiles>();
 	}
 
 	int64_t group_id;
 	std::string name;
 	soa::ArrayPtr files;
 };
-typedef boost::shared_ptr<GroupFiles> GroupFilesPtr;
-typedef boost::shared_ptr< soa::Array< GroupFilesPtr > > GroupFilesArrayPtr;
+typedef std::shared_ptr<GroupFiles> GroupFilesPtr;
+typedef std::shared_ptr< soa::Array< GroupFilesPtr > > GroupFilesArrayPtr;
 
 }
 

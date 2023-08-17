@@ -45,9 +45,9 @@ namespace tls_tunnel {
 #define TLS_VERIFY_HOSTNAME_ERROR "Error verifying hostname"
 #define TLS_CANT_GET_PEER_CERT_ERROR "Failed to get peer certificate"
 
-typedef boost::shared_ptr<boost::asio::ip::tcp::socket> socket_ptr_t;
-typedef boost::shared_ptr<gnutls_session_t> session_ptr_t;
-typedef boost::shared_ptr< std::vector<char> > buffer_ptr_t;
+typedef std::shared_ptr<boost::asio::ip::tcp::socket> socket_ptr_t;
+typedef std::shared_ptr<gnutls_session_t> session_ptr_t;
+typedef std::shared_ptr< std::vector<char> > buffer_ptr_t;
 
 bool Proxy::tls_tunnel_init() {
 	if (gnutls_global_init() != 0)
@@ -346,7 +346,7 @@ void ClientProxy::setup()
 		}
 
 		// connect the transport
-		boost::static_pointer_cast<ClientTransport>(transport_ptr_)->connect();
+		std::static_pointer_cast<ClientTransport>(transport_ptr_)->connect();
 	} catch (boost::system::system_error& se) {
 		throw Exception(std::string(TRANSPORT_ERROR) + se.what());
 	}	
@@ -462,7 +462,7 @@ void ServerProxy::setup()
 										boost::bind(&ServerProxy::on_transport_connect, this, _1, _2)));
 
 	// start accepting connections
-	boost::static_pointer_cast<ServerTransport>(transport_ptr_)->accept();
+	std::static_pointer_cast<ServerTransport>(transport_ptr_)->accept();
 }
 
 void ServerProxy::on_transport_connect(transport_ptr_t transport_ptr, socket_ptr_t remote_socket_ptr) {

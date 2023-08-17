@@ -72,7 +72,7 @@ namespace soup_soa {
 		
 		SoupSession* m_session;
 		SoupMessage* m_msg;
-		boost::shared_ptr<boost::function<void (SoupSession*, SoupMessage*, uint32_t)> > progress_cb_ptr;
+		std::shared_ptr<boost::function<void (SoupSession*, SoupMessage*, uint32_t)> > progress_cb_ptr;
 		uint32_t received_content_length;
 		
 		private:

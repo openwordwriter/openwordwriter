@@ -19,9 +19,10 @@
 #ifndef __SESSION__
 #define __SESSION__
 
+#include <memory>
+
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/noncopyable.hpp>
 #include <deque>
 #include <sync/xp/lock.h>
@@ -32,10 +33,10 @@
 
 class TCPAccountHandler;
 
-class Session : public Synchronizer, public boost::noncopyable, public boost::enable_shared_from_this<Session>
+class Session : public Synchronizer, public boost::noncopyable, public std::enable_shared_from_this<Session>
 {
 public:
-	Session(boost::asio::io_service& io_service, boost::function<void (boost::shared_ptr<Session>)> ef)
+	Session(boost::asio::io_service& io_service, boost::function<void (std::shared_ptr<Session>)> ef)
 		: Synchronizer(boost::bind(&Session::_signal, this)),
 		socket(io_service),
 		queue_protector(),
@@ -264,7 +265,7 @@ private:
 	int										packet_size_write; // state needed for async writes
 	char*									packet_data_write; // state needed for async writes
 
-	boost::function<void (boost::shared_ptr<Session>)>		m_ef;
+	boost::function<void (std::shared_ptr<Session>)>		m_ef;
 };
 
 #endif /* __SESSION__ */

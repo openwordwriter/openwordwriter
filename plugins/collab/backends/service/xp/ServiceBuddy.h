@@ -26,8 +26,8 @@
 #else
 #include <stdint.h>
 #endif
+#include <memory>
 #include <boost/lexical_cast.hpp>
-#include <boost/shared_ptr.hpp>
 #include "ut_string_class.h"
 #include <core/account/xp/Buddy.h>
 #include <core/account/xp/AccountHandler.h>
@@ -106,6 +106,6 @@ private:
 	std::string			m_domain;
 };
 
-typedef boost::shared_ptr<ServiceBuddy> ServiceBuddyPtr;
+typedef std::shared_ptr<ServiceBuddy> ServiceBuddyPtr;
 
 #endif /* __SERVICEBUDDY__ */

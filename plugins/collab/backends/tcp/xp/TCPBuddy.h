@@ -21,7 +21,7 @@
 
 #include <map>
 #include <string>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include "ut_string_class.h"
 #include <core/account/xp/Buddy.h>
 #include <core/account/xp/DocTreeItem.h>
@@ -83,6 +83,6 @@ private:
 	std::string m_port;
 };
 
-typedef boost::shared_ptr<TCPBuddy> TCPBuddyPtr;
+typedef std::shared_ptr<TCPBuddy> TCPBuddyPtr;
 
 #endif /* TCPBUDDY_H */

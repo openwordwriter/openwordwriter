@@ -25,8 +25,7 @@
 #include <stdint.h>
 #endif
 #include <string>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
+#include <memory>
 #include <boost/lexical_cast.hpp>
 #include "ut_string_class.h"
 #include <core/account/xp/Buddy.h>
@@ -34,11 +33,11 @@
 
 class RealmConnection;
 
-class RealmBuddy : public Buddy , public boost::enable_shared_from_this<RealmBuddy>
+class RealmBuddy : public Buddy , public std::enable_shared_from_this<RealmBuddy>
 {
 public:
 	RealmBuddy(AccountHandler* handler, uint64_t _user_id, const std::string& domain_,
-					UT_uint8 realm_conn_id, bool _master, boost::shared_ptr<RealmConnection> conn)
+					UT_uint8 realm_conn_id, bool _master, std::shared_ptr<RealmConnection> conn)
 		: Buddy(handler),
 		m_user_id(_user_id),
 		m_domain(domain_),
@@ -68,7 +67,7 @@ public:
 		return NULL;
 	}
 
-	boost::shared_ptr<RealmBuddy> ptr() {
+	std::shared_ptr<RealmBuddy> ptr() {
 		return shared_from_this();
 	}
 
@@ -76,7 +75,7 @@ public:
 		return m_domain;
 	}
 
-	boost::shared_ptr<RealmConnection> connection() {
+	std::shared_ptr<RealmConnection> connection() {
 		return m_connection;
 	}
 
@@ -105,9 +104,9 @@ private:
 	std::string			m_domain;
 	UT_uint8			m_realm_connection_id;
 	bool				m_master;
-	boost::shared_ptr<RealmConnection>		m_connection;
+	std::shared_ptr<RealmConnection>		m_connection;
 };
 
-typedef boost::shared_ptr<RealmBuddy> RealmBuddyPtr;
+typedef std::shared_ptr<RealmBuddy> RealmBuddyPtr;
 
 #endif /* __REALM_BUDDY__ */

@@ -20,7 +20,7 @@
 #define __BUDDY_H__
 
 #include <vector>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include "ut_string_class.h"
 #include "ut_assert.h"
 #include "ut_debugmsg.h"
@@ -107,6 +107,6 @@ private:
 	bool						m_volatile;
 };
 
-typedef boost::shared_ptr<Buddy> BuddyPtr;
+typedef std::shared_ptr<Buddy> BuddyPtr;
 
 #endif /* BUDDY_H */

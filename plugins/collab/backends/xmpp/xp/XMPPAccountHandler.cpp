@@ -436,7 +436,7 @@ bool XMPPAccountHandler::send(const Packet* pPacket)
 	
 	for (std::vector<BuddyPtr>::iterator it = getBuddies().begin(); it != getBuddies().end(); it++)
 	{
-		XMPPBuddyPtr pBuddy = boost::static_pointer_cast<XMPPBuddy>(*it);
+		XMPPBuddyPtr pBuddy = std::static_pointer_cast<XMPPBuddy>(*it);
 		UT_continue_if_fail(pBuddy);
 		if (!_send(reinterpret_cast<char*>(base64data), pBuddy))
 		{
@@ -461,7 +461,7 @@ bool XMPPAccountHandler::send(const Packet* pPacket, BuddyPtr pBuddy)
 	guint8* base64data = gsf_base64_encode_simple(reinterpret_cast<guint8*>(&data[0]), data.size());
 	UT_return_val_if_fail(base64data, false);
 
-	/*bool res = */_send(reinterpret_cast<char*>(base64data), boost::static_pointer_cast<XMPPBuddy>(pBuddy));
+	/*bool res = */_send(reinterpret_cast<char*>(base64data), std::static_pointer_cast<XMPPBuddy>(pBuddy));
 	g_free(base64data);
 	
 	return true;
@@ -552,7 +552,7 @@ XMPPBuddyPtr XMPPAccountHandler::_getBuddy(const std::string& from_address)
 {
 	for (std::vector<BuddyPtr>::iterator it = getBuddies().begin(); it != getBuddies().end(); it++)
 	{
-		XMPPBuddyPtr pBuddy = boost::static_pointer_cast<XMPPBuddy>(*it);
+		XMPPBuddyPtr pBuddy = std::static_pointer_cast<XMPPBuddy>(*it);
 		UT_continue_if_fail(pBuddy);
 		if (pBuddy->getAddress() == from_address)
 			return pBuddy;

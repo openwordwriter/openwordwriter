@@ -22,9 +22,10 @@
 
 #include <string>
 #include <vector>
+#include <memory>
+
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include "xap_Types.h"
 #include "ut_string_class.h"
@@ -146,24 +147,24 @@ private:
 
 
 	template <class T>
-	void _send(boost::shared_ptr<T> packet, RealmBuddyPtr recipient)
+	void _send(std::shared_ptr<T> packet, RealmBuddyPtr recipient)
 	{
 		realm::protocolv1::send(*packet, recipient->connection()->socket(),
 			boost::bind(&ServiceAccountHandler::_write_handler, this,
 							boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, recipient,
-							boost::static_pointer_cast<rpv1::Packet>(packet)));
+							std::static_pointer_cast<rpv1::Packet>(packet)));
 	}
 
   void									_write_handler(const boost::system::error_code& e, std::size_t bytes_transferred,
-													boost::shared_ptr<const RealmBuddy> recipient, boost::shared_ptr<rpv1::Packet> packet);
+													std::shared_ptr<const RealmBuddy> recipient, std::shared_ptr<rpv1::Packet> packet);
 
   void									_write_result(const boost::system::error_code& e, std::size_t bytes_transferred,
-													ConnectionPtr connection, boost::shared_ptr<rpv1::Packet> packet);
+													ConnectionPtr connection, std::shared_ptr<rpv1::Packet> packet);
 
 	bool									_listDocuments(soa::function_call_ptr fc_ptr,
 													const std::string uri, bool verify_webapp_host,
-													boost::shared_ptr<std::string> result_ptr);
-	void									_listDocuments_cb(bool success, soa::function_call_ptr fc_ptr, boost::shared_ptr<std::string> result_ptr);
+													std::shared_ptr<std::string> result_ptr);
+	void									_listDocuments_cb(bool success, soa::function_call_ptr fc_ptr, std::shared_ptr<std::string> result_ptr);
 
 	acs::SOAP_ERROR							_openDocumentMaster(ConnectionPtr connection, soa::CollectionPtr rcp, PD_Document** pDoc, XAP_Frame* pFrame,
 													const std::string& session_id, const std::string& filename, bool bLocallyOwned);

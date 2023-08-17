@@ -113,7 +113,7 @@ get_contact_for_new_buddie_cb(TpConnection* /*connection*/,
 	TelepathyChatroomPtr pChatroom = pBuddy->getChatRoom();
 	UT_return_if_fail(pChatroom);
 
-	DTubeBuddyPtr pDTubeBuddy = boost::shared_ptr<DTubeBuddy>(pBuddy);
+	DTubeBuddyPtr pDTubeBuddy = std::shared_ptr<DTubeBuddy>(pBuddy);
 	pDTubeBuddy->setContact(contacts[0]);
 	//pDTubeBuddy->setGlobalContact(contacts[1]);
 	pChatroom->addBuddy(pDTubeBuddy);

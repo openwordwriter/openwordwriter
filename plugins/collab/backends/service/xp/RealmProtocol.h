@@ -10,7 +10,7 @@
 #else
 #include <stdint.h>
 #endif
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #if defined(HAVE_BOOST_ASIO_HPP)
 # include <boost/asio.hpp>
 #else
@@ -34,8 +34,8 @@ enum handshake_response {
 namespace protocolv1 {
 
 class Packet;
-typedef boost::shared_ptr<Packet> PacketPtr;
-typedef boost::shared_ptr<boost::asio::streambuf> StreamPtr;
+typedef std::shared_ptr<Packet> PacketPtr;
+typedef std::shared_ptr<boost::asio::streambuf> StreamPtr;
 
 // the packet type values must match up the corresponding body_size in
 // RealmProtocol.cpp (ugly, but it's fast)!
@@ -110,7 +110,7 @@ private:
 class RoutingPacket : public PayloadPacket {
 public:
 	RoutingPacket();
-	RoutingPacket(std::vector<uint8_t>& connection_ids, boost::shared_ptr<std::string> msg);
+	RoutingPacket(std::vector<uint8_t>& connection_ids, std::shared_ptr<std::string> msg);
 	virtual int parse(const char* buf, size_t size);
 
 	const uint8_t& getAddressCount() const {
@@ -121,7 +121,7 @@ public:
 		return m_connection_ids;
 	}
 
-	boost::shared_ptr<std::string> getMessage() const {
+	std::shared_ptr<std::string> getMessage() const {
 		return m_msg;
 	}
 
@@ -130,32 +130,32 @@ private:
 												// but it's convenient to be able to get a reference to this value
 												// when sending this packet
 	std::vector<uint8_t>	m_connection_ids;
-	boost::shared_ptr<std::string> m_msg;
+	std::shared_ptr<std::string> m_msg;
 };
 
 class DeliverPacket : public PayloadPacket {
 public:
 	DeliverPacket();
-	DeliverPacket(uint8_t connection_id, boost::shared_ptr<std::string> msg);
+	DeliverPacket(uint8_t connection_id, std::shared_ptr<std::string> msg);
 	virtual int parse(const char* buf, size_t size);
 
 	const uint8_t& getConnectionId() const {
 		return m_connection_id;
 	}
 
-	boost::shared_ptr<std::string> getMessage() const {
+	std::shared_ptr<std::string> getMessage() const {
 		return m_msg;
 	}
 
 private:
 	uint8_t			m_connection_id;
-	boost::shared_ptr<std::string>	m_msg;
+	std::shared_ptr<std::string>	m_msg;
 };
 
 class UserJoinedPacket : public PayloadPacket {
 public:
 	UserJoinedPacket();
-	UserJoinedPacket(uint8_t connection_id, bool master, boost::shared_ptr<std::string> userinfo);
+	UserJoinedPacket(uint8_t connection_id, bool master, std::shared_ptr<std::string> userinfo);
 	virtual int parse(const char* buf, size_t size);
 
 	const uint8_t& getConnectionId() const {
@@ -166,14 +166,14 @@ public:
 		return m_master;
 	}
 
-	boost::shared_ptr<std::string> getUserInfo() const {
+	std::shared_ptr<std::string> getUserInfo() const {
 		return m_userinfo;
 	}
 
 private:
 	uint8_t			m_connection_id;
 	uint8_t			m_master;
-	boost::shared_ptr<std::string>		m_userinfo;
+	std::shared_ptr<std::string>		m_userinfo;
 };
 
 class UserLeftPacket : public Packet {

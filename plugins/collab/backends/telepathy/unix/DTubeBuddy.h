@@ -113,6 +113,6 @@ private:
 	TpContact*				m_pGlobalContact;
 };
 
-typedef boost::shared_ptr<DTubeBuddy> DTubeBuddyPtr;
+typedef std::shared_ptr<DTubeBuddy> DTubeBuddyPtr;
 
 #endif /* __DTUBEBUDDY_H__ */

@@ -35,7 +35,7 @@
 #include <stdint.h>
 #endif
 #include <boost/lexical_cast.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include <vector>
 #include "soa_types.h"
@@ -69,7 +69,7 @@ public:
 	}
 
 	// FIXME: returning an std::string is inefficient for large blocks of
-	// data; we should make it a boost::shared_ptr<std::string>
+	// data; we should make it a std::shared_ptr<std::string>
 	virtual std::string str() const = 0;
 
 private:
@@ -172,7 +172,7 @@ public:
 				continue;
 
 			// TODO: generalize this; for now, we only support arrays of integers
-			IntPtr val_int = boost::dynamic_pointer_cast<soa::Int>(val);
+			IntPtr val_int = std::dynamic_pointer_cast<soa::Int>(val);
 			if (!val_int)
 				continue;
 			function_arg_int arg(val->name(), val_int->value());
@@ -197,32 +197,32 @@ public:
 	{}
 
 	function_call& operator()(std::string name, const char* value) {
-		args.push_back(boost::shared_ptr<function_arg>(new function_arg_string(name, value)));
+		args.push_back(std::shared_ptr<function_arg>(new function_arg_string(name, value)));
 		return *this;
 	}
 
 	function_call& operator()(std::string name, std::string value) {
-		args.push_back(boost::shared_ptr<function_arg>(new function_arg_string(name, value)));
+		args.push_back(std::shared_ptr<function_arg>(new function_arg_string(name, value)));
 		return *this;
 	}
 
 	function_call& operator()(std::string name, int64_t value) {
-		args.push_back(boost::shared_ptr<function_arg>(new function_arg_int(name, value)));
+		args.push_back(std::shared_ptr<function_arg>(new function_arg_int(name, value)));
 		return *this;
 	}
 
 	function_call& operator()(std::string name, bool value) {
-		args.push_back(boost::shared_ptr<function_arg>(new function_arg_bool(name, value)));
+		args.push_back(std::shared_ptr<function_arg>(new function_arg_bool(name, value)));
 		return *this;
 	}
 
 	function_call& operator()(Base64Bin value) {
-		args.push_back(boost::shared_ptr<function_arg>(new function_arg_base64bin(value)));
+		args.push_back(std::shared_ptr<function_arg>(new function_arg_base64bin(value)));
 		return *this;
 	}
 
 	function_call& operator()(std::string name, ArrayPtr value, Type type) {
-		args.push_back(boost::shared_ptr<function_arg>(new function_arg_array(name, value, type)));
+		args.push_back(std::shared_ptr<function_arg>(new function_arg_array(name, value, type)));
 		return *this;
 	}
 
@@ -234,14 +234,14 @@ public:
 		return response_;
 	}
 
-	void add_arg(boost::shared_ptr<function_arg> arg) {
+	void add_arg(std::shared_ptr<function_arg> arg) {
 		args.push_back(arg);
 	}
 
 	std::string str() const {
 		std::string ret;
 		// TODO: XML escape args/values
-		for (std::vector< boost::shared_ptr<function_arg> >::const_iterator cit = args.begin(); cit != args.end(); cit++) {
+		for (std::vector< std::shared_ptr<function_arg> >::const_iterator cit = args.begin(); cit != args.end(); cit++) {
 			const function_arg& arg = **cit;
 			ret += "<" + arg.name() + " " + "xsi:type=\"" + soap_type(arg.type()) + "\"" +
 						(arg.type_props() ? " " + arg.props() : "") +
@@ -255,9 +255,9 @@ public:
 private:
 	std::string request_;
 	std::string response_;
-	std::vector< boost::shared_ptr<function_arg> > args;
+	std::vector< std::shared_ptr<function_arg> > args;
 };
-typedef boost::shared_ptr<soa::function_call> function_call_ptr;
+typedef std::shared_ptr<soa::function_call> function_call_ptr;
 
 class header {
 public:

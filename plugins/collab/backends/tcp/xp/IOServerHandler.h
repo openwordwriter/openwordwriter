@@ -37,8 +37,8 @@ class TCPAccountHandler;
 class IOServerHandler
 {
 public:
-	IOServerHandler(int port, boost::function<void (IOServerHandler*, boost::shared_ptr<Session>)> af,
-					boost::function<void (boost::shared_ptr<Session>)> ef, boost::asio::io_service& io_service_)
+	IOServerHandler(int port, boost::function<void (IOServerHandler*, std::shared_ptr<Session>)> af,
+					boost::function<void (std::shared_ptr<Session>)> ef, boost::asio::io_service& io_service_)
 	:	accept_synchronizer(boost::bind(&IOServerHandler::_signal, this)),
 		io_service(io_service_),
 		m_pAcceptor(NULL),
@@ -106,10 +106,10 @@ private:
 	Synchronizer				accept_synchronizer;
 	boost::asio::io_service&			io_service;
 	boost::asio::ip::tcp::acceptor*	m_pAcceptor;
-	boost::shared_ptr<Session>	session_ptr;
+	std::shared_ptr<Session>	session_ptr;
 
-	boost::function<void (IOServerHandler*, boost::shared_ptr<Session>)> m_af;
-	boost::function<void (boost::shared_ptr<Session>)> m_ef;
+	boost::function<void (IOServerHandler*, std::shared_ptr<Session>)> m_af;
+	boost::function<void (std::shared_ptr<Session>)> m_ef;
 };
 
 #endif /* __IO_SERVER_HANDLER__ */

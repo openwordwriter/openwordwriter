@@ -86,7 +86,7 @@ RoutingPacket::RoutingPacket()
 	m_msg()
 {}
 
-RoutingPacket::RoutingPacket(std::vector<uint8_t>& connection_ids, boost::shared_ptr<std::string> msg)
+RoutingPacket::RoutingPacket(std::vector<uint8_t>& connection_ids, std::shared_ptr<std::string> msg)
 	: PayloadPacket(PACKET_ROUTE, 2, 1 + connection_ids.size() + msg->size()),
 	m_address_count(connection_ids.size()),
 	m_connection_ids(connection_ids),
@@ -117,7 +117,7 @@ DeliverPacket::DeliverPacket()
 	m_msg()
 {}
 
-DeliverPacket::DeliverPacket(uint8_t connection_id, boost::shared_ptr<std::string> msg)
+DeliverPacket::DeliverPacket(uint8_t connection_id, std::shared_ptr<std::string> msg)
 	: PayloadPacket(PACKET_DELIVER, 1, 1 + msg->size()),
 	m_connection_id(connection_id),
 	m_msg(msg)
@@ -144,7 +144,7 @@ UserJoinedPacket::UserJoinedPacket()
 	m_userinfo()
 {}
 
-UserJoinedPacket::UserJoinedPacket(uint8_t connection_id, bool master, boost::shared_ptr<std::string> userinfo)
+UserJoinedPacket::UserJoinedPacket(uint8_t connection_id, bool master, std::shared_ptr<std::string> userinfo)
 	: PayloadPacket(PACKET_USERJOINED, 2, 2 + userinfo->size()),
 	m_connection_id(connection_id),
 	m_master(static_cast<uint8_t>(master)),

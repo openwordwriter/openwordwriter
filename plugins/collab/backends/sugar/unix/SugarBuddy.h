@@ -60,6 +60,6 @@ private:
 	UT_UTF8String		m_sDBusAddress;
 };
 
-typedef boost::shared_ptr<SugarBuddy> SugarBuddyPtr;
+typedef std::shared_ptr<SugarBuddy> SugarBuddyPtr;
 
 #endif /* SUGARBUDDY_H */

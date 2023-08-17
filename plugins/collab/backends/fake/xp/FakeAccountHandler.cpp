@@ -17,7 +17,9 @@
  * 02110-1301 USA.
  */
 
+#include <memory>
 #include <string.h>
+
 #include <ev_EditMethod.h>
 #include <xap_App.h>
 #include <fv_View.h>
@@ -101,7 +103,7 @@ FakeBuddyPtr FakeAccountHandler::getBuddy(const UT_UTF8String& description)
 {
 	for (std::vector<BuddyPtr>::iterator it = getBuddies().begin(); it != getBuddies().end(); it++)
 	{
-		FakeBuddyPtr pBuddy = boost::static_pointer_cast<FakeBuddy>(*it);
+		FakeBuddyPtr pBuddy = std::static_pointer_cast<FakeBuddy>(*it);
 		UT_continue_if_fail(pBuddy);
 		if (pBuddy->getDescription() == description)
 			return pBuddy;
@@ -118,7 +120,7 @@ BuddyPtr FakeAccountHandler::constructBuddy(const PropertyMap& props)
 	UT_return_val_if_fail(cit->second.size() > 0, FakeBuddyPtr());
 
 	UT_DEBUGMSG(("Constructing FakeBuddy (name: %s)\n", cit->second.c_str()));
-	return boost::shared_ptr<FakeBuddy>(new FakeBuddy(this, cit->second.c_str()));
+	return std::shared_ptr<FakeBuddy>(new FakeBuddy(this, cit->second.c_str()));
 }
 
 BuddyPtr FakeAccountHandler::constructBuddy(const std::string& /*descriptor*/, BuddyPtr /*pBuddy*/)
@@ -308,7 +310,7 @@ bool FakeAccountHandler::_createSession()
 		{
 			if (m_packets[i]->m_bHasBuddy)
 			{
-				pCollaborator = boost::shared_ptr<FakeBuddy>(new FakeBuddy(this, m_packets[i]->m_buddyName));
+				pCollaborator = std::shared_ptr<FakeBuddy>(new FakeBuddy(this, m_packets[i]->m_buddyName));
 				break;
 			}
 		}
@@ -316,7 +318,7 @@ bool FakeAccountHandler::_createSession()
 		if (!pCollaborator)
 		{
 			UT_DEBUGMSG(("The session controller never sent a changerecord, so we don't know who he is; inventing a name\n"));
-			pCollaborator = boost::shared_ptr<FakeBuddy>(new FakeBuddy(this, "Fake::NoName"));
+			pCollaborator = std::shared_ptr<FakeBuddy>(new FakeBuddy(this, "Fake::NoName"));
 		}
 		
 		addBuddy(pCollaborator);
@@ -389,7 +391,7 @@ bool FakeAccountHandler::_import(const RecordedPacket& rp)
 				if (!getBuddy(rp.m_buddyName))
 				{
 					UT_DEBUGMSG(("Adding new buddy to the collaboration session: %s\n", rp.m_buddyName.utf8_str()));
-					FakeBuddyPtr pNewCollaborator = boost::shared_ptr<FakeBuddy>(new FakeBuddy(this, rp.m_buddyName));
+					FakeBuddyPtr pNewCollaborator = std::shared_ptr<FakeBuddy>(new FakeBuddy(this, rp.m_buddyName));
 					addBuddy(pNewCollaborator);
 					m_pSession->addCollaborator(pNewCollaborator);
 				}
@@ -428,7 +430,7 @@ bool FakeAccountHandler::_import(const RecordedPacket& rp)
 				if (AbstractChangeRecordSessionPacket::isInstanceOf(*sp))
 				{
 					ABI_Collab_Import* pImport = m_pSession->getImport();
-					FakeBuddyPtr pBuddy = boost::shared_ptr<FakeBuddy>(new FakeBuddy(this, "NULL"));
+					FakeBuddyPtr pBuddy = std::shared_ptr<FakeBuddy>(new FakeBuddy(this, "NULL"));
 					pImport->_import(*sp, 0, pBuddy);
 				}
 				else

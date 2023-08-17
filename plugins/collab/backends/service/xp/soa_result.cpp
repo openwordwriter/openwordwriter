@@ -30,7 +30,7 @@
 #else
 #include <strings.h>
 #endif
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/lexical_cast.hpp>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
@@ -163,7 +163,7 @@ namespace soa {
 					xmlChar* value = xmlNodeGetContent(element);
 					t.reset(new Base64Bin(
 										reinterpret_cast<const char*>(element->name), 
-										boost::shared_ptr<std::string>(new std::string(reinterpret_cast<const char*>(value)))
+										std::shared_ptr<std::string>(new std::string(reinterpret_cast<const char*>(value)))
 									));
 					xmlFree(value);
 				}
@@ -223,7 +223,7 @@ namespace soa {
 			return GenericPtr();
 		}
 
-		boost::shared_ptr<xmlDocPtr> reader(&doc, XmlDocDeleter());
+		std::shared_ptr<xmlDocPtr> reader(&doc, XmlDocDeleter());
 		xmlNode* rootNode = xmlDocGetRootElement(*reader);
 		if (!rootNode) {
 			return GenericPtr();
@@ -248,7 +248,7 @@ namespace soa {
 						if (!soap_tree)
 							throw SoapFault();
 						
-						soa::CollectionPtr fault = boost::dynamic_pointer_cast<soa::Collection>(soap_tree);
+						soa::CollectionPtr fault = std::dynamic_pointer_cast<soa::Collection>(soap_tree);
 						if (!fault)
 							throw SoapFault();
 						

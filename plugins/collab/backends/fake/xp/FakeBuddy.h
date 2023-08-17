@@ -21,6 +21,7 @@
 #define __FAKEBUDDY_H__
 
 #include <map>
+#include <memory>
 #include <account/xp/Buddy.h>
 #include <account/xp/DocTreeItem.h>
 #include <account/xp/AccountHandler.h>
@@ -54,6 +55,6 @@ private:
 	UT_UTF8String m_sDescriptor;
 };
 
-typedef boost::shared_ptr<FakeBuddy> FakeBuddyPtr;
+typedef std::shared_ptr<FakeBuddy> FakeBuddyPtr;
 
 #endif /* __FAKEBUDDY_H__ */

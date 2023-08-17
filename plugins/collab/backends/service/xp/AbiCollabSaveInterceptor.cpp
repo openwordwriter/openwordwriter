@@ -175,8 +175,8 @@ bool AbiCollabSaveInterceptor::save(PD_Document* pDoc)
 			bool verify_webapp_host = (pServiceHandler->getProperty("verify-webapp-host") == "true");
 			soa::function_call_ptr fc_ptr = pServiceHandler->constructSaveDocumentCall(pDoc, connection_ptr);
 			std::string ssl_ca_file = pServiceHandler->getCA();
-			boost::shared_ptr<std::string> result_ptr(new std::string());
-			boost::shared_ptr<AsyncWorker<bool> > async_save_ptr(
+			std::shared_ptr<std::string> result_ptr(new std::string());
+			std::shared_ptr<AsyncWorker<bool> > async_save_ptr(
 						new AsyncWorker<bool>(
 							boost::bind(&AbiCollabSaveInterceptor::_save, this, uri, verify_webapp_host, ssl_ca_file, fc_ptr, result_ptr),
 							boost::bind(&AbiCollabSaveInterceptor::_save_cb, this, _1, pServiceHandler, pSession, connection_ptr, fc_ptr, result_ptr)
@@ -197,7 +197,7 @@ bool AbiCollabSaveInterceptor::save(PD_Document* pDoc)
 
 // NOTE: don't use const std::string& arguments where, as we want a copy for thread safety
 bool AbiCollabSaveInterceptor::_save(std::string uri, bool verify_webapp_host, std::string ssl_ca_file,
-			soa::function_call_ptr fc_ptr, boost::shared_ptr<std::string> result_ptr)
+			soa::function_call_ptr fc_ptr, std::shared_ptr<std::string> result_ptr)
 {
 	UT_DEBUGMSG(("AbiCollabSaveInterceptor::_save()\n"));
 	UT_return_val_if_fail(fc_ptr, false);
@@ -213,7 +213,7 @@ bool AbiCollabSaveInterceptor::_save(std::string uri, bool verify_webapp_host, s
 
 void AbiCollabSaveInterceptor::_save_cb(bool success, ServiceAccountHandler* pAccount,
 			AbiCollab* pSession, ConnectionPtr connection_ptr,
-			soa::function_call_ptr fc_ptr, boost::shared_ptr<std::string> result_ptr)
+			soa::function_call_ptr fc_ptr, std::shared_ptr<std::string> result_ptr)
 {
 	UT_DEBUGMSG(("AbiCollabSaveInterceptor::_save_cb()\n"));
 	UT_return_if_fail(pAccount);
@@ -265,7 +265,7 @@ void AbiCollabSaveInterceptor::_save_cb(bool success, ServiceAccountHandler* pAc
 						fc_ptr = pAccount->constructSaveDocumentCall(pSession->getDocument(), connection_ptr);
 
 						// re-attempt the save
-						boost::shared_ptr<AsyncWorker<bool> > async_save_ptr(
+						std::shared_ptr<AsyncWorker<bool> > async_save_ptr(
 									new AsyncWorker<bool>(
 										boost::bind(&AbiCollabSaveInterceptor::_save, this, uri, verify_webapp_host, ssl_ca_file, fc_ptr, result_ptr),
 										boost::bind(&AbiCollabSaveInterceptor::_save_cb, this, _1, pAccount, pSession, connection_ptr, fc_ptr, result_ptr)

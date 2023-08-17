@@ -28,7 +28,7 @@ namespace rpv1 = realm::protocolv1;
 
 RealmConnection::RealmConnection(const std::string& ca_file, const std::string& address, int port, bool tls,
 								 const std::string& cookie, UT_uint64 _doc_id, bool _master, const std::string& _session_id,
-								 boost::function<void (boost::shared_ptr<RealmConnection>)> sig)
+								 boost::function<void (std::shared_ptr<RealmConnection>)> sig)
 	: m_io_service(),
 	m_ca_file(ca_file),
 	m_address(address),
@@ -249,7 +249,7 @@ bool RealmConnection::_login()
 	UT_DEBUGMSG(("RealmConnection::_login()\n"));
 	
 	// FIXME: make this a combined asio buffer
-	boost::shared_ptr<std::string> header_ptr(new std::string(2*sizeof(UT_uint32) + m_cookie.size(), '\0'));
+	std::shared_ptr<std::string> header_ptr(new std::string(2*sizeof(UT_uint32) + m_cookie.size(), '\0'));
 	std::string& header = *header_ptr;
 	
 	UT_uint32 proto_magic = 0x000A0B01;
@@ -332,7 +332,7 @@ UserJoinedPacketPtr RealmConnection::_receiveUserJoinedPacket()
 			boost::asio::buffer(&m, sizeof(m)) }};
 		boost::asio::read(m_socket, buf);
 
-		boost::shared_ptr<std::string> userinfo_ptr(new std::string(payload_size - 2, '\0'));
+		std::shared_ptr<std::string> userinfo_ptr(new std::string(payload_size - 2, '\0'));
 		boost::asio::read(m_socket, boost::asio::buffer(&(*userinfo_ptr)[0], userinfo_ptr->size()));
 
 		return UserJoinedPacketPtr(new rpv1::UserJoinedPacket(conn_id, static_cast<bool>(m), userinfo_ptr));
@@ -345,13 +345,13 @@ void RealmConnection::_receive()
 {
 	UT_DEBUGMSG(("RealmConnection::_receive()\n"));
 	m_buf.clear();
-	boost::shared_ptr<std::string> msg_ptr(new std::string(1, '\0'));
+	std::shared_ptr<std::string> msg_ptr(new std::string(1, '\0'));
 	boost::asio::async_read(m_socket, boost::asio::buffer(&(*msg_ptr)[0], msg_ptr->size()),
 		boost::bind(&RealmConnection::_message, shared_from_this(),
 			boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, msg_ptr));
 }
 
-void RealmConnection::_message(const boost::system::error_code& e, std::size_t /*bytes_transferred*/, boost::shared_ptr<std::string> msg_ptr)
+void RealmConnection::_message(const boost::system::error_code& e, std::size_t /*bytes_transferred*/, std::shared_ptr<std::string> msg_ptr)
 {
 	UT_DEBUGMSG(("RealmConnection::_message()\n"));
 	if (e)

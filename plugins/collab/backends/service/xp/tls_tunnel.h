@@ -34,7 +34,6 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #if defined(HAVE_BOOST_ASIO_HPP)
 # include <boost/asio.hpp>
 #else
@@ -42,6 +41,7 @@
 #endif
 #include <string>
 #include <vector>
+#include <memory>
 #ifdef _MSC_VER
 typedef long ssize_t;
 typedef int pid_t;
@@ -51,9 +51,9 @@ typedef int pid_t;
 
 namespace tls_tunnel {
 
-typedef boost::shared_ptr<boost::asio::ip::tcp::socket> socket_ptr_t;
-typedef boost::shared_ptr<gnutls_session_t> session_ptr_t;
-typedef boost::shared_ptr< std::vector<char> > buffer_ptr_t;
+typedef std::shared_ptr<boost::asio::ip::tcp::socket> socket_ptr_t;
+typedef std::shared_ptr<gnutls_session_t> session_ptr_t;
+typedef std::shared_ptr< std::vector<char> > buffer_ptr_t;
 
 class Exception {
 public:
@@ -63,7 +63,7 @@ private:
 	std::string message_;
 };
 
-class Transport : public boost::enable_shared_from_this<Transport> {
+class Transport : public std::enable_shared_from_this<Transport> {
 public:
 	boost::asio::io_service& io_service();
 	void run();
@@ -78,7 +78,7 @@ private:
 	boost::asio::io_service::work work_;
 };
 
-typedef boost::shared_ptr<Transport> transport_ptr_t;
+typedef std::shared_ptr<Transport> transport_ptr_t;
 
 class ClientTransport : public Transport {
 public:
@@ -158,7 +158,7 @@ private:
 	unsigned short local_port_;
 	std::string connect_address_;
 	unsigned short connect_port_;
-	boost::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor_ptr;
+	std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor_ptr;
 	bool check_hostname_;
 };
 

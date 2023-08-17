@@ -26,8 +26,8 @@
 #include <unistd.h>
 #endif
 #include <string>
+#include <memory>
 #include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include "xap_App.h"
@@ -335,7 +335,7 @@ BuddyPtr ServiceAccountHandler::constructBuddy(const std::string& descriptor, Bu
 	// the given buddy. This because you can't just invent/guess/whatever a buddy descriptor
 	// and communicate with him (even if the buddy descriptor actually exists)... 
 	// the security mechanism would not allow that
-	RealmBuddyPtr pSessionBuddy = boost::static_pointer_cast<RealmBuddy>(pBuddy);
+	RealmBuddyPtr pSessionBuddy = std::static_pointer_cast<RealmBuddy>(pBuddy);
 
 	ConnectionPtr connection = pSessionBuddy->connection();
 	UT_return_val_if_fail(connection, BuddyPtr());
@@ -389,7 +389,7 @@ bool ServiceAccountHandler::hasAccess(const std::vector<std::string>& /*vAcl*/, 
 	// when he tries to save the document. It would be nice if we would fully fix 
 	// this later, possibly by passing more information in the realm "userinfo"
 	// XML blob.
-	RealmBuddyPtr pRealBuddy = boost::dynamic_pointer_cast<RealmBuddy>(pBuddy);
+	RealmBuddyPtr pRealBuddy = std::dynamic_pointer_cast<RealmBuddy>(pBuddy);
 	UT_return_val_if_fail(pRealBuddy, false);
 
 	if (pRealBuddy->domain() != _getDomain())
@@ -402,7 +402,7 @@ bool ServiceAccountHandler::canShare(BuddyPtr pBuddy)
 {
 	UT_return_val_if_fail(pBuddy, false);
 
-	ServiceBuddyPtr pServiceBuddy = boost::dynamic_pointer_cast<ServiceBuddy>(pBuddy);
+	ServiceBuddyPtr pServiceBuddy = std::dynamic_pointer_cast<ServiceBuddy>(pBuddy);
 	UT_return_val_if_fail(pServiceBuddy, false)
 
 	if (pServiceBuddy->getType() == SERVICE_USER)
@@ -426,19 +426,19 @@ bool ServiceAccountHandler::send(const Packet* packet, BuddyPtr pBuddy)
 	UT_return_val_if_fail(packet, false);
 	UT_return_val_if_fail(pBuddy, false);
 
-	RealmBuddyPtr pB = boost::static_pointer_cast<RealmBuddy>(pBuddy);
+	RealmBuddyPtr pB = std::static_pointer_cast<RealmBuddy>(pBuddy);
 	uint8_t arr[] = { pB->realm_connection_id() };
 	std::vector<uint8_t> connection_ids(arr, arr+1);
 
-	boost::shared_ptr<std::string> data(new std::string());
+	std::shared_ptr<std::string> data(new std::string());
 	_createPacketStream(*data, packet);
 
-	_send(boost::shared_ptr<rpv1::RoutingPacket>(new rpv1::RoutingPacket(connection_ids, data)), pB);
+	_send(std::shared_ptr<rpv1::RoutingPacket>(new rpv1::RoutingPacket(connection_ids, data)), pB);
 	return true;
 }
 
 void ServiceAccountHandler::_write_handler(const boost::system::error_code& e, std::size_t /*bytes_transferred*/,
-											boost::shared_ptr<const RealmBuddy> /*recipient*/, boost::shared_ptr<realm::protocolv1::Packet> packet)
+											std::shared_ptr<const RealmBuddy> /*recipient*/, std::shared_ptr<realm::protocolv1::Packet> packet)
 {
 	if (e)
 	{
@@ -454,7 +454,7 @@ void ServiceAccountHandler::_write_handler(const boost::system::error_code& e, s
 }										   
 
 void ServiceAccountHandler::_write_result(const boost::system::error_code& e, std::size_t /*bytes_transferred*/,
-													ConnectionPtr /*connection*/, boost::shared_ptr<realm::protocolv1::Packet> packet)
+													ConnectionPtr /*connection*/, std::shared_ptr<realm::protocolv1::Packet> packet)
 {
 	if (e)
 	{
@@ -480,8 +480,8 @@ void ServiceAccountHandler::getSessionsAsync()
 
 	pManager->beginAsyncOperation(this);
 	soa::function_call_ptr fc_ptr = constructListDocumentsCall();
-	boost::shared_ptr<std::string> result_ptr(new std::string());
-	boost::shared_ptr<AsyncWorker<bool> > async_list_docs_ptr(
+	std::shared_ptr<std::string> result_ptr(new std::string());
+	std::shared_ptr<AsyncWorker<bool> > async_list_docs_ptr(
 				new AsyncWorker<bool>(
 					boost::bind(&ServiceAccountHandler::_listDocuments, this, 
 								fc_ptr, getProperty("uri"), verify_webapp_host, result_ptr),
@@ -504,8 +504,8 @@ void ServiceAccountHandler::getSessionsAsync(const Buddy& /*buddy*/)
 
 	pManager->beginAsyncOperation(this);
 	soa::function_call_ptr fc_ptr = constructListDocumentsCall();
-	boost::shared_ptr<std::string> result_ptr(new std::string());
-	boost::shared_ptr<AsyncWorker<bool> > async_list_docs_ptr(
+	std::shared_ptr<std::string> result_ptr(new std::string());
+	std::shared_ptr<AsyncWorker<bool> > async_list_docs_ptr(
 				new AsyncWorker<bool>(
 					boost::bind(&ServiceAccountHandler::_listDocuments, this, 
 								fc_ptr, getProperty("uri"), verify_webapp_host, result_ptr),
@@ -545,7 +545,7 @@ bool ServiceAccountHandler::startSession(PD_Document* pDoc, const std::vector<st
 		bFilenameChanged = true;
 	}
 	
-	boost::shared_ptr<std::string> document(new std::string(""));
+	std::shared_ptr<std::string> document(new std::string(""));
 	UT_return_val_if_fail(AbiCollabSessionManager::serializeDocument(pDoc, *document, true) == UT_OK, false);
 	
 	soa::GenericPtr soap_result;
@@ -793,9 +793,9 @@ void ServiceAccountHandler::joinSessionAsync(BuddyPtr pBuddy, DocHandle& docHand
 
 bool ServiceAccountHandler::hasSession(const std::string& sSessionId)
 {
-	for (std::vector<boost::shared_ptr<RealmConnection> >::iterator it = m_connections.begin(); it != m_connections.end(); it++)
+	for (std::vector<std::shared_ptr<RealmConnection> >::iterator it = m_connections.begin(); it != m_connections.end(); it++)
 	{
-		boost::shared_ptr<RealmConnection> connection_ptr = *it;
+		std::shared_ptr<RealmConnection> connection_ptr = *it;
 		UT_continue_if_fail(connection_ptr);
 		if (connection_ptr->session_id() == sSessionId)
 			return true;
@@ -817,7 +817,7 @@ acs::SOAP_ERROR ServiceAccountHandler::openDocument(UT_uint64 doc_id, UT_uint64 
 	fc("email", email)("password", password)("doc_id", static_cast<int64_t>(doc_id))("revision", static_cast<int64_t>(revision));
 
 	// execute the call
-	boost::shared_ptr<ProgressiveSoapCall> call(new ProgressiveSoapCall(uri, fc, verify_webapp_host?m_ssl_ca_file:""));
+	std::shared_ptr<ProgressiveSoapCall> call(new ProgressiveSoapCall(uri, fc, verify_webapp_host?m_ssl_ca_file:""));
 	soa::GenericPtr soap_result;
 	try {
 		soap_result = call->run();
@@ -908,7 +908,7 @@ ConnectionPtr ServiceAccountHandler::_realmConnect(soa::CollectionPtr rcp,
 	    realm_tls ? "yes" : "no",
 	    cookie->value().c_str()));
 	ConnectionPtr connection = 
-		boost::shared_ptr<RealmConnection>(new RealmConnection(m_ssl_ca_file, realm_address->value(), 
+		std::shared_ptr<RealmConnection>(new RealmConnection(m_ssl_ca_file, realm_address->value(), 
 								realm_port->value(), realm_tls, cookie->value(), doc_id, master, session_id,
 								boost::bind(&ServiceAccountHandler::_handleRealmPacket, this, _1)));
 
@@ -927,7 +927,7 @@ ServiceBuddyPtr	ServiceAccountHandler::_getBuddy(const UT_UTF8String& descriptor
 {
 	for (std::vector<BuddyPtr>::iterator it = getBuddies().begin(); it != getBuddies().end(); it++)
 	{
-		ServiceBuddyPtr pB = boost::static_pointer_cast<ServiceBuddy>(*it);
+		ServiceBuddyPtr pB = std::static_pointer_cast<ServiceBuddy>(*it);
 		UT_continue_if_fail(pB);
 		if (pB->getDescriptor(false) == descriptor)
 			return pB;
@@ -940,7 +940,7 @@ ServiceBuddyPtr ServiceAccountHandler::_getBuddy(ServiceBuddyPtr pBuddy)
 	UT_return_val_if_fail(pBuddy, ServiceBuddyPtr());
 	for (std::vector<BuddyPtr>::iterator it = getBuddies().begin(); it != getBuddies().end(); it++)
 	{
-		ServiceBuddyPtr pB = boost::static_pointer_cast<ServiceBuddy>(*it);
+		ServiceBuddyPtr pB = std::static_pointer_cast<ServiceBuddy>(*it);
 		UT_continue_if_fail(pB);
 		if (pB->getUserId() == pBuddy->getUserId() &&
 			pB->getType() == pBuddy->getType())
@@ -953,7 +953,7 @@ ServiceBuddyPtr ServiceAccountHandler::_getBuddy(ServiceBuddyType type, uint64_t
 {
 	for (std::vector<BuddyPtr>::iterator it = getBuddies().begin(); it != getBuddies().end(); it++)
 	{
-		ServiceBuddyPtr pB = boost::static_pointer_cast<ServiceBuddy>(*it);
+		ServiceBuddyPtr pB = std::static_pointer_cast<ServiceBuddy>(*it);
 		UT_continue_if_fail(pB);
 		if (pB->getUserId() == user_id && pB->getType() == type)
 			return pB;
@@ -1098,7 +1098,7 @@ bool ServiceAccountHandler::_getConnections()
 					UT_DEBUGMSG(("Got a friend: %s <id: %lld>\n", friend_->name.c_str(), (long long unsigned)friend_->friend_id));
 					if (friend_->name != "")
 					{
-						ServiceBuddyPtr pBuddy = boost::shared_ptr<ServiceBuddy>(new ServiceBuddy(this, SERVICE_FRIEND, friend_->friend_id, friend_->name, _getDomain()));
+						ServiceBuddyPtr pBuddy = std::shared_ptr<ServiceBuddy>(new ServiceBuddy(this, SERVICE_FRIEND, friend_->friend_id, friend_->name, _getDomain()));
 						ServiceBuddyPtr pExistingBuddy = _getBuddy(pBuddy); // TODO: add a getBuddy function based on the email address
 						if (!pExistingBuddy)
 							addBuddy(pBuddy);
@@ -1114,7 +1114,7 @@ bool ServiceAccountHandler::_getConnections()
 					UT_DEBUGMSG(("Got a group: %s <id: %lld>\n", group_->name.c_str(), (long long unsigned)group_->group_id));
 					if (group_->name != "")
 					{
-						ServiceBuddyPtr pBuddy = boost::shared_ptr<ServiceBuddy>(new ServiceBuddy(this, SERVICE_GROUP, group_->group_id, group_->name, _getDomain()));
+						ServiceBuddyPtr pBuddy = std::shared_ptr<ServiceBuddy>(new ServiceBuddy(this, SERVICE_GROUP, group_->group_id, group_->name, _getDomain()));
 						ServiceBuddyPtr pExistingBuddy = _getBuddy(pBuddy); // TODO: add a getBuddy function based on the email address
 						if (!pExistingBuddy)
 							addBuddy(pBuddy);
@@ -1303,7 +1303,7 @@ soa::function_call_ptr ServiceAccountHandler::constructSaveDocumentCall(PD_Docum
 	const std::string email = getProperty("email");
 	const std::string password = getProperty("password");
 
-	boost::shared_ptr<std::string> document(new std::string(""));
+	std::shared_ptr<std::string> document(new std::string(""));
 	UT_return_val_if_fail(AbiCollabSessionManager::serializeDocument(pDoc, *document, true) == UT_OK, soa::function_call_ptr());
 	
 	// construct a SOAP method call to gets our documents
@@ -1417,7 +1417,7 @@ bool ServiceAccountHandler::parseUserInfo(const std::string& userinfo, uint64_t&
 // TODO: don't need this method, call soup_soa::invoke directly
 bool ServiceAccountHandler::_listDocuments(soa::function_call_ptr fc_ptr,
 					const std::string uri, bool verify_webapp_host,
-					boost::shared_ptr<std::string> result_ptr)
+					std::shared_ptr<std::string> result_ptr)
 {
 	UT_DEBUGMSG(("ServiceAccountHandler::_listDocuments()\n"));
 	UT_return_val_if_fail(fc_ptr, false);
@@ -1427,7 +1427,7 @@ bool ServiceAccountHandler::_listDocuments(soa::function_call_ptr fc_ptr,
 
 
 void ServiceAccountHandler::_listDocuments_cb(bool success, 
-			soa::function_call_ptr fc_ptr, boost::shared_ptr<std::string> result_ptr)
+			soa::function_call_ptr fc_ptr, std::shared_ptr<std::string> result_ptr)
 {
 	UT_DEBUGMSG(("ServiceAccountHandler::_listDocuments_cb()\n"));
 	AbiCollabSessionManager* pManager = AbiCollabSessionManager::getManager();
@@ -1469,7 +1469,7 @@ void ServiceAccountHandler::_listDocuments_cb(bool success,
 
 						// re-attempt to fetch the documents list
 						pManager->beginAsyncOperation(this);
-						boost::shared_ptr<AsyncWorker<bool> > async_list_docs_ptr(
+						std::shared_ptr<AsyncWorker<bool> > async_list_docs_ptr(
 									new AsyncWorker<bool>(
 										boost::bind(&ServiceAccountHandler::_listDocuments, this,
 													fc_ptr, getProperty("uri"), verify_webapp_host, result_ptr),
@@ -1653,11 +1653,11 @@ void ServiceAccountHandler::_handleMessages(ConnectionPtr connection)
 			case rpv1::PACKET_DELIVER:
 				{
 					UT_DEBUGMSG(("Received a 'Deliver' packet!\n"));
-					boost::shared_ptr<rpv1::DeliverPacket> dp =
-							boost::static_pointer_cast<rpv1::DeliverPacket>(packet);					
+					std::shared_ptr<rpv1::DeliverPacket> dp =
+							std::static_pointer_cast<rpv1::DeliverPacket>(packet);					
 					UT_return_if_fail(dp->getMessage());
 				
-					boost::shared_ptr<RealmBuddy> buddy_ptr = 
+					std::shared_ptr<RealmBuddy> buddy_ptr = 
 							connection->getBuddy(dp->getConnectionId());
 					UT_return_if_fail(buddy_ptr);
 				
@@ -1670,7 +1670,7 @@ void ServiceAccountHandler::_handleMessages(ConnectionPtr connection)
 						// have to abort that...
 						if (buddy_ptr->master())
 						{
-							boost::shared_ptr<PendingDocumentProperties> pdp = connection->getPendingDocProps();
+							std::shared_ptr<PendingDocumentProperties> pdp = connection->getPendingDocProps();
 							if (pdp)
 							{
 								UT_return_if_fail(pdp->pDlg);
@@ -1687,7 +1687,7 @@ void ServiceAccountHandler::_handleMessages(ConnectionPtr connection)
 					if (pPacket->getClassType() == PCT_JoinSessionRequestResponseEvent)
 					{
 						UT_DEBUGMSG(("Trapped a JoinSessionRequestResponseEvent!\n"));
-						boost::shared_ptr<PendingDocumentProperties> pdp = connection->getPendingDocProps();
+						std::shared_ptr<PendingDocumentProperties> pdp = connection->getPendingDocProps();
 						UT_return_if_fail(pdp);
 
 						UT_DEBUGMSG(("Joining received document...\n"));
@@ -1705,11 +1705,11 @@ void ServiceAccountHandler::_handleMessages(ConnectionPtr connection)
 						if (strp->promote())
 						{
 							UT_DEBUGMSG(("We're the new master, informing the realm!\n"));
-							boost::shared_ptr<rpv1::SessionTakeOverPacket> stop(new rpv1::SessionTakeOverPacket());
+							std::shared_ptr<rpv1::SessionTakeOverPacket> stop(new rpv1::SessionTakeOverPacket());
 							rpv1::send(*stop, connection->socket(), 
 									boost::bind(&ServiceAccountHandler::_write_result, this,
-										boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, connection,
-											boost::static_pointer_cast<rpv1::Packet>(stop))	
+									boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, connection,
+											std::static_pointer_cast<rpv1::Packet>(stop))
 								);
 
 							// promote this connection to master
@@ -1742,7 +1742,7 @@ void ServiceAccountHandler::_handleMessages(ConnectionPtr connection)
 							BuddyPtr pNewMaster = constructBuddy(strp->getBuddyIdentifiers()[0], buddy_ptr);
 							UT_continue_if_fail(pNewMaster);
 							UT_DEBUGMSG(("Promoting buddy %s\n", pNewMaster->getDescriptor(true).utf8_str()));
-							RealmBuddyPtr pB = boost::static_pointer_cast<RealmBuddy>(pNewMaster);
+							RealmBuddyPtr pB = std::static_pointer_cast<RealmBuddy>(pNewMaster);
 							pB->promote();
 						}
 
@@ -1757,8 +1757,8 @@ void ServiceAccountHandler::_handleMessages(ConnectionPtr connection)
 			case rpv1::PACKET_USERJOINED:
 				{
 					UT_DEBUGMSG(("Received a 'User Joined' packet!\n"));
-					boost::shared_ptr<rpv1::UserJoinedPacket> ujp =
-							boost::static_pointer_cast<rpv1::UserJoinedPacket>(packet);
+					std::shared_ptr<rpv1::UserJoinedPacket> ujp =
+							std::static_pointer_cast<rpv1::UserJoinedPacket>(packet);
 					UT_DEBUGMSG(("User information:\n%s\n", ujp->getUserInfo()->c_str()));
 
 					uint64_t user_id;
@@ -1779,8 +1779,8 @@ void ServiceAccountHandler::_handleMessages(ConnectionPtr connection)
 			case rpv1::PACKET_USERLEFT:
 				{
 					UT_DEBUGMSG(("Received a 'User Left' packet!\n"));
-					boost::shared_ptr<rpv1::UserLeftPacket> ulp =
-							boost::static_pointer_cast<rpv1::UserLeftPacket>(packet);
+					std::shared_ptr<rpv1::UserLeftPacket> ulp =
+							std::static_pointer_cast<rpv1::UserLeftPacket>(packet);
 					RealmBuddyPtr realm_buddy_ptr = connection->getBuddy(ulp->getConnectionId());
 					if (!realm_buddy_ptr)
 						return; // we don't store slave buddies at the moment, so this happens when a slave disconnects

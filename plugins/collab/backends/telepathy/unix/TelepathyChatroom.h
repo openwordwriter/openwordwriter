@@ -24,8 +24,7 @@
 #include <string>
 
 #include <telepathy-glib/telepathy-glib.h>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
+#include <memory>
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
@@ -35,9 +34,9 @@
 
 class TelepathyAccountHandler;
 class DTubeBuddy;
-typedef boost::shared_ptr<DTubeBuddy> DTubeBuddyPtr;
+typedef std::shared_ptr<DTubeBuddy> DTubeBuddyPtr;
 
-class TelepathyChatroom : public boost::enable_shared_from_this<TelepathyChatroom>
+class TelepathyChatroom : public std::enable_shared_from_this<TelepathyChatroom>
 {
 public:
 	TelepathyChatroom(TelepathyAccountHandler* pHandler, TpChannel* pChannel,
@@ -55,7 +54,7 @@ public:
 
 	void setChannel(TpChannel* pChannel);
 
-	boost::shared_ptr<TelepathyChatroom> ptr()
+	std::shared_ptr<TelepathyChatroom> ptr()
 		{ return shared_from_this(); }
 
 	TelepathyAccountHandler* getHandler()
@@ -111,6 +110,6 @@ private:
 	std::vector<std::string> m_offered_tubes; // list of TelepathyBuddy descriptors
 };
 
-typedef boost::shared_ptr<TelepathyChatroom> TelepathyChatroomPtr;
+typedef std::shared_ptr<TelepathyChatroom> TelepathyChatroomPtr;
 
 #endif /* __TELEPATHY_CHATROOM_H__ */

@@ -120,7 +120,7 @@ BuddyPtr SugarAccountHandler::constructBuddy(const PropertyMap& props)
 	// guarantee at the moment that the name we could get from the sugar
 	// presence framework would always be unique to one buddy; hence the
 	// dbus address will do for now
-	return boost::shared_ptr<SugarBuddy>(new SugarBuddy(this, cit->second.c_str()));
+	return std::shared_ptr<SugarBuddy>(new SugarBuddy(this, cit->second.c_str()));
 }
 
 BuddyPtr SugarAccountHandler::constructBuddy(const std::string& descriptor, BuddyPtr /*pBuddy*/)
@@ -232,7 +232,7 @@ bool SugarAccountHandler::send(const Packet* pPacket, BuddyPtr pBuddy)
 	UT_return_val_if_fail(pPacket, false);
 	UT_return_val_if_fail(m_pTube, false);
 	
-	SugarBuddyPtr pSugarBuddy = boost::static_pointer_cast<SugarBuddy>(pBuddy);
+	SugarBuddyPtr pSugarBuddy = std::static_pointer_cast<SugarBuddy>(pBuddy);
 	UT_DEBUGMSG(("Sending packet to sugar buddy on dbus addess: %s\n", pSugarBuddy->getDBusAddress().utf8_str()));
 
 	return _send(pPacket, pSugarBuddy->getDBusAddress().utf8_str());
@@ -461,7 +461,7 @@ bool SugarAccountHandler::joinBuddy(FV_View* pView, const UT_UTF8String& buddyDB
 	UT_DEBUGMSG(("SugarAccountHandler::joinBuddy() - buddyDBusAddress: %s\n", buddyDBusAddress.utf8_str()));
 	UT_return_val_if_fail(pView, false);
 
-	SugarBuddyPtr pBuddy = boost::shared_ptr<SugarBuddy>(new SugarBuddy(this, buddyDBusAddress));
+	SugarBuddyPtr pBuddy = std::shared_ptr<SugarBuddy>(new SugarBuddy(this, buddyDBusAddress));
 	addBuddy(pBuddy);
 
 	return true;
@@ -504,7 +504,7 @@ bool SugarAccountHandler::hasAccess(const std::vector<std::string>& /*vAcl*/, Bu
 	// The sugar presence service is responsible for access control. Just do a quick
 	// check here to see if we know the buddy on this account, and
 	// then be done with it.
-	SugarBuddyPtr pSugarBuddy = boost::dynamic_pointer_cast<SugarBuddy>(pBuddy);
+	SugarBuddyPtr pSugarBuddy = std::dynamic_pointer_cast<SugarBuddy>(pBuddy);
 	UT_return_val_if_fail(pSugarBuddy, false);
 
 	SugarBuddyPtr pExistingBuddy = getBuddy(pSugarBuddy->getDBusAddress());
@@ -518,7 +518,7 @@ SugarBuddyPtr SugarAccountHandler::getBuddy(const UT_UTF8String& dbusAddress)
 {
 	for (std::vector<BuddyPtr>::iterator it = getBuddies().begin(); it != getBuddies().end(); it++)
 	{
-		SugarBuddyPtr pBuddy = boost::static_pointer_cast<SugarBuddy>(*it);
+		SugarBuddyPtr pBuddy = std::static_pointer_cast<SugarBuddy>(*it);
 		UT_continue_if_fail(pBuddy);
 		if (pBuddy->getDBusAddress() == dbusAddress)
 			return pBuddy;
@@ -630,7 +630,7 @@ DBusHandlerResult s_dbus_handle_message(DBusConnection *connection, DBusMessage 
 					// this can actually happen, for example when joining a tube
 					// we send out a broadcast GetSessionsEvent. Responses from
 					// that can return before joinBuddy() was called for that buddy.
-					pBuddy = boost::shared_ptr<SugarBuddy>(new SugarBuddy( pHandler, senderDBusAddress));
+					pBuddy = std::shared_ptr<SugarBuddy>(new SugarBuddy( pHandler, senderDBusAddress));
 					pHandler->addBuddy(pBuddy);
 				}
 

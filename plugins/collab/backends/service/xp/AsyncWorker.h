@@ -24,16 +24,16 @@
 #else
 # include <asio.hpp>
 #endif
+#include <memory>
 
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include "ut_debugmsg.h"
 #include <sync/xp/Synchronizer.h>
 
 template <class T>
-class AsyncWorker : private boost::noncopyable, public boost::enable_shared_from_this<AsyncWorker<T> >
+class AsyncWorker : private boost::noncopyable, public std::enable_shared_from_this<AsyncWorker<T> >
 {
 public:
 	AsyncWorker(boost::function<T ()> async_func, boost::function<void (T)> async_callback)
@@ -53,7 +53,7 @@ public:
 	virtual void start()
 	{
 		m_synchronizer.reset(new Synchronizer(boost::bind(&AsyncWorker<T>::_signal,
-												boost::enable_shared_from_this<AsyncWorker<T> >::shared_from_this())));
+												std::enable_shared_from_this<AsyncWorker<T> >::shared_from_this())));
 		m_thread_ptr.reset(
 				new std::thread(
 					boost::bind(&AsyncWorker::_thread_func,
@@ -79,8 +79,8 @@ private:
 
 	boost::function<T ()>					m_async_func;
 	boost::function<void (T)>				m_async_callback;
-	boost::shared_ptr<Synchronizer>			m_synchronizer;
-	boost::shared_ptr<std::thread>			m_thread_ptr;
+	std::shared_ptr<Synchronizer>			m_synchronizer;
+	std::shared_ptr<std::thread>			m_thread_ptr;
 	T										m_func_result;
 };
 

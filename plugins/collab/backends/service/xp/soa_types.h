@@ -36,8 +36,7 @@
 #include <stdint.h>
 #endif
 #include <string>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
+#include <memory>
 
 namespace soa {
 
@@ -51,7 +50,7 @@ enum Type {
 	QNAME_TYPE
 };
 
-class Generic : public boost::enable_shared_from_this<Generic> {
+class Generic : public std::enable_shared_from_this<Generic> {
 public:
 	Generic(const std::string& n, Type t)
 		: name_(n),
@@ -74,22 +73,22 @@ public:
 	}
 
 	template <class T>
-	boost::shared_ptr<T> as() {
-		return boost::dynamic_pointer_cast<T>(shared_from_this());
+	std::shared_ptr<T> as() {
+		return std::dynamic_pointer_cast<T>(shared_from_this());
 	}
 
 	template <class T>
-	boost::shared_ptr<T> as(const std::string& n) {
+	std::shared_ptr<T> as(const std::string& n) {
 		if (name_ != n)
-			return boost::shared_ptr<T>();
-		return boost::dynamic_pointer_cast<T>(shared_from_this());
+			return std::shared_ptr<T>();
+		return std::dynamic_pointer_cast<T>(shared_from_this());
 	}
 
 private:
 	std::string name_;
 	Type type_;
 };
-typedef boost::shared_ptr<Generic> GenericPtr;
+typedef std::shared_ptr<Generic> GenericPtr;
 
 template <class T, Type Y>
 class Primitive : public Generic {
@@ -108,17 +107,17 @@ private:
 };
 
 typedef Primitive<std::string, STRING_TYPE> String;
-typedef boost::shared_ptr<String> StringPtr;
+typedef std::shared_ptr<String> StringPtr;
 
 typedef Primitive<int64_t, INT_TYPE> Int;
-typedef boost::shared_ptr<Int> IntPtr;
+typedef std::shared_ptr<Int> IntPtr;
 
 typedef Primitive<bool, BOOL_TYPE> Bool;
-typedef boost::shared_ptr<Bool> BoolPtr;
+typedef std::shared_ptr<Bool> BoolPtr;
 
 class Base64Bin : public Generic {
 public:
-	Base64Bin(const std::string& n, boost::shared_ptr<std::string> data)
+	Base64Bin(const std::string& n, std::shared_ptr<std::string> data)
 		: Generic(n, BASE64BIN_TYPE),
 		m_data(data)
 	{}
@@ -128,12 +127,12 @@ public:
 	}
 
 private:
-	boost::shared_ptr<std::string> m_data;
+	std::shared_ptr<std::string> m_data;
 };
-typedef boost::shared_ptr<Base64Bin> Base64BinPtr;
+typedef std::shared_ptr<Base64Bin> Base64BinPtr;
 
 typedef Primitive<std::string, QNAME_TYPE> QName; // FIXME: QName's are not simple strings, but they have a Namespace URI, local part and prefix
-typedef boost::shared_ptr<QName> QNamePtr;
+typedef std::shared_ptr<QName> QNamePtr;
 
 class Complex : public Generic {
 public:
@@ -158,8 +157,8 @@ public:
 	}
 
 	template <class Y>
-	boost::shared_ptr< Array< boost::shared_ptr<Y> > > construct() const {
-		boost::shared_ptr< Array< boost::shared_ptr<Y> > > conv(new Array< boost::shared_ptr<Y> >(name()));
+	std::shared_ptr< Array< std::shared_ptr<Y> > > construct() const {
+		std::shared_ptr< Array< std::shared_ptr<Y> > > conv(new Array< std::shared_ptr<Y> >(name()));
 		for (typename std::vector< T >::const_iterator it = values_.begin(); it != values_.end(); it++) {
 			conv->add(Y::construct(*it));
 		}
@@ -181,7 +180,7 @@ public:
 private:
 	std::vector< T > values_;
 };
-typedef boost::shared_ptr< Array<GenericPtr> > ArrayPtr;
+typedef std::shared_ptr< Array<GenericPtr> > ArrayPtr;
 
 class Collection : public Complex {
 public:
@@ -196,17 +195,17 @@ public:
 	}
 
 	template <class T>
-	boost::shared_ptr<T> get(const std::string& n) {
+	std::shared_ptr<T> get(const std::string& n) {
 		for (std::vector<GenericPtr>::iterator it = values_.begin(); it != values_.end(); it++) {
 			if ((*it)->name() == n) {
 				return (*it)->as<T>();
 			}
 		}
-		return boost::shared_ptr<T>();
+		return std::shared_ptr<T>();
 	}
 
 	template <class T>
-	boost::shared_ptr<T> operator[](const std::string& n) {
+	std::shared_ptr<T> operator[](const std::string& n) {
 		return get<T>(n);
 	}
 
@@ -221,7 +220,7 @@ public:
 private:
 	std::vector<GenericPtr> values_;
 };
-typedef boost::shared_ptr<Collection> CollectionPtr;
+typedef std::shared_ptr<Collection> CollectionPtr;
 
 class SoapFault {
 public:
