@@ -27,7 +27,7 @@
 #endif
 #include <string>
 #include <memory>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include "xap_App.h"
@@ -485,7 +485,7 @@ void ServiceAccountHandler::getSessionsAsync()
 				new AsyncWorker<bool>(
 					boost::bind(&ServiceAccountHandler::_listDocuments, this, 
 								fc_ptr, getProperty("uri"), verify_webapp_host, result_ptr),
-					boost::bind(&ServiceAccountHandler::_listDocuments_cb, this, _1, fc_ptr, result_ptr)
+					boost::bind(&ServiceAccountHandler::_listDocuments_cb, this, boost::placeholders::_1, fc_ptr, result_ptr)
 				)
 			);
 	async_list_docs_ptr->start();	
@@ -509,7 +509,7 @@ void ServiceAccountHandler::getSessionsAsync(const Buddy& /*buddy*/)
 				new AsyncWorker<bool>(
 					boost::bind(&ServiceAccountHandler::_listDocuments, this, 
 								fc_ptr, getProperty("uri"), verify_webapp_host, result_ptr),
-					boost::bind(&ServiceAccountHandler::_listDocuments_cb, this, _1, fc_ptr, result_ptr)
+					boost::bind(&ServiceAccountHandler::_listDocuments_cb, this, boost::placeholders::_1, fc_ptr, result_ptr)
 				)
 			);
 	async_list_docs_ptr->start();	
@@ -910,7 +910,7 @@ ConnectionPtr ServiceAccountHandler::_realmConnect(soa::CollectionPtr rcp,
 	ConnectionPtr connection = 
 		std::shared_ptr<RealmConnection>(new RealmConnection(m_ssl_ca_file, realm_address->value(), 
 								realm_port->value(), realm_tls, cookie->value(), doc_id, master, session_id,
-								boost::bind(&ServiceAccountHandler::_handleRealmPacket, this, _1)));
+								boost::bind(&ServiceAccountHandler::_handleRealmPacket, this, boost::placeholders::_1)));
 
 	// TODO: this connect() call is blocking, so it _could_ take a while; we should
 	// display a progress bar in that case
@@ -1473,7 +1473,7 @@ void ServiceAccountHandler::_listDocuments_cb(bool success,
 									new AsyncWorker<bool>(
 										boost::bind(&ServiceAccountHandler::_listDocuments, this,
 													fc_ptr, getProperty("uri"), verify_webapp_host, result_ptr),
-										boost::bind(&ServiceAccountHandler::_listDocuments_cb, this, _1, fc_ptr, result_ptr)
+										boost::bind(&ServiceAccountHandler::_listDocuments_cb, this, boost::placeholders::_1, fc_ptr, result_ptr)
 									)
 								);
 						async_list_docs_ptr->start();

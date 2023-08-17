@@ -325,7 +325,7 @@ void ClientProxy::setup()
 	{
 		// FIXME: should we make the proxy a shared ptr?
 		transport_ptr_.reset(new ClientTransport(connect_address_, connect_port_,
-											boost::bind(&ClientProxy::on_transport_connect, this, _1, _2)));
+											boost::bind(&ClientProxy::on_transport_connect, this, boost::placeholders::_1, boost::placeholders::_2)));
 
 		for (unsigned short port = MIN_CLIENT_PORT; port <= MAX_CLIENT_PORT; port++) {
 			try {
@@ -459,7 +459,7 @@ void ServerProxy::setup()
 {
 	// FIXME: should we make the proxy a shared ptr?
 	transport_ptr_.reset(new ServerTransport(bind_ip_, bind_port_,
-										boost::bind(&ServerProxy::on_transport_connect, this, _1, _2)));
+										boost::bind(&ServerProxy::on_transport_connect, this, boost::placeholders::_1, boost::placeholders::_2)));
 
 	// start accepting connections
 	std::static_pointer_cast<ServerTransport>(transport_ptr_)->accept();

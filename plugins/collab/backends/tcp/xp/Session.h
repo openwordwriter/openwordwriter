@@ -22,7 +22,7 @@
 #include <memory>
 
 #include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/noncopyable.hpp>
 #include <deque>
 #include <sync/xp/lock.h>
@@ -94,7 +94,7 @@ public:
 	void asyncReadHeader()
 	{
 		UT_DEBUGMSG(("Session::asyncReadHeader()\n"));
-		packet_data = 0; // just to be sure we'll never touch a datablock we might have read before
+		packet_data = nullptr; // just to be sure we'll never touch a datablock we might have read before
 		boost::asio::async_read(socket,
 			boost::asio::buffer(&packet_size, 4),
 			boost::bind(&Session::asyncReadHeaderHandler, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));

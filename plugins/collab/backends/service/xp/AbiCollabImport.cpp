@@ -161,7 +161,7 @@ bool IE_Imp_AbiCollab::_parse(GsfInput * input, std::string& email, std::string&
 
 	// FIXME: put this in a boost shared ptr
 	xmlDocPtr reader = xmlReadMemory(reinterpret_cast<const char*>(contents), 
-							strlen(reinterpret_cast<const char*>(contents)), 0, "UTF-8", 0);
+							strlen(reinterpret_cast<const char*>(contents)), nullptr, "UTF-8", 0);
 	UT_return_val_if_fail(reader, false);
 	std::shared_ptr<xmlDocPtr> reader_ptr(&reader, XmlDocDeleter());
 	

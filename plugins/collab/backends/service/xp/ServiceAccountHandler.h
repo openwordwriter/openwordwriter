@@ -25,7 +25,7 @@
 #include <memory>
 
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 
 #include "xap_Types.h"
 #include "ut_string_class.h"

@@ -17,7 +17,7 @@
  */
 
 #include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include "ut_assert.h"
 #include "ut_debugmsg.h"

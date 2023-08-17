@@ -31,7 +31,7 @@
 
 #include "config.h"
 
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
 #if defined(HAVE_BOOST_ASIO_HPP)

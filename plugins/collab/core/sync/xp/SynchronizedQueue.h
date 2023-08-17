@@ -20,7 +20,7 @@
 #define __SYNCHRONIZED_QUEUE__
 
 #include <deque>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
 #include <sync/xp/lock.h>

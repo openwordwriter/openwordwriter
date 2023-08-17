@@ -30,9 +30,9 @@ TCPAccountHandler::TCPAccountHandler()
 	: AccountHandler(),
 	m_io_service(),
 	m_work(m_io_service),
-	m_thread(0),
+	m_thread(nullptr),
 	m_bConnected(false),
-	m_pDelegator(0)
+	m_pDelegator(nullptr)
 {
 }
 
@@ -91,8 +91,8 @@ ConnectResult TCPAccountHandler::connect()
 		try
 		{
 			IOServerHandler* pDelegator = new IOServerHandler(port, 
-						boost::bind(&TCPAccountHandler::_handleAccept, this, _1, _2),
-						boost::bind(&TCPAccountHandler::handleEvent, this, _1), m_io_service);
+						boost::bind(&TCPAccountHandler::_handleAccept, this, boost::placeholders::_1, boost::placeholders::_2),
+						boost::bind(&TCPAccountHandler::handleEvent, this, boost::placeholders::_1), m_io_service);
 			m_pDelegator = pDelegator;
 			m_bConnected = true; // todo: ask it to the acceptor
 			pDelegator->run();
@@ -121,7 +121,7 @@ ConnectResult TCPAccountHandler::connect()
 			boost::asio::ip::tcp::resolver::iterator iterator(resolver.resolve(query));
 
 			bool connected = false;
-			std::shared_ptr<Session> session_ptr(new Session(m_io_service, boost::bind(&TCPAccountHandler::handleEvent, this, _1)));
+			std::shared_ptr<Session> session_ptr(new Session(m_io_service, boost::bind(&TCPAccountHandler::handleEvent, this, boost::placeholders::_1)));
 			while (iterator != boost::asio::ip::tcp::resolver::iterator())
 			{
 				try

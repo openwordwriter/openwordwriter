@@ -850,7 +850,7 @@ void findSessionFiles( time_t now, std::vector<std::string>& files )
 				{
 					//UT_DEBUGMSG(("findSessionFiles: it's a session file!\n"));
 					// and if it's too old
-					UT_DEBUGMSG(("findSessionFiles: file is %u seconds old, treshold is %u!\n", now - details.st_mtime, secondsInDay));
+					UT_DEBUGMSG(("findSessionFiles: file is %lu seconds old, treshold is %u!\n", now - details.st_mtime, secondsInDay));
 					if ((now > details.st_mtime) &&				// is file older than current time? (should always be the case, but who knows)
 						(now - details.st_mtime > secondsInDay))	// is file older than a day?
 					{
@@ -877,10 +877,10 @@ void s_cleanup_old_sessions()
 	
 	// get all files we need to delete
 	std::vector<std::string> files;
-	findSessionFiles( time(0), files );
+	findSessionFiles( time(nullptr), files );
 	
 	// delete files!
-	UT_DEBUGMSG(("cleanupOldSessions: removing %u files\n", files.size()));
+	UT_DEBUGMSG(("cleanupOldSessions: removing %lu files\n", files.size()));
 	for (size_t i=0; i<files.size(); ++i) 
 	{
 		UT_DEBUGMSG(("cleanupOldSessions: removing %s\n", files[i].c_str()));

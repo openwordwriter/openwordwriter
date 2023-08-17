@@ -26,7 +26,7 @@
 #endif
 #include <memory>
 
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
 #include "ut_debugmsg.h"

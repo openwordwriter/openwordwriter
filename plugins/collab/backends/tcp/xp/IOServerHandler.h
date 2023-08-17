@@ -21,7 +21,7 @@
 
 #include "ut_debugmsg.h"
 
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/function.hpp>
 #if defined(HAVE_BOOST_ASIO_HPP)
 # include <boost/asio.hpp>
