@@ -29,6 +29,8 @@
 #ifndef __TLS_TUNNEL_H__
 #define __TLS_TUNNEL_H__
 
+#include "config.h"
+
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
@@ -49,7 +51,7 @@ typedef int pid_t;
 
 namespace tls_tunnel {
 
-typedef boost::shared_ptr<asio::ip::tcp::socket> socket_ptr_t;
+typedef boost::shared_ptr<boost::asio::ip::tcp::socket> socket_ptr_t;
 typedef boost::shared_ptr<gnutls_session_t> session_ptr_t;
 typedef boost::shared_ptr< std::vector<char> > buffer_ptr_t;
 
@@ -63,7 +65,7 @@ private:
 
 class Transport : public boost::enable_shared_from_this<Transport> {
 public:
-	asio::io_service& io_service();
+	boost::asio::io_service& io_service();
 	void run();
 	void stop();
 
@@ -72,8 +74,8 @@ protected:
 	virtual ~Transport();
 
 private:
-	asio::io_service io_service_;
-	asio::io_service::work work_;
+	boost::asio::io_service io_service_;
+	boost::asio::io_service::work work_;
 };
 
 typedef boost::shared_ptr<Transport> transport_ptr_t;
@@ -96,9 +98,9 @@ public:
 			boost::function<void (transport_ptr_t, socket_ptr_t)> on_connect);
 	void accept();
 private:
-	void on_accept(const asio::error_code& error, socket_ptr_t socket_ptr);
+	void on_accept(const boost::system::error_code& error, socket_ptr_t socket_ptr);
 
-	asio::ip::tcp::acceptor acceptor_;
+	boost::asio::ip::tcp::acceptor acceptor_;
 	boost::function<void (transport_ptr_t, socket_ptr_t)> on_connect_;
 };
 
@@ -114,7 +116,7 @@ public:
 protected:
 	Proxy(const std::string& ca_file);
 
-	void on_local_read(const asio::error_code& error, std::size_t bytes_transferred,
+	void on_local_read(const boost::system::error_code& error, std::size_t bytes_transferred,
 			transport_ptr_t transport_ptr, session_ptr_t session_ptr, socket_ptr_t local_socket_ptr,
 			buffer_ptr_t local_buffer_ptr, socket_ptr_t remote_socket_ptr);
 	void tunnel(transport_ptr_t transport_ptr, session_ptr_t session_ptr,
@@ -131,7 +133,7 @@ private:
 			socket_ptr_t local_socket_ptr, buffer_ptr_t local_buffer_ptr,
 			socket_ptr_t remote_socket);
 
-	asio::thread* t;
+	std::thread* t;
 };
 
 // FIXME: this clientproxy can only handle 1 SSL connection at the same time
@@ -148,7 +150,7 @@ public:
 
 private:
 	void on_transport_connect(transport_ptr_t transport_ptr, socket_ptr_t remote_socket_ptr);
-	void on_client_connect(const asio::error_code& error, transport_ptr_t transport_ptr,
+	void on_client_connect(const boost::system::error_code& error, transport_ptr_t transport_ptr,
 			session_ptr_t session_ptr, socket_ptr_t local_socket_ptr, socket_ptr_t remote_socket_ptr);
 	session_ptr_t setup_tls_session(socket_ptr_t remote_socket_ptr);
 
@@ -156,7 +158,7 @@ private:
 	unsigned short local_port_;
 	std::string connect_address_;
 	unsigned short connect_port_;
-	boost::shared_ptr<asio::ip::tcp::acceptor> acceptor_ptr;
+	boost::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor_ptr;
 	bool check_hostname_;
 };
 

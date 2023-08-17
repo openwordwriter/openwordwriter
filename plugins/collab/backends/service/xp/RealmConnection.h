@@ -94,7 +94,7 @@ public:
 		{ m_pDoc = pDoc; }
 	SynchronizedQueue<realm::protocolv1::PacketPtr>&		queue()
 		{ return m_packet_queue; }
-	asio::ip::tcp::socket&				socket()
+	boost::asio::ip::tcp::socket&				socket()
 		{ return m_socket; }
 
 	void								loadDocumentStart(AP_Dialog_GenericProgress* pDlg,
@@ -117,21 +117,21 @@ private:
 	bool								_login();
 	UserJoinedPacketPtr					_receiveUserJoinedPacket();
 	void								_receive();
-	void								_message(const asio::error_code& e,
+	void								_message(const boost::system::error_code& e,
 												std::size_t bytes_transferred,
 												boost::shared_ptr<std::string> msg_ptr);
 
 	void								_complete_packet(realm::protocolv1::PacketPtr packet_ptr);
-	void								_complete(const asio::error_code& e, std::size_t bytes_transferred,
+	void								_complete(const boost::system::error_code& e, std::size_t bytes_transferred,
 												realm::protocolv1::PacketPtr packet_ptr);
 
-	asio::io_service					m_io_service;
+	boost::asio::io_service					m_io_service;
 	std::string							m_ca_file;
 	std::string							m_address;
 	int									m_port;
 	int									m_tls;
-	asio::ip::tcp::socket				m_socket;
-	boost::shared_ptr<asio::thread>		m_thread_ptr;
+	boost::asio::ip::tcp::socket				m_socket;
+	boost::shared_ptr<std::thread>		m_thread_ptr;
 	std::string							m_cookie;
 	UT_uint64							m_user_id; // only valid after login
 	UT_uint8							m_connection_id; // only valid after login

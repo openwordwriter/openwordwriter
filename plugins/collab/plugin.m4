@@ -10,8 +10,8 @@ dnl set to yes when we find at least one dependency.
 
 collab_deps="no"
 
-AC_ARG_ENABLE([collab-backend-fake], 
-    [AS_HELP_STRING([--enable-collab-backend-fake], [Fake backend for debugging purposes only (default: off)])], 
+AC_ARG_ENABLE([collab-backend-fake],
+    [AS_HELP_STRING([--enable-collab-backend-fake], [Fake backend for debugging purposes only (default: off)])],
 [
 	enable_collab_backend_fake=$enableval
         if test "$enableval" = "yes" ; then
@@ -24,8 +24,8 @@ AC_MSG_CHECKING([for collab fake backend])
 AC_MSG_RESULT([$enable_collab_backend_fake])
 
 
-AC_ARG_ENABLE([collab-backend-telepathy], 
-    [AS_HELP_STRING([--enable-collab-backend-telepathy], [Telepathy backend (default: auto)])], 
+AC_ARG_ENABLE([collab-backend-telepathy],
+    [AS_HELP_STRING([--enable-collab-backend-telepathy], [Telepathy backend (default: auto)])],
 [
 	enable_collab_backend_telepathy=$enableval
         if test "$enableval" = "yes" ; then
@@ -44,8 +44,8 @@ test "$enable_collab_backend_telepathy" = "yes" && collab_pkgs="$collab_pkgs $co
 AC_MSG_CHECKING([for collab telepathy backend])
 AC_MSG_RESULT([$enable_collab_backend_telepathy])
 
-AC_ARG_ENABLE([collab-backend-xmpp], 
-    [AS_HELP_STRING([--enable-collab-backend-xmpp], [Jabber backend (default: auto)])], 
+AC_ARG_ENABLE([collab-backend-xmpp],
+    [AS_HELP_STRING([--enable-collab-backend-xmpp], [Jabber backend (default: auto)])],
 [
 	enable_collab_backend_xmpp=$enableval
 	if test "$enableval" = "yes" ; then
@@ -64,35 +64,33 @@ test "$enable_collab_backend_xmpp" = "yes" && collab_pkgs="$collab_pkgs $collab_
 AC_MSG_CHECKING([for collab xmpp backend])
 AC_MSG_RESULT([$enable_collab_backend_xmpp])
 
-AC_ARG_ENABLE([collab-backend-tcp], 
-    [AS_HELP_STRING([--enable-collab-backend-tcp], [TCP backend (default: auto)])], 
+AC_ARG_ENABLE([collab-backend-tcp],
+    [AS_HELP_STRING([--enable-collab-backend-tcp], [TCP backend (default: auto)])],
 [
 	enable_collab_backend_tcp=$enableval
 	if test "$enable_collab_backend_tcp" != "no"; then
 		AC_LANG_PUSH(C++)
-		AC_CHECK_HEADERS([asio.hpp], [],
-			[AC_CHECK_HEADERS([boost/asio.hpp], [AC_DEFINE([HAVE_BOOST_ASIO_HPP])],
+		AC_CHECK_HEADERS([boost/asio.hpp], [AC_DEFINE([HAVE_BOOST_ASIO_HPP])],
 		[
 			AC_MSG_ERROR([collab plugin: asio is required for the collab plugin TCP backend, see http://think-async.com/])
-		])])
+		])
 		AC_LANG_POP
 		collab_deps="yes"
 	fi
 ], [
 	AC_LANG_PUSH(C++)
-	AC_CHECK_HEADERS([asio.hpp],
-		[AC_CHECK_HEADERS([boost/asio.hpp], [AC_DEFINE([HAVE_BOOST_ASIO_HPP])],
+	AC_CHECK_HEADERS([boost/asio.hpp], [AC_DEFINE([HAVE_BOOST_ASIO_HPP])],
 	[
 		enable_collab_backend_tcp="yes"
 		collab_deps="yes"
-	])])
+	])
 	AC_LANG_POP
 ])
 AC_MSG_CHECKING([for collab tcp backend])
 AC_MSG_RESULT([$enable_collab_backend_tcp])
 
-AC_ARG_ENABLE([collab-backend-sugar], 
-    [AS_HELP_STRING([--enable-collab-backend-sugar], [Sugar/OLPC backend (default: auto)])], 
+AC_ARG_ENABLE([collab-backend-sugar],
+    [AS_HELP_STRING([--enable-collab-backend-sugar], [Sugar/OLPC backend (default: auto)])],
 [
 	enable_collab_backend_sugar=$enableval
 ], [
@@ -108,17 +106,16 @@ test "$enable_collab_backend_sugar" = "yes" && collab_pkgs="$collab_pkgs $collab
 AC_MSG_CHECKING([for collab sugar backend])
 AC_MSG_RESULT([$enable_collab_backend_sugar])
 
-AC_ARG_ENABLE([collab-backend-service], 
-    [AS_HELP_STRING([--enable-collab-backend-service], [abicollab.net backend (default: auto)])], 
+AC_ARG_ENABLE([collab-backend-service],
+    [AS_HELP_STRING([--enable-collab-backend-service], [abicollab.net backend (default: auto)])],
 [
 	enable_collab_backend_service=$enableval
 	if test "$enable_collab_backend_service" != "no"; then
 		AC_LANG_PUSH(C++)
-		AC_CHECK_HEADERS([asio.hpp], [],
-		[AC_CHECK_HEADERS([boost/asio.hpp], [AC_DEFINE([HAVE_BOOST_ASIO_HPP])],	
+		AC_CHECK_HEADERS([boost/asio.hpp], [AC_DEFINE([HAVE_BOOST_ASIO_HPP])],
 		[
 			AC_MSG_ERROR([collab plugin: asio is required for the the abicollab.net backend, see http://think-async.com/])
-		])])
+		])
 		AC_LANG_POP
 		PKG_CHECK_EXISTS([ $collab_service_req ], [], [
 			AC_MSG_ERROR([collab plugin: missing dependencies $collab_service_req])
@@ -127,17 +124,14 @@ AC_ARG_ENABLE([collab-backend-service],
 	fi
 ], [
 	AC_LANG_PUSH(C++)
-	AC_CHECK_HEADERS([asio.hpp],
-		[AC_CHECK_HEADERS([boost/asio.hpp], [AC_DEFINE([HAVE_BOOST_ASIO_HPP])],
+	AC_CHECK_HEADERS([boost/asio.hpp], [AC_DEFINE([HAVE_BOOST_ASIO_HPP])],
 	[
 		PKG_CHECK_EXISTS([ $collab_service_req ], [
 			enable_collab_backend_service="yes"
 			collab_deps="yes"
 		], [
 			enable_collab_backend_service="no"
-		])])
-	], [
-		enable_collab_backend_service="no"
+		])
         ])
 	AC_LANG_POP
 ])
@@ -145,8 +139,8 @@ test "$enable_collab_backend_service" = "yes" && collab_pkgs="$collab_pkgs $coll
 AC_MSG_CHECKING([for collab service backend])
 AC_MSG_RESULT([$enable_collab_backend_service])
 
-AC_ARG_ENABLE([collab-backend-sip], 
-    [AS_HELP_STRING([--enable-collab-backend-sip], [Experimental SIP backend (default: off)])], 
+AC_ARG_ENABLE([collab-backend-sip],
+    [AS_HELP_STRING([--enable-collab-backend-sip], [Experimental SIP backend (default: off)])],
 [
 	enable_collab_backend_sipsimple=$enableval
 	if test "$enableval" = "yes" ; then
@@ -158,8 +152,8 @@ AC_ARG_ENABLE([collab-backend-sip],
 AC_MSG_CHECKING([for collab sip backend])
 AC_MSG_RESULT([$enable_collab_backend_sipsimple])
 
-AC_ARG_ENABLE([collab-record-always], 
-    [AS_HELP_STRING([--enable-collab-record-always], [Always record AbiCollab sessions (default: off)])], 
+AC_ARG_ENABLE([collab-record-always],
+    [AS_HELP_STRING([--enable-collab-record-always], [Always record AbiCollab sessions (default: off)])],
 [
 	enable_collab_record_always=$enableval
 	if test "$enableval" = "yes" ; then

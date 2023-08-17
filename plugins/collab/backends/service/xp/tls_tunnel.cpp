@@ -45,7 +45,7 @@ namespace tls_tunnel {
 #define TLS_VERIFY_HOSTNAME_ERROR "Error verifying hostname"
 #define TLS_CANT_GET_PEER_CERT_ERROR "Failed to get peer certificate"
 
-typedef boost::shared_ptr<asio::ip::tcp::socket> socket_ptr_t;
+typedef boost::shared_ptr<boost::asio::ip::tcp::socket> socket_ptr_t;
 typedef boost::shared_ptr<gnutls_session_t> session_ptr_t;
 typedef boost::shared_ptr< std::vector<char> > buffer_ptr_t;
 
@@ -79,12 +79,12 @@ public:
 	}
 };
 
-asio::io_service& Transport::io_service() {
+boost::asio::io_service& Transport::io_service() {
 	return io_service_;
 }
 
 void Transport::run() {
-	asio::error_code ec;
+	boost::system::error_code ec;
 	io_service_.run(ec);
 }
 
@@ -112,17 +112,17 @@ ClientTransport::ClientTransport(const std::string& host, unsigned short port,
 }
 
 void ClientTransport::connect() {
-	asio::ip::tcp::resolver resolver(io_service());
-	asio::ip::tcp::resolver::query query(host_, boost::lexical_cast<std::string>(port_));
-	asio::ip::tcp::resolver::iterator iterator(resolver.resolve(query));
-	socket_ptr_t socket_ptr(new asio::ip::tcp::socket(io_service()));
+	boost::asio::ip::tcp::resolver resolver(io_service());
+	boost::asio::ip::tcp::resolver::query query(host_, boost::lexical_cast<std::string>(port_));
+	boost::asio::ip::tcp::resolver::iterator iterator(resolver.resolve(query));
+	socket_ptr_t socket_ptr(new boost::asio::ip::tcp::socket(io_service()));
 
-	if (iterator == asio::ip::tcp::resolver::iterator())
-		throw asio::system_error(asio::error::host_not_found);
+	if (iterator == boost::asio::ip::tcp::resolver::iterator())
+		throw boost::system::system_error(boost::asio::error::host_not_found);
 
 	bool connected = false;
-	asio::error_code error_code;
-	while (iterator != asio::ip::tcp::resolver::iterator())
+	boost::system::error_code error_code;
+	while (iterator != boost::asio::ip::tcp::resolver::iterator())
 	{
 		try
 		{
@@ -130,7 +130,7 @@ void ClientTransport::connect() {
 			connected = true;
 			break;
 		}
-		catch (asio::system_error se)
+		catch (boost::system::system_error se)
 		{
 			error_code = se.code();
 			try { socket_ptr->close(); } catch(...) {}
@@ -138,24 +138,24 @@ void ClientTransport::connect() {
 		iterator++;
 	}
 	if (!connected)
-		throw asio::system_error(error_code); // throw the last error on failure
+		throw boost::system::system_error(error_code); // throw the last error on failure
 	on_connect_(shared_from_this(), socket_ptr);
 }
 
 ServerTransport::ServerTransport(const std::string& ip, unsigned short port, 
 		boost::function<void (transport_ptr_t, socket_ptr_t)> on_connect) 
 	: Transport(),
-	acceptor_(io_service(), asio::ip::tcp::endpoint(asio::ip::address_v4::from_string(ip), port)),
+	acceptor_(io_service(), boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v4::from_string(ip), port)),
 	on_connect_(on_connect)
 {
 }
 
 void ServerTransport::accept() {
-	socket_ptr_t socket_ptr(new asio::ip::tcp::socket(io_service()));
-	acceptor_.async_accept(*socket_ptr, boost::bind(&ServerTransport::on_accept, this, asio::placeholders::error, socket_ptr));
+	socket_ptr_t socket_ptr(new boost::asio::ip::tcp::socket(io_service()));
+	acceptor_.async_accept(*socket_ptr, boost::bind(&ServerTransport::on_accept, this, boost::asio::placeholders::error, socket_ptr));
 }
 
-void ServerTransport::on_accept(const asio::error_code& error, socket_ptr_t socket_ptr) {
+void ServerTransport::on_accept(const boost::system::error_code& error, socket_ptr_t socket_ptr) {
 	if (error) {
 		return;
 	}
@@ -164,19 +164,19 @@ void ServerTransport::on_accept(const asio::error_code& error, socket_ptr_t sock
 }
 
 static ssize_t read(gnutls_transport_ptr_t ptr, void* buffer, size_t size) {
-	asio::ip::tcp::socket* socket = reinterpret_cast<asio::ip::tcp::socket*>(ptr);
+	boost::asio::ip::tcp::socket* socket = reinterpret_cast<boost::asio::ip::tcp::socket*>(ptr);
 	try {
-		return asio::read(*socket, asio::buffer(buffer, size));
-	} catch (asio::system_error& /*se*/) {
+		return boost::asio::read(*socket, boost::asio::buffer(buffer, size));
+	} catch (boost::system::system_error& /*se*/) {
 		return -1;
 	}
 }
 
 static ssize_t write(gnutls_transport_ptr_t ptr, const void* buffer, size_t size) {
-	asio::ip::tcp::socket* socket = reinterpret_cast<asio::ip::tcp::socket*>(ptr);
+	boost::asio::ip::tcp::socket* socket = reinterpret_cast<boost::asio::ip::tcp::socket*>(ptr);
 	try {
-		return asio::write(*socket, asio::buffer(buffer, size));
-	} catch (asio::system_error& /*se*/) {
+		return boost::asio::write(*socket, boost::asio::buffer(buffer, size));
+	} catch (boost::system::system_error& /*se*/) {
 		return -1;
 	}
 }
@@ -223,7 +223,7 @@ Proxy::Proxy(const std::string& ca_file)
 		throw Exception(TLS_SETUP_ERROR);
 }
 
-void Proxy::on_local_read(const asio::error_code& error, std::size_t bytes_transferred,
+void Proxy::on_local_read(const boost::system::error_code& error, std::size_t bytes_transferred,
 		transport_ptr_t transport_ptr, session_ptr_t session_ptr, socket_ptr_t local_socket_ptr, 
 		buffer_ptr_t local_buffer_ptr, socket_ptr_t remote_socket_ptr)
 {
@@ -240,8 +240,8 @@ void Proxy::on_local_read(const asio::error_code& error, std::size_t bytes_trans
 	}
 
 	local_socket_ptr->async_receive(
-			asio::buffer(&(*local_buffer_ptr)[0], local_buffer_ptr->size()),
-			boost::bind(&Proxy::on_local_read, this, asio::placeholders::error, asio::placeholders::bytes_transferred,
+			boost::asio::buffer(&(*local_buffer_ptr)[0], local_buffer_ptr->size()),
+			boost::bind(&Proxy::on_local_read, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred,
 					transport_ptr, session_ptr, local_socket_ptr, local_buffer_ptr, remote_socket_ptr)
 		);
 }
@@ -250,7 +250,7 @@ void Proxy::tunnel(transport_ptr_t transport_ptr, session_ptr_t session_ptr,
 		socket_ptr_t local_socket_ptr, socket_ptr_t remote_socket_ptr)
 {
 	buffer_ptr_t local_buffer_ptr(new std::vector<char>(LOCAL_BUFFER_SIZE));
-	t = new asio::thread(boost::bind(&Proxy::tunnel_, this, transport_ptr,
+	t = new std::thread(boost::bind(&Proxy::tunnel_, this, transport_ptr,
 							session_ptr, local_socket_ptr, local_buffer_ptr, remote_socket_ptr));
 }
 
@@ -262,14 +262,14 @@ void Proxy::disconnect_(transport_ptr_t /*transport_ptr*/, session_ptr_t session
 		gnutls_bye(*session_ptr, GNUTLS_SHUT_RDWR);
 
 	// shutdown the sockets belonging to this tunnel
-	asio::error_code ec;
+	boost::system::error_code ec;
 	if (local_socket_ptr && local_socket_ptr->is_open()) {
-		local_socket_ptr->shutdown(asio::ip::tcp::socket::shutdown_both, ec);
+		local_socket_ptr->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
 		local_socket_ptr->close(ec);
 	}
 
 	if (remote_socket_ptr && remote_socket_ptr->is_open()) {	
-		remote_socket_ptr->shutdown(asio::ip::tcp::socket::shutdown_both, ec);
+		remote_socket_ptr->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
 		remote_socket_ptr->close(ec);
 	}
 }
@@ -278,8 +278,8 @@ void Proxy::tunnel_(transport_ptr_t transport_ptr, session_ptr_t session_ptr, so
 		buffer_ptr_t local_buffer_ptr, socket_ptr_t remote_socket_ptr)
 {
 	local_socket_ptr->async_receive(
-			asio::buffer(&(*local_buffer_ptr)[0], local_buffer_ptr->size()),
-			boost::bind(&Proxy::on_local_read, this, asio::placeholders::error, asio::placeholders::bytes_transferred, 
+			boost::asio::buffer(&(*local_buffer_ptr)[0], local_buffer_ptr->size()),
+			boost::bind(&Proxy::on_local_read, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, 
 					transport_ptr, session_ptr, local_socket_ptr, local_buffer_ptr, remote_socket_ptr)
 		);
 	
@@ -297,8 +297,8 @@ void Proxy::tunnel_(transport_ptr_t transport_ptr, session_ptr_t session_ptr, so
 		
 		// forward the data over the local connection
 		try {
-			asio::write(*local_socket_ptr, asio::buffer(&tunnel_buffer[0], bytes_transferred));
-		} catch (asio::system_error& /*se*/) {
+			boost::asio::write(*local_socket_ptr, boost::asio::buffer(&tunnel_buffer[0], bytes_transferred));
+		} catch (boost::system::system_error& /*se*/) {
 			break;
 		}
 	}
@@ -330,15 +330,15 @@ void ClientProxy::setup()
 		for (unsigned short port = MIN_CLIENT_PORT; port <= MAX_CLIENT_PORT; port++) {
 			try {
 				acceptor_ptr.reset(
-						new asio::ip::tcp::acceptor(transport_ptr_->io_service(),
-														asio::ip::tcp::endpoint(asio::ip::address_v4::from_string(local_address_),
+						new boost::asio::ip::tcp::acceptor(transport_ptr_->io_service(),
+														boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v4::from_string(local_address_),
 														port), false));
 				local_port_ = port;
 				break;
-			} catch (asio::system_error& se) {
+			} catch (boost::system::system_error& se) {
 				if (port == MAX_CLIENT_PORT)
 					throw se;
-				if (se.code() != asio::error::address_in_use)
+				if (se.code() != boost::asio::error::address_in_use)
 					throw se;
 				// this port is already in use, try another one
 				continue;
@@ -347,7 +347,7 @@ void ClientProxy::setup()
 
 		// connect the transport
 		boost::static_pointer_cast<ClientTransport>(transport_ptr_)->connect();
-	} catch (asio::system_error& se) {
+	} catch (boost::system::system_error& se) {
 		throw Exception(std::string(TRANSPORT_ERROR) + se.what());
 	}	
 }
@@ -375,12 +375,12 @@ void ClientProxy::on_transport_connect(transport_ptr_t transport_ptr, socket_ptr
 	}
 	
 	// start accepting connections on the local socket
-	socket_ptr_t local_socket_ptr(new asio::ip::tcp::socket(transport_ptr->io_service()));
+	socket_ptr_t local_socket_ptr(new boost::asio::ip::tcp::socket(transport_ptr->io_service()));
 	acceptor_ptr->async_accept(*local_socket_ptr, boost::bind(&ClientProxy::on_client_connect, this, 
-			asio::placeholders::error, transport_ptr, session_ptr, local_socket_ptr, remote_socket_ptr));
+			boost::asio::placeholders::error, transport_ptr, session_ptr, local_socket_ptr, remote_socket_ptr));
 }
 
-void ClientProxy::on_client_connect(const asio::error_code& error, 
+void ClientProxy::on_client_connect(const boost::system::error_code& error, 
 		transport_ptr_t transport_ptr, session_ptr_t session_ptr,
 		socket_ptr_t local_socket_ptr, socket_ptr_t remote_socket_ptr) {
 	if (error) {
@@ -451,7 +451,7 @@ try
 		throw Exception(TLS_SETUP_ERROR);
 
 	gnutls_certificate_set_dh_params(x509cred, dh_params);
-} catch (asio::system_error& se) {
+} catch (boost::system::system_error& se) {
 	throw Exception(std::string(TRANSPORT_ERROR) + se.what());
 }
 
@@ -472,14 +472,14 @@ void ServerProxy::on_transport_connect(transport_ptr_t transport_ptr, socket_ptr
 		return;
 	}
 	
-	socket_ptr_t local_socket_ptr(new asio::ip::tcp::socket(transport_ptr->io_service()));
+	socket_ptr_t local_socket_ptr(new boost::asio::ip::tcp::socket(transport_ptr->io_service()));
 	try {
-		asio::ip::tcp::resolver resolver(transport_ptr->io_service());
-		asio::ip::tcp::resolver::query query("127.0.0.1", boost::lexical_cast<std::string>(local_port_));
-		asio::ip::tcp::resolver::iterator iterator(resolver.resolve(query));
+		boost::asio::ip::tcp::resolver resolver(transport_ptr->io_service());
+		boost::asio::ip::tcp::resolver::query query("127.0.0.1", boost::lexical_cast<std::string>(local_port_));
+		boost::asio::ip::tcp::resolver::iterator iterator(resolver.resolve(query));
 
 		bool connected = false;
-		while (iterator != asio::ip::tcp::resolver::iterator())
+		while (iterator != boost::asio::ip::tcp::resolver::iterator())
 		{
 			try
 			{
@@ -487,7 +487,7 @@ void ServerProxy::on_transport_connect(transport_ptr_t transport_ptr, socket_ptr
 				connected = true;
 				break;
 			}
-			catch (asio::system_error /*se*/)
+			catch (boost::system::system_error /*se*/)
 			{
 				// make sure we close the socket after a failed attempt, as it
 				// may have been opened by the connect() call.
@@ -500,7 +500,7 @@ void ServerProxy::on_transport_connect(transport_ptr_t transport_ptr, socket_ptr
 			disconnect_(transport_ptr, session_ptr, local_socket_ptr, remote_socket_ptr);
 			return;
 		}
-	} catch (asio::system_error& /*se*/) {
+	} catch (boost::system::system_error& /*se*/) {
 		disconnect_(transport_ptr, session_ptr, local_socket_ptr, remote_socket_ptr);
 		return;
 	}

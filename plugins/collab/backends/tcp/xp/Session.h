@@ -35,7 +35,7 @@ class TCPAccountHandler;
 class Session : public Synchronizer, public boost::noncopyable, public boost::enable_shared_from_this<Session>
 {
 public:
-	Session(asio::io_service& io_service, boost::function<void (boost::shared_ptr<Session>)> ef)
+	Session(boost::asio::io_service& io_service, boost::function<void (boost::shared_ptr<Session>)> ef)
 		: Synchronizer(boost::bind(&Session::_signal, this)),
 		socket(io_service),
 		queue_protector(),
@@ -43,13 +43,13 @@ public:
 	{
 	}
 
-	void connect(asio::ip::tcp::resolver::iterator& iterator)
+	void connect(boost::asio::ip::tcp::resolver::iterator& iterator)
 	{
 		socket.connect(*iterator);
 	}
 
 	// TODO: don't expose this
-	asio::ip::tcp::socket& getSocket()
+	boost::asio::ip::tcp::socket& getSocket()
 	{
 		return socket;
 	}
@@ -94,9 +94,9 @@ public:
 	{
 		UT_DEBUGMSG(("Session::asyncReadHeader()\n"));
 		packet_data = 0; // just to be sure we'll never touch a datablock we might have read before
-		asio::async_read(socket,
-			asio::buffer(&packet_size, 4),
-			boost::bind(&Session::asyncReadHeaderHandler, shared_from_this(), asio::placeholders::error, asio::placeholders::bytes_transferred));
+		boost::asio::async_read(socket,
+			boost::asio::buffer(&packet_size, 4),
+			boost::bind(&Session::asyncReadHeaderHandler, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 	}
 
 	void asyncWrite(int size, const char* data)
@@ -115,9 +115,9 @@ public:
 			packet_data_write = store_data;
 
 			UT_DEBUGMSG(("sending datablock of length: %d\n", packet_size_write));
-			asio::async_write(socket,
-				asio::buffer(&packet_size_write, 4),
-				boost::bind(&Session::asyncWriteHeaderHandler, shared_from_this(), asio::placeholders::error));
+			boost::asio::async_write(socket,
+				boost::asio::buffer(&packet_size_write, 4),
+				boost::bind(&Session::asyncWriteHeaderHandler, shared_from_this(), boost::asio::placeholders::error));
 		}
 	}
 
@@ -134,12 +134,12 @@ public:
 		UT_DEBUGMSG(("Session::disconnect()\n"));
 		if (socket.is_open())
 		{
-			asio::error_code ecs;
-			socket.shutdown(asio::ip::tcp::socket::shutdown_both, ecs);
+			boost::system::error_code ecs;
+			socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ecs);
 			if (ecs) {
 				UT_DEBUGMSG(("Error shutting down socket: %s\n", ecs.message().c_str()));
 			}
-			asio::error_code ecc;
+			boost::system::error_code ecc;
 			socket.close(ecc);
 			if (ecc) {
 				UT_DEBUGMSG(("Error closing socket: %s\n", ecc.message().c_str()));
@@ -156,7 +156,7 @@ private:
 		m_ef(shared_from_this());
 	}
 
-	void asyncReadHeaderHandler(const asio::error_code& error,
+	void asyncReadHeaderHandler(const boost::system::error_code& error,
 		std::size_t bytes_transferred)
 	{
 		if (error)
@@ -183,12 +183,12 @@ private:
 		UT_DEBUGMSG(("going to read datablock of length: %d\n", packet_size));
 		// now continue reading the packet data
 		packet_data = reinterpret_cast<char*>(g_malloc(packet_size));
-		asio::async_read(socket,
-			asio::buffer(packet_data, packet_size),
-			boost::bind(&Session::asyncReadHandler, shared_from_this(), asio::placeholders::error, asio::placeholders::bytes_transferred));
+		boost::asio::async_read(socket,
+			boost::asio::buffer(packet_data, packet_size),
+			boost::bind(&Session::asyncReadHandler, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 	}
 
-	void asyncReadHandler(const asio::error_code& error,
+	void asyncReadHandler(const boost::system::error_code& error,
 		std::size_t bytes_transferred)
 	{
 		if (error)
@@ -210,7 +210,7 @@ private:
 		asyncReadHeader();
 	}
 
-	void asyncWriteHeaderHandler(const asio::error_code& ec)
+	void asyncWriteHeaderHandler(const boost::system::error_code& ec)
 	{
 		UT_DEBUGMSG(("Session::asyncWriteHeaderHandler()\n"));
 		if (ec)
@@ -221,12 +221,12 @@ private:
 		}
 
 		// write the packet body
-		asio::async_write(socket,
-			asio::buffer(packet_data_write, packet_size_write),
-			boost::bind(&Session::asyncWriteHandler, shared_from_this(), asio::placeholders::error));
+		boost::asio::async_write(socket,
+			boost::asio::buffer(packet_data_write, packet_size_write),
+			boost::bind(&Session::asyncWriteHandler, shared_from_this(), boost::asio::placeholders::error));
 	}
 
-	void asyncWriteHandler(const asio::error_code& ec)
+	void asyncWriteHandler(const boost::system::error_code& ec)
 	{
 		UT_DEBUGMSG(("Session::asyncWriteHandler()\n"));
 		FREEP(packet_data_write);
@@ -247,13 +247,13 @@ private:
 
 			UT_DEBUGMSG(("sending datablock of length: %d\n", packet_size_write));
 
-			asio::async_write(socket,
-				asio::buffer(&packet_size_write, 4),
-				boost::bind(&Session::asyncWriteHeaderHandler, shared_from_this(), asio::placeholders::error));
+			boost::asio::async_write(socket,
+				boost::asio::buffer(&packet_size_write, 4),
+				boost::bind(&Session::asyncWriteHeaderHandler, shared_from_this(), boost::asio::placeholders::error));
 		}
 	}
 
-	asio::ip::tcp::socket					socket;
+	boost::asio::ip::tcp::socket					socket;
 	abicollab::mutex 						queue_protector;
 	std::deque< std::pair<int, char*> >		incoming;
 	std::deque< std::pair<int, char*> >		outgoing;

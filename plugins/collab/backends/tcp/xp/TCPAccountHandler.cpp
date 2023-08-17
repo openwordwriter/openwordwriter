@@ -80,7 +80,7 @@ ConnectResult TCPAccountHandler::connect()
 	UT_return_val_if_fail(!m_bConnected, CONNECT_ALREADY_CONNECTED);
 	UT_return_val_if_fail(!m_thread, CONNECT_INTERNAL_ERROR);
 	m_io_service.reset();
-	m_thread = new asio::thread(boost::bind(&asio::io_service::run, &m_io_service));
+	m_thread = new std::thread(boost::bind(&boost::asio::io_service::run, &m_io_service));
 
 	// set up the connection
 	if (getProperty("server") == "")
@@ -97,7 +97,7 @@ ConnectResult TCPAccountHandler::connect()
 			m_bConnected = true; // todo: ask it to the acceptor
 			pDelegator->run();
 		}
-		catch (asio::system_error se)
+		catch (boost::system::system_error se)
 		{
 			UT_DEBUGMSG(("Failed to start accepting connections: %s\n", se.what()));
 			_teardownAndDestroyHandler();
@@ -116,13 +116,13 @@ ConnectResult TCPAccountHandler::connect()
 
 		try
 		{
-			asio::ip::tcp::resolver resolver(m_io_service);
-			asio::ip::tcp::resolver::query query(getProperty("server"), getProperty("port"));
-			asio::ip::tcp::resolver::iterator iterator(resolver.resolve(query));
+			boost::asio::ip::tcp::resolver resolver(m_io_service);
+			boost::asio::ip::tcp::resolver::query query(getProperty("server"), getProperty("port"));
+			boost::asio::ip::tcp::resolver::iterator iterator(resolver.resolve(query));
 
 			bool connected = false;
 			boost::shared_ptr<Session> session_ptr(new Session(m_io_service, boost::bind(&TCPAccountHandler::handleEvent, this, _1)));
-			while (iterator != asio::ip::tcp::resolver::iterator())
+			while (iterator != boost::asio::ip::tcp::resolver::iterator())
 			{
 				try
 				{
@@ -132,7 +132,7 @@ ConnectResult TCPAccountHandler::connect()
 					connected = true;
 					break;
 				}
-				catch (asio::system_error se)
+				catch (boost::system::system_error se)
 				{
 					UT_DEBUGMSG(("Connection attempt failed: %s\n", se.what()));
 					// make sure we close the socket after a failed attempt, as it
@@ -158,7 +158,7 @@ ConnectResult TCPAccountHandler::connect()
 			addBuddy(pBuddy);
 			m_clients.insert(std::pair<TCPBuddyPtr, boost::shared_ptr<Session> >(pBuddy, session_ptr));
 		}
-		catch (asio::system_error se)
+		catch (boost::system::system_error se)
 		{
 			UT_DEBUGMSG(("Failed to resolve %s:%d: %s\n", getProperty("server").c_str(), _getPort(getProperties()), se.what()));
 			_teardownAndDestroyHandler();

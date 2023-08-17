@@ -68,7 +68,7 @@ bool RealmConnection::connect()
 			// setup our local TLS tunnel to the realm
 			m_tls_tunnel_ptr.reset(new tls_tunnel::ClientProxy(m_address, m_port, m_ca_file, false));
 			m_tls_tunnel_ptr->setup();
-			asio::thread thread(boost::bind(&tls_tunnel::ClientProxy::run, m_tls_tunnel_ptr));
+			std::thread thread(boost::bind(&tls_tunnel::ClientProxy::run, m_tls_tunnel_ptr));
 
 			// make sure we connect to the tunnel, and not directly to the realm
 			address = m_tls_tunnel_ptr->local_address();
@@ -76,13 +76,13 @@ bool RealmConnection::connect()
 		}
 
 		// connect!
-		asio::ip::tcp::resolver::query query(address, boost::lexical_cast<std::string>(port));
-		asio::ip::tcp::resolver resolver(m_io_service);
-		asio::ip::tcp::resolver::iterator iterator(resolver.resolve(query));
+		boost::asio::ip::tcp::resolver::query query(address, boost::lexical_cast<std::string>(port));
+		boost::asio::ip::tcp::resolver resolver(m_io_service);
+		boost::asio::ip::tcp::resolver::iterator iterator(resolver.resolve(query));
 
 		bool connected = false;
-		asio::error_code error_code;
-		while (iterator != asio::ip::tcp::resolver::iterator())
+		boost::system::error_code error_code;
+		while (iterator != boost::asio::ip::tcp::resolver::iterator())
 		{
 			try
 			{
@@ -90,7 +90,7 @@ bool RealmConnection::connect()
 				connected = true;
 				break;
 			}
-			catch (asio::system_error se)
+			catch (boost::system::system_error se)
 			{
 				error_code = se.code();
 				try { m_socket.close(); } catch(...) {}
@@ -99,7 +99,7 @@ bool RealmConnection::connect()
 		}
 		if (!connected)
 		{
-			UT_DEBUGMSG(("Error connecting to realm: %s", asio::system_error(error_code).what()));
+			UT_DEBUGMSG(("Error connecting to realm: %s", boost::system::system_error(error_code).what()));
 			return false;
 		}
 	}
@@ -108,7 +108,7 @@ bool RealmConnection::connect()
 		UT_DEBUGMSG(("tls_tunnel exception connecting to realm: %s\n", e.message().c_str()));
 		return false;
 	}
-	catch (asio::system_error& se)
+	catch (boost::system::system_error& se)
 	{
 		UT_DEBUGMSG(("Error connecting to realm: %s\n", se.what()));
 		return false;
@@ -131,7 +131,7 @@ bool RealmConnection::connect()
 	// start reading realm messages
 	_receive();	
 	
-	m_thread_ptr.reset(new asio::thread(boost::bind(&asio::io_service::run, &m_io_service)));
+	m_thread_ptr.reset(new std::thread(boost::bind(&boost::asio::io_service::run, &m_io_service)));
 	return true;
 }
 
@@ -145,8 +145,8 @@ void RealmConnection::disconnect()
 	// the complete disconnect
 	if (m_socket.is_open())
 	{
-		asio::error_code ac;
-		m_socket.shutdown(asio::ip::tcp::socket::shutdown_both, ac);
+		boost::system::error_code ac;
+		m_socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ac);
 		m_socket.close(ac);
 	}
 }
@@ -217,8 +217,8 @@ void RealmConnection::_disconnect()
 	
 	if (m_socket.is_open())
 	{
-		asio::error_code ac;
-		m_socket.shutdown(asio::ip::tcp::socket::shutdown_both, ac);
+		boost::system::error_code ac;
+		m_socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ac);
 		m_socket.close(ac);
 	}
 	
@@ -266,13 +266,13 @@ bool RealmConnection::_login()
 	{
 		// send the login credententials
 		// TODO: we should check the number of bytes written
-		asio::write(m_socket, asio::buffer(header));
+		boost::asio::write(m_socket, boost::asio::buffer(header));
 		
 		// read the login response
 		// TODO: we should check the number of bytes read
-		asio::read(m_socket, asio::buffer(&response[0], response.size()));
+		boost::asio::read(m_socket, boost::asio::buffer(&response[0], response.size()));
 	}
-	catch (asio::system_error e)
+	catch (boost::system::system_error e)
 	{
 		UT_DEBUGMSG(("Error while writing/writing protocol header: %s\n", e.what()));
 		return false;
@@ -315,7 +315,7 @@ UserJoinedPacketPtr RealmConnection::_receiveUserJoinedPacket()
 {
 	// receive the packet type
 	std::string msg(1, '\0');
-	asio::read(m_socket, asio::buffer(&msg[0], msg.size()));
+	boost::asio::read(m_socket, boost::asio::buffer(&msg[0], msg.size()));
 	rpv1::packet_type packet_type = static_cast<rpv1::packet_type>(msg[0]);
 	if (packet_type != rpv1::PACKET_USERJOINED)
 		return UserJoinedPacketPtr();
@@ -326,17 +326,17 @@ UserJoinedPacketPtr RealmConnection::_receiveUserJoinedPacket()
 		uint8_t conn_id = 0;
 		uint8_t m = 0;
 
-		boost::array<asio::mutable_buffer, 3> buf = {{
-			asio::buffer(&payload_size, sizeof(payload_size)),
-			asio::buffer(&conn_id, sizeof(conn_id)),
-			asio::buffer(&m, sizeof(m)) }};
-		asio::read(m_socket, buf);
+		boost::array<boost::asio::mutable_buffer, 3> buf = {{
+			boost::asio::buffer(&payload_size, sizeof(payload_size)),
+			boost::asio::buffer(&conn_id, sizeof(conn_id)),
+			boost::asio::buffer(&m, sizeof(m)) }};
+		boost::asio::read(m_socket, buf);
 
 		boost::shared_ptr<std::string> userinfo_ptr(new std::string(payload_size - 2, '\0'));
-		asio::read(m_socket, asio::buffer(&(*userinfo_ptr)[0], userinfo_ptr->size()));
+		boost::asio::read(m_socket, boost::asio::buffer(&(*userinfo_ptr)[0], userinfo_ptr->size()));
 
 		return UserJoinedPacketPtr(new rpv1::UserJoinedPacket(conn_id, static_cast<bool>(m), userinfo_ptr));
-	} catch (asio::system_error se) {
+	} catch (boost::system::system_error se) {
 		return UserJoinedPacketPtr(); 
 	}
 }
@@ -346,12 +346,12 @@ void RealmConnection::_receive()
 	UT_DEBUGMSG(("RealmConnection::_receive()\n"));
 	m_buf.clear();
 	boost::shared_ptr<std::string> msg_ptr(new std::string(1, '\0'));
-	asio::async_read(m_socket, asio::buffer(&(*msg_ptr)[0], msg_ptr->size()),
+	boost::asio::async_read(m_socket, boost::asio::buffer(&(*msg_ptr)[0], msg_ptr->size()),
 		boost::bind(&RealmConnection::_message, shared_from_this(),
-			asio::placeholders::error, asio::placeholders::bytes_transferred, msg_ptr));
+			boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, msg_ptr));
 }
 
-void RealmConnection::_message(const asio::error_code& e, std::size_t /*bytes_transferred*/, boost::shared_ptr<std::string> msg_ptr)
+void RealmConnection::_message(const boost::system::error_code& e, std::size_t /*bytes_transferred*/, boost::shared_ptr<std::string> msg_ptr)
 {
 	UT_DEBUGMSG(("RealmConnection::_message()\n"));
 	if (e)
@@ -390,15 +390,15 @@ void RealmConnection::_complete_packet(realm::protocolv1::PacketPtr packet_ptr)
 			UT_DEBUGMSG(("Need more data (%d bytes) for this packet...\n", bytes_needed));
 			// read the needed number of bytes
 			char* ptr = m_buf.prepare(bytes_needed);
-			asio::async_read(m_socket, asio::buffer(ptr, bytes_needed),
+			boost::asio::async_read(m_socket, boost::asio::buffer(ptr, bytes_needed),
 							boost::bind(&RealmConnection::_complete, shared_from_this(),
-								asio::placeholders::error, asio::placeholders::bytes_transferred, packet_ptr)
+								boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, packet_ptr)
 							);
 			break;
 	}
 }
 
-void RealmConnection::_complete(const asio::error_code& e, std::size_t bytes_transferred, realm::protocolv1::PacketPtr packet_ptr)
+void RealmConnection::_complete(const boost::system::error_code& e, std::size_t bytes_transferred, realm::protocolv1::PacketPtr packet_ptr)
 {
 	UT_DEBUGMSG(("RealmConnection::_complete()\n"));
 	if (e)

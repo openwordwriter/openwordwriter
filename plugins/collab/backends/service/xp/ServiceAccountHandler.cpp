@@ -437,7 +437,7 @@ bool ServiceAccountHandler::send(const Packet* packet, BuddyPtr pBuddy)
 	return true;
 }
 
-void ServiceAccountHandler::_write_handler(const asio::error_code& e, std::size_t /*bytes_transferred*/,
+void ServiceAccountHandler::_write_handler(const boost::system::error_code& e, std::size_t /*bytes_transferred*/,
 											boost::shared_ptr<const RealmBuddy> /*recipient*/, boost::shared_ptr<realm::protocolv1::Packet> packet)
 {
 	if (e)
@@ -453,7 +453,7 @@ void ServiceAccountHandler::_write_handler(const asio::error_code& e, std::size_
 	}
 }										   
 
-void ServiceAccountHandler::_write_result(const asio::error_code& e, std::size_t /*bytes_transferred*/,
+void ServiceAccountHandler::_write_result(const boost::system::error_code& e, std::size_t /*bytes_transferred*/,
 													ConnectionPtr /*connection*/, boost::shared_ptr<realm::protocolv1::Packet> packet)
 {
 	if (e)
@@ -1708,7 +1708,7 @@ void ServiceAccountHandler::_handleMessages(ConnectionPtr connection)
 							boost::shared_ptr<rpv1::SessionTakeOverPacket> stop(new rpv1::SessionTakeOverPacket());
 							rpv1::send(*stop, connection->socket(), 
 									boost::bind(&ServiceAccountHandler::_write_result, this,
-										asio::placeholders::error, asio::placeholders::bytes_transferred, connection,
+										boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, connection,
 											boost::static_pointer_cast<rpv1::Packet>(stop))	
 								);
 

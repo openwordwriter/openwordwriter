@@ -22,6 +22,7 @@
 
 #include <string>
 #include <vector>
+#include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -149,14 +150,14 @@ private:
 	{
 		realm::protocolv1::send(*packet, recipient->connection()->socket(),
 			boost::bind(&ServiceAccountHandler::_write_handler, this,
-							asio::placeholders::error, asio::placeholders::bytes_transferred, recipient,
+							boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred, recipient,
 							boost::static_pointer_cast<rpv1::Packet>(packet)));
 	}
 
-	void									_write_handler(const asio::error_code& e, std::size_t bytes_transferred,
+  void									_write_handler(const boost::system::error_code& e, std::size_t bytes_transferred,
 													boost::shared_ptr<const RealmBuddy> recipient, boost::shared_ptr<rpv1::Packet> packet);
 
-	void									_write_result(const asio::error_code& e, std::size_t bytes_transferred,
+  void									_write_result(const boost::system::error_code& e, std::size_t bytes_transferred,
 													ConnectionPtr connection, boost::shared_ptr<rpv1::Packet> packet);
 
 	bool									_listDocuments(soa::function_call_ptr fc_ptr,

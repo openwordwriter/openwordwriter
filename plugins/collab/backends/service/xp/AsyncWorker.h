@@ -55,7 +55,7 @@ public:
 		m_synchronizer.reset(new Synchronizer(boost::bind(&AsyncWorker<T>::_signal,
 												boost::enable_shared_from_this<AsyncWorker<T> >::shared_from_this())));
 		m_thread_ptr.reset(
-				new asio::thread(
+				new std::thread(
 					boost::bind(&AsyncWorker::_thread_func,
 								AsyncWorker<T>::shared_from_this())
 				)
@@ -80,7 +80,7 @@ private:
 	boost::function<T ()>					m_async_func;
 	boost::function<void (T)>				m_async_callback;
 	boost::shared_ptr<Synchronizer>			m_synchronizer;
-	boost::shared_ptr<asio::thread>			m_thread_ptr;
+	boost::shared_ptr<std::thread>			m_thread_ptr;
 	T										m_func_result;
 };
 

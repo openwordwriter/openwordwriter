@@ -84,9 +84,9 @@ private:
 	virtual UT_sint32						_getPort(const PropertyMap& props);
 	void									_handleAccept(IOServerHandler* pHandler, boost::shared_ptr<Session> session);
 
-	asio::io_service						m_io_service;
-	asio::io_service::work					m_work;
-	asio::thread*							m_thread;
+	boost::asio::io_service						m_io_service;
+	boost::asio::io_service::work					m_work;
+	std::thread*							m_thread;
 	bool									m_bConnected; // TODO: drop this, ask the IO handler
 	IOServerHandler*						m_pDelegator;
 

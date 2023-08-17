@@ -8,48 +8,48 @@ namespace realm {
 namespace protocolv1 {
 
 	template <typename WriteHandler>
-	static void send(const RoutingPacket& p, asio::ip::tcp::socket& socket, WriteHandler handler) {
-		std::vector<asio::const_buffer> bufs(4);
-		bufs.push_back(asio::buffer(&p.type(), 1));
-		bufs.push_back(asio::buffer(&p.getPayloadSize(), 4)); // FIXME: not Big Endian safe!
-		bufs.push_back(asio::buffer(&p.getAddressCount(), 1));
-		bufs.push_back(asio::buffer(&(p.getConnectionIds()[0]), p.getConnectionIds().size()));
-		bufs.push_back(asio::buffer(*p.getMessage()));
-		asio::async_write(socket, bufs, handler);
+	static void send(const RoutingPacket& p, boost::asio::ip::tcp::socket& socket, WriteHandler handler) {
+		std::vector<boost::asio::const_buffer> bufs(4);
+		bufs.push_back(boost::asio::buffer(&p.type(), 1));
+		bufs.push_back(boost::asio::buffer(&p.getPayloadSize(), 4)); // FIXME: not Big Endian safe!
+		bufs.push_back(boost::asio::buffer(&p.getAddressCount(), 1));
+		bufs.push_back(boost::asio::buffer(&(p.getConnectionIds()[0]), p.getConnectionIds().size()));
+		bufs.push_back(boost::asio::buffer(*p.getMessage()));
+		boost::asio::async_write(socket, bufs, handler);
 	}
 
 	template <typename WriteHandler>
-	static void send(const DeliverPacket& p, asio::ip::tcp::socket& socket, WriteHandler handler) {
-		std::vector<asio::const_buffer> bufs(4);
-		bufs.push_back(asio::buffer(&p.type(), 1));
-		bufs.push_back(asio::buffer(&p.getPayloadSize(), 4)); // FIXME: not Big Endian safe!
-		bufs.push_back(asio::buffer(&p.getConnectionId(), 1));
-		bufs.push_back(asio::buffer(*p.getMessage()));
-		asio::async_write(socket, bufs, handler);
+	static void send(const DeliverPacket& p, boost::asio::ip::tcp::socket& socket, WriteHandler handler) {
+		std::vector<boost::asio::const_buffer> bufs(4);
+		bufs.push_back(boost::asio::buffer(&p.type(), 1));
+		bufs.push_back(boost::asio::buffer(&p.getPayloadSize(), 4)); // FIXME: not Big Endian safe!
+		bufs.push_back(boost::asio::buffer(&p.getConnectionId(), 1));
+		bufs.push_back(boost::asio::buffer(*p.getMessage()));
+		boost::asio::async_write(socket, bufs, handler);
 	}
 
 	template <typename WriteHandler>
-	static void send(const UserJoinedPacket& p, asio::ip::tcp::socket& socket, WriteHandler handler) {
-		std::vector<asio::const_buffer> bufs(4);
-		bufs.push_back(asio::buffer(&p.type(), 1));
-		bufs.push_back(asio::buffer(&p.getPayloadSize(), 4)); // FIXME: not Big Endian safe!
-		bufs.push_back(asio::buffer(&p.getConnectionId(), 1));
-		bufs.push_back(asio::buffer(&p.isMaster(), 1));
-		bufs.push_back(asio::buffer(*p.getUserInfo()));
-		asio::async_write(socket, bufs, handler);
+	static void send(const UserJoinedPacket& p, boost::asio::ip::tcp::socket& socket, WriteHandler handler) {
+		std::vector<boost::asio::const_buffer> bufs(4);
+		bufs.push_back(boost::asio::buffer(&p.type(), 1));
+		bufs.push_back(boost::asio::buffer(&p.getPayloadSize(), 4)); // FIXME: not Big Endian safe!
+		bufs.push_back(boost::asio::buffer(&p.getConnectionId(), 1));
+		bufs.push_back(boost::asio::buffer(&p.isMaster(), 1));
+		bufs.push_back(boost::asio::buffer(*p.getUserInfo()));
+		boost::asio::async_write(socket, bufs, handler);
 	}
 
 	template <typename WriteHandler>
-	static void send(const UserLeftPacket& p, asio::ip::tcp::socket& socket, WriteHandler handler) {
-		std::vector<asio::const_buffer> bufs(2);
-		bufs.push_back(asio::buffer(&p.type(), 1));
-		bufs.push_back(asio::buffer(&p.getConnectionId(), 1));
-		asio::async_write(socket, bufs, handler);
+	static void send(const UserLeftPacket& p, boost::asio::ip::tcp::socket& socket, WriteHandler handler) {
+		std::vector<boost::asio::const_buffer> bufs(2);
+		bufs.push_back(boost::asio::buffer(&p.type(), 1));
+		bufs.push_back(boost::asio::buffer(&p.getConnectionId(), 1));
+		boost::asio::async_write(socket, bufs, handler);
 	}
 
 	template <typename WriteHandler>
-	static void send(const SessionTakeOverPacket& p, asio::ip::tcp::socket& socket, WriteHandler handler) {
-		asio::async_write(socket, asio::buffer(&p.type(), 1), handler);
+	static void send(const SessionTakeOverPacket& p, boost::asio::ip::tcp::socket& socket, WriteHandler handler) {
+		boost::asio::async_write(socket, boost::asio::buffer(&p.type(), 1), handler);
 	}
 
 }

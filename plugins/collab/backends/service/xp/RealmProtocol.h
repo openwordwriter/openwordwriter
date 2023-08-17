@@ -1,6 +1,8 @@
 #ifndef __REALM_PROTOCOL__
 #define __REALM_PROTOCOL__
 
+#include "config.h"
+
 #include <string>
 #include <vector>
 #ifdef _MSC_VER
@@ -33,7 +35,7 @@ namespace protocolv1 {
 
 class Packet;
 typedef boost::shared_ptr<Packet> PacketPtr;
-typedef boost::shared_ptr<asio::streambuf> StreamPtr;
+typedef boost::shared_ptr<boost::asio::streambuf> StreamPtr;
 
 // the packet type values must match up the corresponding body_size in
 // RealmProtocol.cpp (ugly, but it's fast)!
