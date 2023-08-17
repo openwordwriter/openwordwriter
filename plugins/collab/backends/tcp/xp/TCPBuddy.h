@@ -40,12 +40,12 @@ public:
 		setVolatile(true);
 	}
 
-	virtual UT_UTF8String getDescriptor(bool /*include_session_info = false*/) const
+	virtual UT_UTF8String getDescriptor(bool /*include_session_info = false*/) const override
 	{
 		return UT_UTF8String("tcp://") + m_address.c_str() + UT_UTF8String(":") + m_port.c_str();
 	}
 
-	virtual UT_UTF8String getDescription() const
+	virtual UT_UTF8String getDescription() const override
 	{
 		return UT_UTF8String(m_address.c_str()) + UT_UTF8String(":") + m_port.c_str();
 	}
@@ -56,7 +56,7 @@ public:
 	const std::string& getPort() const
 		{ return m_port; }
 
-	virtual const DocTreeItem* getDocTreeItems() const
+	virtual const DocTreeItem* getDocTreeItems() const override
 	{
 		const std::vector<DocHandle*>& docHandles = getDocHandles();
 		DocTreeItem* first = 0;

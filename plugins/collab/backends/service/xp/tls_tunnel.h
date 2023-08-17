@@ -142,8 +142,8 @@ public:
 	ClientProxy(const std::string& connect_address, unsigned short connect_port,
 			const std::string& ca_file, bool check_hostname);
 
-	virtual void setup();
-	virtual void stop();
+	virtual void setup() override;
+	virtual void stop() override;
 
 	const std::string& local_address() const;
 	unsigned short local_port() const;
@@ -167,7 +167,7 @@ public:
 	ServerProxy(const std::string& bind_ip, unsigned short bind_port, unsigned short local_port,
 			const std::string& ca_file, const std::string& cert_file, const std::string& key_file);
 
-	virtual void setup();
+	virtual void setup() override;
 
 private:
 	void on_transport_connect(transport_ptr_t transport_ptr, socket_ptr_t remote_socket_ptr);

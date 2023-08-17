@@ -37,15 +37,15 @@ public:
 	{
 	}
 
-	virtual UT_UTF8String getDescriptor(bool /*include_session_info = false*/) const
+	virtual UT_UTF8String getDescriptor(bool /*include_session_info = false*/) const override
 	{
 		return UT_UTF8String("fake://") + m_sDescriptor;
 	}
 
-	virtual UT_UTF8String		getDescription() const
+	virtual UT_UTF8String		getDescription() const override
 		{ return m_sDescriptor; }
 
-	virtual const DocTreeItem* getDocTreeItems() const
+	virtual const DocTreeItem* getDocTreeItems() const override
 	{
 		UT_ASSERT_HARMLESS(UT_NOT_REACHED);
 		return NULL;

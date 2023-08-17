@@ -48,7 +48,7 @@ public:
 		setVolatile(true);
 	}
 
-	virtual UT_UTF8String getDescriptor(bool include_session_info = false) const
+	virtual UT_UTF8String getDescriptor(bool include_session_info = false) const override
 	{
 		return UT_UTF8String("acn://") +
 					boost::lexical_cast<std::string>(m_user_id).c_str() +
@@ -57,12 +57,12 @@ public:
 					m_domain.c_str();
 	}
 
-	virtual UT_UTF8String getDescription() const
+	virtual UT_UTF8String getDescription() const override
 	{
 		return getDescriptor();
 	}
 
-	virtual const DocTreeItem* getDocTreeItems() const
+	virtual const DocTreeItem* getDocTreeItems() const override
 	{
 		return NULL;
 	}

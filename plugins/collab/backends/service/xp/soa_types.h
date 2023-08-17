@@ -140,7 +140,7 @@ public:
 		: Generic(n, t)
 	{}
 
-	virtual bool complex() {
+	virtual bool complex() override {
 		return true;
 	}
 };

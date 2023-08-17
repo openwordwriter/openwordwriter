@@ -37,38 +37,38 @@ public:
 
 	// housekeeping
 	static UT_UTF8String					getStaticStorageType();
-	virtual UT_UTF8String					getStorageType()
+	virtual UT_UTF8String					getStorageType() override
 		{ return getStaticStorageType(); }
-	virtual UT_UTF8String					getDescription();
-	virtual UT_UTF8String					getDisplayType();
+	virtual UT_UTF8String					getDescription() override;
+	virtual UT_UTF8String					getDisplayType() override;
 
 	// dialog management
-	virtual void							storeProperties();
+	virtual void							storeProperties() override;
 
 	// connection management
-	virtual ConnectResult					connect();
-	virtual bool							disconnect();
-	virtual bool							isOnline();
+	virtual ConnectResult					connect() override;
+	virtual bool							disconnect() override;
+	virtual bool							isOnline() override;
 
 	// user management
 	void									addBuddy(BuddyPtr pBuddy);
-	virtual BuddyPtr						constructBuddy(const PropertyMap& props);
-	virtual BuddyPtr						constructBuddy(const std::string& descriptor, BuddyPtr pBuddy);
-	virtual bool							recognizeBuddyIdentifier(const std::string& identifier);
-	virtual bool							allowsManualBuddies()
+	virtual BuddyPtr						constructBuddy(const PropertyMap& props) override;
+	virtual BuddyPtr						constructBuddy(const std::string& descriptor, BuddyPtr pBuddy) override;
+	virtual bool							recognizeBuddyIdentifier(const std::string& identifier) override;
+	virtual bool							allowsManualBuddies() override
 		{ return false; }
-	virtual void							forceDisconnectBuddy(BuddyPtr buddy);
-	virtual bool							hasPersistentAccessControl()
+	virtual void							forceDisconnectBuddy(BuddyPtr buddy) override;
+	virtual bool							hasPersistentAccessControl() override
 		{ return false; }
-	virtual bool							defaultShareState(BuddyPtr /*pBuddy*/);
+	virtual bool							defaultShareState(BuddyPtr /*pBuddy*/) override;
 
 	// session management
-	virtual bool							allowsSessionTakeover()
+	virtual bool							allowsSessionTakeover() override
 		{ return false; }
 
 	// packet management
-	virtual bool							send(const Packet* packet);
-	virtual bool							send(const Packet*, BuddyPtr pBuddy);
+	virtual bool							send(const Packet* packet) override;
+	virtual bool							send(const Packet*, BuddyPtr pBuddy) override;
 
 	// event management
 	void									handleEvent(std::shared_ptr<Session> session_ptr);

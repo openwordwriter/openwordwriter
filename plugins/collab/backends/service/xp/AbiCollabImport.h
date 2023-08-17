@@ -30,11 +30,11 @@ public:
 	IE_Imp_AbiCollabSniffer();
 	virtual ~IE_Imp_AbiCollabSniffer() {}
 
-	virtual const IE_SuffixConfidence * getSuffixConfidence ();
-	virtual UT_Confidence_t recognizeContents(const char * szBuf, UT_uint32 iNumbytes);
-	virtual const IE_MimeConfidence * getMimeConfidence () { return NULL; }
-	virtual bool getDlgLabels (const char ** pszDesc, const char ** pszSuffixList, IEFileType * ft);
-	virtual UT_Error constructImporter (PD_Document * pDocument, IE_Imp ** ppie);
+	virtual const IE_SuffixConfidence * getSuffixConfidence () override;
+	virtual UT_Confidence_t recognizeContents(const char * szBuf, UT_uint32 iNumbytes) override;
+	virtual const IE_MimeConfidence * getMimeConfidence () override { return NULL; }
+	virtual bool getDlgLabels (const char ** pszDesc, const char ** pszSuffixList, IEFileType * ft) override;
+	virtual UT_Error constructImporter (PD_Document * pDocument, IE_Imp ** ppie) override;
 };
 
 class IE_Imp_AbiCollab : public IE_Imp
@@ -43,7 +43,7 @@ public:
 	IE_Imp_AbiCollab(PD_Document* pDocument);
 
 protected:
-	virtual UT_Error _loadFile(GsfInput * input);
+	virtual UT_Error _loadFile(GsfInput * input) override;
 
 private:
 	UT_Error				_openDocument(GsfInput * input, ServiceAccountHandler* pAccount,

@@ -30,7 +30,7 @@ public:
 	AP_Dialog_GenericInput(XAP_DialogFactory * pDlgFactory, XAP_Dialog_Id id);
 	virtual ~AP_Dialog_GenericInput(void);
 
-	virtual void					runModal(XAP_Frame * pFrame) = 0;
+	virtual void					runModal(XAP_Frame * pFrame) override = 0;
 
 	// functions related to password style input
 	bool							isPassword()

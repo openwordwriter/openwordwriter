@@ -85,8 +85,8 @@ private:
 
 class PayloadPacket : public Packet {
 public:
-	virtual int complete(const char* buf, size_t size);
-	virtual int parse(const char* buf, size_t size);
+	virtual int complete(const char* buf, size_t size) override;
+	virtual int parse(const char* buf, size_t size) override;
 
 	const uint32_t& getPayloadSize() const {
 		return m_payload_size;
@@ -111,7 +111,7 @@ class RoutingPacket : public PayloadPacket {
 public:
 	RoutingPacket();
 	RoutingPacket(std::vector<uint8_t>& connection_ids, std::shared_ptr<std::string> msg);
-	virtual int parse(const char* buf, size_t size);
+	virtual int parse(const char* buf, size_t size) override;
 
 	const uint8_t& getAddressCount() const {
 		return m_address_count;
@@ -137,7 +137,7 @@ class DeliverPacket : public PayloadPacket {
 public:
 	DeliverPacket();
 	DeliverPacket(uint8_t connection_id, std::shared_ptr<std::string> msg);
-	virtual int parse(const char* buf, size_t size);
+	virtual int parse(const char* buf, size_t size) override;
 
 	const uint8_t& getConnectionId() const {
 		return m_connection_id;
@@ -156,7 +156,7 @@ class UserJoinedPacket : public PayloadPacket {
 public:
 	UserJoinedPacket();
 	UserJoinedPacket(uint8_t connection_id, bool master, std::shared_ptr<std::string> userinfo);
-	virtual int parse(const char* buf, size_t size);
+	virtual int parse(const char* buf, size_t size) override;
 
 	const uint8_t& getConnectionId() const {
 		return m_connection_id;
@@ -180,7 +180,7 @@ class UserLeftPacket : public Packet {
 public:
 	UserLeftPacket();
 	UserLeftPacket(uint8_t connection_id);
-	virtual int parse(const char* buf, size_t size);
+	virtual int parse(const char* buf, size_t size) override;
 
 	const uint8_t& getConnectionId() const {
 		return m_connection_id;

@@ -77,56 +77,56 @@ public:
 
 	// housekeeping
 	static UT_UTF8String					getStaticStorageType();
-	virtual UT_UTF8String					getStorageType()
+	virtual UT_UTF8String					getStorageType() override
 		{ return getStaticStorageType(); }
-	virtual UT_UTF8String					getDescription();
-	virtual UT_UTF8String					getDisplayType();
+	virtual UT_UTF8String					getDescription() override;
+	virtual UT_UTF8String					getDisplayType() override;
 
 	// dialog management
-	virtual UT_UTF8String					getShareHint(PD_Document* pDoc);
+	virtual UT_UTF8String					getShareHint(PD_Document* pDoc) override;
 	static XAP_Dialog_Id					getDialogGenericInputId();
 	static XAP_Dialog_Id					getDialogGenericProgressId();
 
 	// connection management
-	virtual ConnectResult					connect();
-	virtual bool							disconnect();
-	virtual bool							isOnline();
+	virtual ConnectResult					connect() override;
+	virtual bool							disconnect() override;
+	virtual bool							isOnline() override;
 	ConnectionPtr							getConnection(PD_Document* pDoc);
 
 	// user management
-	virtual void							getBuddiesAsync();
-	virtual BuddyPtr						constructBuddy(const PropertyMap& props);
-	virtual BuddyPtr						constructBuddy(const std::string& descriptor, BuddyPtr pBuddy);
-	virtual bool							allowsManualBuddies()
+	virtual void							getBuddiesAsync() override;
+	virtual BuddyPtr						constructBuddy(const PropertyMap& props) override;
+	virtual BuddyPtr						constructBuddy(const std::string& descriptor, BuddyPtr pBuddy) override;
+	virtual bool							allowsManualBuddies() override
 		{ return false; }
-	virtual bool							recognizeBuddyIdentifier(const std::string& identifier);
-	virtual void							forceDisconnectBuddy(BuddyPtr pBuddy);
-	virtual bool							hasAccess(const std::vector<std::string>& vAcl, BuddyPtr pBuddy);
-	virtual bool							hasPersistentAccessControl()
+	virtual bool							recognizeBuddyIdentifier(const std::string& identifier) override;
+	virtual void							forceDisconnectBuddy(BuddyPtr pBuddy) override;
+	virtual bool							hasAccess(const std::vector<std::string>& vAcl, BuddyPtr pBuddy) override;
+	virtual bool							hasPersistentAccessControl() override
 		{ return true; }
-	virtual bool							canShare(BuddyPtr pBuddy);
+	virtual bool							canShare(BuddyPtr pBuddy) override;
 
 	// packet management
-	virtual bool							send(const Packet* packet);
-	virtual bool							send(const Packet* packet, BuddyPtr pBuddy);
+	virtual bool							send(const Packet* packet) override;
+	virtual bool							send(const Packet* packet, BuddyPtr pBuddy) override;
 
 	// session management
-	virtual void							getSessionsAsync();
+	virtual void							getSessionsAsync() override;
 	virtual void							getSessionsAsync(const Buddy& buddy);
-	virtual bool							startSession(PD_Document* pDoc, const std::vector<std::string>& vAcl, AbiCollab** pSession);
-	virtual bool							getAcl(AbiCollab* pSession, std::vector<std::string>& vAcl);
-	virtual bool							setAcl(AbiCollab* pSession, const std::vector<std::string>& vAcl);
-	virtual void							joinSessionAsync(BuddyPtr pBuddy, DocHandle& docHandle);
-	virtual bool							hasSession(const std::string& sSessionId);
+	virtual bool							startSession(PD_Document* pDoc, const std::vector<std::string>& vAcl, AbiCollab** pSession) override;
+	virtual bool							getAcl(AbiCollab* pSession, std::vector<std::string>& vAcl) override;
+	virtual bool							setAcl(AbiCollab* pSession, const std::vector<std::string>& vAcl) override;
+	virtual void							joinSessionAsync(BuddyPtr pBuddy, DocHandle& docHandle) override;
+	virtual bool							hasSession(const std::string& sSessionId) override ;
 	acs::SOAP_ERROR							openDocument(UT_uint64 doc_id, UT_uint64 revision, const std::string& session_id, PD_Document** pDoc, XAP_Frame* pFrame);
 	soa::function_call_ptr					constructListDocumentsCall();
 	soa::function_call_ptr					constructSaveDocumentCall(PD_Document* pDoc, ConnectionPtr connection_ptr);
 	void									removeExporter(void);
-	virtual bool							allowsSessionTakeover()
+	virtual bool							allowsSessionTakeover() override
 		{ return true; }
 
 	// signal management
-	virtual void							signal(const Event& event, BuddyPtr pSource);
+	virtual void							signal(const Event& event, BuddyPtr pSource) override;
 
 	// misc functions
 	const std::string&						getCA() const

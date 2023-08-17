@@ -31,10 +31,10 @@ public:
 	void									eventGroupChanged();
 
 	// dialog management
-	virtual void							embedDialogWidgets(void* pEmbeddingParent);
-	virtual void							removeDialogWidgets(void* pEmbeddingParent);
-	virtual void							loadProperties();
-	virtual void							storeProperties();
+	virtual void							embedDialogWidgets(void* pEmbeddingParent) override;
+	virtual void							removeDialogWidgets(void* pEmbeddingParent) override;
+	virtual void							loadProperties() override;
+	virtual void							storeProperties() override;
 
 private:
 	GtkWidget*								vbox;

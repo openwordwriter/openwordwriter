@@ -36,44 +36,44 @@ public:
 
 	// housekeeping
 	static UT_UTF8String					getStaticStorageType();
-	virtual UT_UTF8String					getStorageType()
+	virtual UT_UTF8String					getStorageType() override
 		{ return getStaticStorageType(); }
-	virtual UT_UTF8String					getDescription();
-	virtual UT_UTF8String					getDisplayType();
+	virtual UT_UTF8String					getDescription() override;
+	virtual UT_UTF8String					getDisplayType() override;
 
 	// dialog management
-	virtual void							embedDialogWidgets(void* /*pEmbeddingParent*/)
+	virtual void							embedDialogWidgets(void* /*pEmbeddingParent*/) override
 		{ UT_ASSERT_HARMLESS(UT_NOT_REACHED); }
-	virtual void							removeDialogWidgets(void* /*pEmbeddingParent*/)
+	virtual void							removeDialogWidgets(void* /*pEmbeddingParent*/) override
 		{ UT_ASSERT_HARMLESS(UT_NOT_REACHED); }
-	virtual void							loadProperties();
-	virtual void							storeProperties();
+	virtual void							loadProperties() override;
+	virtual void							storeProperties() override;
 
 	// connection management
-	virtual ConnectResult					connect();
-	virtual bool							disconnect();
-	virtual bool							isOnline();
+	virtual ConnectResult					connect() override;
+	virtual bool							disconnect() override;
+	virtual bool							isOnline() override;
 	bool									isLocallyControlled()
 		{ return false; }
 
 	// user management
 	FakeBuddyPtr							getBuddy(const UT_UTF8String& description);
-	virtual BuddyPtr						constructBuddy(const PropertyMap& props);
-	virtual BuddyPtr						constructBuddy(const std::string& descriptor, BuddyPtr pBuddy);
-	virtual bool							allowsManualBuddies()
+	virtual BuddyPtr						constructBuddy(const PropertyMap& props) override;
+	virtual BuddyPtr						constructBuddy(const std::string& descriptor, BuddyPtr pBuddy) override;
+	virtual bool							allowsManualBuddies() override
 		{ return false; }
-	virtual void							forceDisconnectBuddy(BuddyPtr pBuddy);
-	virtual bool							recognizeBuddyIdentifier(const std::string& identifier);
-	virtual bool							hasPersistentAccessControl()
+	virtual void							forceDisconnectBuddy(BuddyPtr pBuddy) override;
+	virtual bool							recognizeBuddyIdentifier(const std::string& identifier) override;
+	virtual bool							hasPersistentAccessControl() override
 		{ return true; }
 
 	// session management
-	virtual bool							allowsSessionTakeover()
+	virtual bool							allowsSessionTakeover() override
 		{ return false; } // not sure if sugar/tubes allow session takeover; should investigate - MARCM
 
 	// packet management
-	virtual bool							send(const Packet* pPacket);
-	virtual bool							send(const Packet* pPacket, BuddyPtr pBuddy);
+	virtual bool							send(const Packet* pPacket) override;
+	virtual bool							send(const Packet* pPacket, BuddyPtr pBuddy) override;
 
 	// functions for the regression test
 	bool									process();

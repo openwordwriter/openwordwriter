@@ -52,7 +52,7 @@ public:
 		setVolatile(true);
 	}
 
-	virtual UT_UTF8String getDescriptor(bool include_session_info = false) const
+	virtual UT_UTF8String getDescriptor(bool include_session_info = false) const override
 	{
 		if (include_session_info)
 		{
@@ -65,7 +65,7 @@ public:
 		return descr.c_str();
 	}
 
-	virtual UT_UTF8String getDescription() const
+	virtual UT_UTF8String getDescription() const override
 		{ return m_name.c_str(); }
 
 	ServiceBuddyType getType() const
@@ -77,7 +77,7 @@ public:
 	const std::string& getName() const
 		{ return m_name; }
 
-	virtual const DocTreeItem* getDocTreeItems() const
+	virtual const DocTreeItem* getDocTreeItems() const override
 	{
 		const std::vector<DocHandle*>& docHandles = getDocHandles();
 		DocTreeItem* first = 0;

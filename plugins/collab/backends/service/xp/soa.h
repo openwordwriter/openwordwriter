@@ -84,7 +84,7 @@ public:
 		value_(value)
 	{}
 
-	virtual std::string str() const {
+	virtual std::string str() const override {
 		return value_;
 	}
 
@@ -99,7 +99,7 @@ public:
 		value_(value)
 	{}
 
-	virtual std::string str() const {
+	virtual std::string str() const override {
 		try {
 			return boost::lexical_cast<std::string>(value_);
 		} catch (boost::bad_lexical_cast &) {
@@ -118,7 +118,7 @@ public:
 		value_(value)
 	{}
 
-	virtual std::string str() const {
+	virtual std::string str() const override {
 		return value_ ? "true" : "false";
 	}
 
@@ -133,7 +133,7 @@ public:
 		value_(value)
 	{}
 
-	virtual std::string str() const {
+	virtual std::string str() const override {
 		return value_.value();
 	}
 
@@ -150,17 +150,17 @@ public:
 		element_type_(element_type)
 	{}
 
-	virtual bool type_props() const {
+	virtual bool type_props() const override {
 		return true;
 	}
 
-	virtual std::string props() const {
+	virtual std::string props() const override {
 		if (value_)
 			return "SOAP-ENC:arrayType=\"" + soap_type(element_type_) + "[" + boost::lexical_cast<std::string>(value_->size()) + "]\"" + " " + "SOAP-ENC:offset=\"[0]\"";
 		return "SOAP-ENC:arrayType=\"xsd:anyType[0]\" xsi:nil=\"true\"";
 	}
 
-	virtual std::string str() const {
+	virtual std::string str() const override {
 		std::string ret = "\n";
 		if (!value_)
 			return ret;
