@@ -121,7 +121,7 @@ AC_ARG_ENABLE([collab-backend-service],
 		])])
 		AC_LANG_POP
 		PKG_CHECK_EXISTS([ $collab_service_req ], [], [
-			AC_MSG_ERROR([collab plugin: missing dependencies])
+			AC_MSG_ERROR([collab plugin: missing dependencies $collab_service_req])
 		])
 		collab_deps="yes"
 	fi
