@@ -28,12 +28,11 @@
 
 #include <boost/bind/bind.hpp>
 #include <boost/function.hpp>
-#include <boost/noncopyable.hpp>
 #include "ut_debugmsg.h"
 #include <sync/xp/Synchronizer.h>
 
 template <class T>
-class AsyncWorker : private boost::noncopyable, public std::enable_shared_from_this<AsyncWorker<T> >
+class AsyncWorker : public std::enable_shared_from_this<AsyncWorker<T> >
 {
 public:
 	AsyncWorker(boost::function<T ()> async_func, boost::function<void (T)> async_callback)
@@ -42,6 +41,9 @@ public:
 	m_synchronizer() // can't initialize the synchronizer here yet, because you can't call shared_from_this() from a constructor
 	{
 	}
+
+	AsyncWorker(const AsyncWorker&) = delete;
+	AsyncWorker& operator=(const AsyncWorker&) = delete;
 
 	virtual ~AsyncWorker()
 	{

@@ -53,8 +53,8 @@ public:
 
 private:
 	// we are noncopyable
-	mutex( const mutex& );
-	const mutex& operator=( const mutex& );
+	mutex( const mutex& ) = delete;
+	const mutex& operator=( const mutex& ) = delete;
 
 #ifdef _WIN32
 	HANDLE repr;
@@ -87,8 +87,8 @@ public:
 
 private:
 	// we are noncopyable
-	scoped_lock( const scoped_lock& );
-	const scoped_lock& operator=( const scoped_lock& );
+	scoped_lock( const scoped_lock& ) = delete;
+	const scoped_lock& operator=( const scoped_lock& ) = delete;
 
 	mutex& m_mutex;
 };

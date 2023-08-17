@@ -22,14 +22,13 @@
 #include <deque>
 #include <boost/bind/bind.hpp>
 #include <boost/function.hpp>
-#include <boost/noncopyable.hpp>
 #include <sync/xp/lock.h>
 #include <sync/xp/Synchronizer.h>
 
 class EmptyQueueException {};
 
 template <typename T>
-class SynchronizedQueue : public Synchronizer, public boost::noncopyable
+class SynchronizedQueue : public Synchronizer
 {
 public:
 	SynchronizedQueue(boost::function<void (SynchronizedQueue&)> sig)
@@ -38,6 +37,9 @@ public:
 		m_queue(),
 		m_sig(sig)
 	{}
+
+	SynchronizedQueue(const SynchronizedQueue&) = delete;
+	SynchronizedQueue& operator=(const SynchronizedQueue&) = delete;
 
 	void push(T t)
 	{

@@ -23,7 +23,6 @@
 
 #include <boost/function.hpp>
 #include <boost/bind/bind.hpp>
-#include <boost/noncopyable.hpp>
 #include <deque>
 #include <sync/xp/lock.h>
 #include <sync/xp/Synchronizer.h>
@@ -33,7 +32,7 @@
 
 class TCPAccountHandler;
 
-class Session : public Synchronizer, public boost::noncopyable, public std::enable_shared_from_this<Session>
+class Session : public Synchronizer, public std::enable_shared_from_this<Session>
 {
 public:
 	Session(boost::asio::io_service& io_service, boost::function<void (std::shared_ptr<Session>)> ef)
@@ -43,6 +42,9 @@ public:
 		m_ef(ef)
 	{
 	}
+
+	Session(const Session&) = delete;
+	Session& operator=(const Session&) = delete;
 
 	void connect(boost::asio::ip::tcp::resolver::iterator& iterator)
 	{
