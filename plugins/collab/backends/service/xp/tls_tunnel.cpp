@@ -25,6 +25,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <boost/bind/bind.hpp>
 
 #include "tls_tunnel.h"
 
@@ -103,7 +104,7 @@ Transport::~Transport()
 }
 
 ClientTransport::ClientTransport(const std::string& host, unsigned short port, 
-		boost::function<void (transport_ptr_t, socket_ptr_t)> on_connect)
+		std::function<void (transport_ptr_t, socket_ptr_t)> on_connect)
 	: Transport(),
 	host_(host),
 	port_(port),
@@ -143,7 +144,7 @@ void ClientTransport::connect() {
 }
 
 ServerTransport::ServerTransport(const std::string& ip, unsigned short port, 
-		boost::function<void (transport_ptr_t, socket_ptr_t)> on_connect) 
+		std::function<void (transport_ptr_t, socket_ptr_t)> on_connect) 
 	: Transport(),
 	acceptor_(io_service(), boost::asio::ip::tcp::endpoint(boost::asio::ip::address_v4::from_string(ip), port)),
 	on_connect_(on_connect)

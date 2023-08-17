@@ -64,7 +64,7 @@ class RealmConnection : public std::enable_shared_from_this<RealmConnection>
 public:
 	RealmConnection(const std::string& ca_file, const std::string& address, int port, bool tls,
 					const std::string& cookie, UT_uint64 doc_id, bool master, const std::string& session_id,
-					boost::function<void (std::shared_ptr<RealmConnection>)> sig);
+					std::function<void (std::shared_ptr<RealmConnection>)> sig);
 
 	bool								connect();
 	void								disconnect();
@@ -140,7 +140,7 @@ private:
 	PD_Document*						m_pDoc;
 	realm::GrowBuffer					m_buf;
 	SynchronizedQueue<realm::protocolv1::PacketPtr>		m_packet_queue;
-	boost::function<void (std::shared_ptr<RealmConnection>)> m_sig;
+	std::function<void (std::shared_ptr<RealmConnection>)> m_sig;
 	std::vector<RealmBuddyPtr>			m_buddies;
 
 	std::shared_ptr<PendingDocumentProperties>

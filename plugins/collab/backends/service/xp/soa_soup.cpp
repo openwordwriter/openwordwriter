@@ -48,10 +48,10 @@ namespace soup_soa {
 			_set_session(ssl_ca_file);
 		}
 	
-		SoaSoupSession(SoupMessage* msg, const std::string& ssl_ca_file, boost::function<void (SoupSession*, SoupMessage*, uint32_t)> progress_cb_)
+		SoaSoupSession(SoupMessage* msg, const std::string& ssl_ca_file, std::function<void (SoupSession*, SoupMessage*, uint32_t)> progress_cb_)
 			: m_session(NULL),
 			m_msg(msg),
-			progress_cb_ptr(new boost::function<void (SoupSession*, SoupMessage*, uint32_t)>(progress_cb_)),
+			progress_cb_ptr(new std::function<void (SoupSession*, SoupMessage*, uint32_t)>(progress_cb_)),
 			received_content_length(0)
 		{
 			_set_session(ssl_ca_file);
@@ -72,7 +72,7 @@ namespace soup_soa {
 		
 		SoupSession* m_session;
 		SoupMessage* m_msg;
-		std::shared_ptr<boost::function<void (SoupSession*, SoupMessage*, uint32_t)> > progress_cb_ptr;
+		std::shared_ptr<std::function<void (SoupSession*, SoupMessage*, uint32_t)> > progress_cb_ptr;
 		uint32_t received_content_length;
 		
 		private:
@@ -116,7 +116,7 @@ namespace soup_soa {
 	}
 	
 	soa::GenericPtr invoke(const std::string& url, const soa::method_invocation& mi, const std::string& ssl_ca_file,
-						   boost::function<void (SoupSession*, SoupMessage*, uint32_t)> progress_cb) {
+						   std::function<void (SoupSession*, SoupMessage*, uint32_t)> progress_cb) {
 		std::string soap_msg = mi.str();
 		SoupMessage* msg = soup_message_new ("POST", url.c_str());
 		SoaSoupSession sess(msg, ssl_ca_file, progress_cb);
@@ -145,7 +145,7 @@ namespace soup_soa {
 	}
 
 	bool invoke(const std::string& url, const soa::method_invocation& mi, const std::string& ssl_ca_file,
-						   boost::function<void (SoupSession*, SoupMessage*, uint32_t)> progress_cb, std::string& result) {
+						   std::function<void (SoupSession*, SoupMessage*, uint32_t)> progress_cb, std::string& result) {
 		std::string soap_msg = mi.str();
 		SoupMessage* msg = soup_message_new ("POST", url.c_str());
 		SoaSoupSession sess(msg, ssl_ca_file, progress_cb);

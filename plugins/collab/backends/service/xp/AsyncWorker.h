@@ -24,10 +24,10 @@
 #else
 # include <asio.hpp>
 #endif
+#include <functional>
 #include <memory>
 
 #include <boost/bind/bind.hpp>
-#include <boost/function.hpp>
 #include "ut_debugmsg.h"
 #include <sync/xp/Synchronizer.h>
 
@@ -35,7 +35,7 @@ template <class T>
 class AsyncWorker : public std::enable_shared_from_this<AsyncWorker<T> >
 {
 public:
-	AsyncWorker(boost::function<T ()> async_func, boost::function<void (T)> async_callback)
+	AsyncWorker(std::function<T ()> async_func, std::function<void (T)> async_callback)
 	: m_async_func(async_func),
 	m_async_callback(async_callback),
 	m_synchronizer() // can't initialize the synchronizer here yet, because you can't call shared_from_this() from a constructor
@@ -79,8 +79,8 @@ private:
 		m_synchronizer->signal();
 	}
 
-	boost::function<T ()>					m_async_func;
-	boost::function<void (T)>				m_async_callback;
+	std::function<T ()>					m_async_func;
+	std::function<void (T)>				m_async_callback;
 	std::shared_ptr<Synchronizer>			m_synchronizer;
 	std::shared_ptr<std::thread>			m_thread_ptr;
 	T										m_func_result;

@@ -20,8 +20,8 @@
 #define __SYNCHRONIZED_QUEUE__
 
 #include <deque>
-#include <boost/bind/bind.hpp>
-#include <boost/function.hpp>
+#include <functional>
+
 #include <sync/xp/lock.h>
 #include <sync/xp/Synchronizer.h>
 
@@ -31,8 +31,8 @@ template <typename T>
 class SynchronizedQueue : public Synchronizer
 {
 public:
-	SynchronizedQueue(boost::function<void (SynchronizedQueue&)> sig)
-		: Synchronizer(boost::bind(&SynchronizedQueue::_signal, this)),
+	SynchronizedQueue(std::function<void (SynchronizedQueue&)> sig)
+		: Synchronizer(std::bind(&SynchronizedQueue::_signal, this)),
 		m_mutex(),
 		m_queue(),
 		m_sig(sig)
@@ -71,7 +71,7 @@ private:
 
 	abicollab::mutex m_mutex;
 	std::deque< T > m_queue;
-	boost::function<void (SynchronizedQueue&)> m_sig;
+	std::function<void (SynchronizedQueue&)> m_sig;
 };
 
 #endif /* __SYNCHRONIZED_QUEUE__ */

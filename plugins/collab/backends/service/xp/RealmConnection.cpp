@@ -16,7 +16,8 @@
  * 02110-1301 USA.
  */
 
-#include <boost/function.hpp>
+#include <functional>
+
 #include <boost/bind/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include "ut_assert.h"
@@ -28,7 +29,7 @@ namespace rpv1 = realm::protocolv1;
 
 RealmConnection::RealmConnection(const std::string& ca_file, const std::string& address, int port, bool tls,
 								 const std::string& cookie, UT_uint64 _doc_id, bool _master, const std::string& _session_id,
-								 boost::function<void (std::shared_ptr<RealmConnection>)> sig)
+								 std::function<void (std::shared_ptr<RealmConnection>)> sig)
 	: m_io_service(),
 	m_ca_file(ca_file),
 	m_address(address),

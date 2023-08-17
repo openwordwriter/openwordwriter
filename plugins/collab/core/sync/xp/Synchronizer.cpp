@@ -213,7 +213,7 @@ Synchronizer::Synchronizer(boost::function<void ()>  signalhandler) // Win32 Imp
 
 #else
 
-Synchronizer::Synchronizer(boost::function<void ()> signalhandler) // Unix Implementation
+Synchronizer::Synchronizer(std::function<void ()> signalhandler) // Unix Implementation
 	: m_signalhandler(signalhandler)
 {
 	UT_DEBUGMSG(("Synchronizer()\n"));

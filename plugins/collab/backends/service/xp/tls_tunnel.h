@@ -31,8 +31,6 @@
 
 #include "config.h"
 
-#include <boost/bind/bind.hpp>
-#include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
 #if defined(HAVE_BOOST_ASIO_HPP)
 # include <boost/asio.hpp>
@@ -83,25 +81,25 @@ typedef std::shared_ptr<Transport> transport_ptr_t;
 class ClientTransport : public Transport {
 public:
 	ClientTransport(const std::string& host, unsigned short port,
-			boost::function<void (transport_ptr_t, socket_ptr_t)> on_connect);
+			std::function<void (transport_ptr_t, socket_ptr_t)> on_connect);
 	void connect();
 private:
 	std::string host_;
 	unsigned short port_;
-	boost::function<void (transport_ptr_t, socket_ptr_t)> on_connect_;
+	std::function<void (transport_ptr_t, socket_ptr_t)> on_connect_;
 };
 
 
 class ServerTransport : public Transport {
 public:
 	ServerTransport(const std::string& ip, unsigned short port,
-			boost::function<void (transport_ptr_t, socket_ptr_t)> on_connect);
+			std::function<void (transport_ptr_t, socket_ptr_t)> on_connect);
 	void accept();
 private:
 	void on_accept(const boost::system::error_code& error, socket_ptr_t socket_ptr);
 
 	boost::asio::ip::tcp::acceptor acceptor_;
-	boost::function<void (transport_ptr_t, socket_ptr_t)> on_connect_;
+	std::function<void (transport_ptr_t, socket_ptr_t)> on_connect_;
 };
 
 class Proxy {

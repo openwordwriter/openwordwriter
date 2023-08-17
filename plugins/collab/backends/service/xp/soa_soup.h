@@ -30,8 +30,8 @@
 #define __SOA_SOUP__
 
 #include <string>
+#include <functional>
 #include <libsoup/soup.h>
-#include <boost/function.hpp>
 #include "soa.h"
 
 namespace soup_soa {
@@ -39,12 +39,12 @@ namespace soup_soa {
 	soa::GenericPtr invoke(const std::string& url, const soa::method_invocation& mi, const std::string& ssl_ca_file);
 
 	soa::GenericPtr invoke(const std::string& url, const soa::method_invocation& mi, const std::string& ssl_ca_file,
-						   boost::function<void (SoupSession*, SoupMessage*, uint32_t)> progress_cb);
+						   std::function<void (SoupSession*, SoupMessage*, uint32_t)> progress_cb);
 
 	bool invoke(const std::string& url, const soa::method_invocation& mi, const std::string& ssl_ca_file, std::string& result);
 
 	bool invoke(const std::string& url, const soa::method_invocation& mi, const std::string& ssl_ca_file,
-						   boost::function<void (SoupSession*, SoupMessage*, uint32_t)> progress_cb, std::string& result);
+						   std::function<void (SoupSession*, SoupMessage*, uint32_t)> progress_cb, std::string& result);
 }
 
 #endif /* __SOA_SOUP__ */

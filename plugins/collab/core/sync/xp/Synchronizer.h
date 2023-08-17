@@ -21,7 +21,8 @@
 #ifndef __SYNCHRONIZER__
 #define __SYNCHRONIZER__
 
-#include <boost/function.hpp>
+#include <functional>
+
 #include <ut_assert.h>
 
 class Synchronizer;
@@ -51,7 +52,7 @@ public:
 #endif
 
 	// XP prototypes
-	Synchronizer(boost::function<void ()> signalhandler);
+	Synchronizer(std::function<void ()> signalhandler);
 	virtual ~Synchronizer();
 
 	void signal();
@@ -69,7 +70,7 @@ private:
 // PRIVATE DATA
 //////////////////
 // XP members
-	boost::function<void ()> m_signalhandler;
+	std::function<void ()> m_signalhandler;
 
 #ifdef _WIN32
 	HWND m_hWnd;

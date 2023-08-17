@@ -21,8 +21,9 @@
 
 #include "ut_debugmsg.h"
 
+#include <functional>
+
 #include <boost/bind/bind.hpp>
-#include <boost/function.hpp>
 #if defined(HAVE_BOOST_ASIO_HPP)
 # include <boost/asio.hpp>
 #else
@@ -37,8 +38,8 @@ class TCPAccountHandler;
 class IOServerHandler
 {
 public:
-	IOServerHandler(int port, boost::function<void (IOServerHandler*, std::shared_ptr<Session>)> af,
-					boost::function<void (std::shared_ptr<Session>)> ef, boost::asio::io_service& io_service_)
+	IOServerHandler(int port, std::function<void (IOServerHandler*, std::shared_ptr<Session>)> af,
+					std::function<void (std::shared_ptr<Session>)> ef, boost::asio::io_service& io_service_)
 	:	accept_synchronizer(boost::bind(&IOServerHandler::_signal, this)),
 		io_service(io_service_),
 		m_pAcceptor(NULL),
@@ -108,8 +109,8 @@ private:
 	boost::asio::ip::tcp::acceptor*	m_pAcceptor;
 	std::shared_ptr<Session>	session_ptr;
 
-	boost::function<void (IOServerHandler*, std::shared_ptr<Session>)> m_af;
-	boost::function<void (std::shared_ptr<Session>)> m_ef;
+	std::function<void (IOServerHandler*, std::shared_ptr<Session>)> m_af;
+	std::function<void (std::shared_ptr<Session>)> m_ef;
 };
 
 #endif /* __IO_SERVER_HANDLER__ */

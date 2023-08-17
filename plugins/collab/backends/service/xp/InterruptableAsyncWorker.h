@@ -39,7 +39,7 @@ template <class T>
 class InterruptableAsyncWorker : public std::enable_shared_from_this< InterruptableAsyncWorker<T> >
 {
 public:
-	InterruptableAsyncWorker(boost::function<T ()> async_func)
+	InterruptableAsyncWorker(std::function<T ()> async_func)
 		: m_async_func(async_func),
 		m_worker_ptr(),
 		m_pProgressDlg(NULL),
@@ -150,7 +150,7 @@ private:
 		}
 	}
 
-	boost::function<T ()>				m_async_func;
+	std::function<T ()>				m_async_func;
 	std::shared_ptr< AsyncWorker<T> > m_worker_ptr;
 
 	AP_Dialog_GenericProgress*			m_pProgressDlg;
