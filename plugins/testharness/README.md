@@ -4,10 +4,10 @@ The plugin has no dependency beside AbiWord itself.
 
 To run it:
 
-abiword --plugin AbiTest 
-
+```shell
+abiword --plugin AbiTest
+```
 
 This will run the whole test suite.
 
-
-See docs/Testing.txt from the top-level directory for more details.
+See [docs/testing.md] from the top-level directory for more details.

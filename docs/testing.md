@@ -1,9 +1,7 @@
 Testing AbiWord
+===============
 
-
-Built-in test suite
-===================
-
+## Built-in test suite
 
 AbiWord has a built-in testsuite.
 
@@ -19,46 +17,50 @@ installed like any other plugins.
 
 To run it:
 
-    $ abiword --plugin=AbiTest
+```shell
+$ abiword --plugin=AbiTest
+```
 
 In case of test failure, `abiword` will return a non-zero code.
 
-Test data files
----------------
+### Test data files
 
-Ensure either ````ABI_TEST_SRC_DIR```` or ````top_srcdir```` is set to
+Ensure either `ABI_TEST_SRC_DIR` or `top_srcdir` is set to
 the top of the source dir.
 
-Individual tests
-----------------
+### Individual tests
 
-Test are *.t.cpp files. Usually in a t subdirector of what they are
+Test are *.t.cpp files. Usually in a `t` subdirectory of what they are
 testing. They are built and linked directly into the plugin.
+
 To add such a file make sure that:
-- the 't' directory is in ````DIST_SUBDIR````
-- the test source file is in ````EXTRA_DIST````
-- the test source file is in ````plugins/testharness/xp/Makefile.am````
+- the 't' directory is in `DIST_SUBDIR`
+- the test source file is in `EXTRA_DIST`
+- the test source file is in `plugins/testharness/xp/Makefile.am`
 
 When they are run from the AbiTest harness all the basics are setup.
 
-Each test source must define ````TFSUITE```` to a string that will
+Each test source must define `TFSUITE` to a string that will
 name the test. Example:
 
-    #define TFSUITE "core.wp.impexp.table"
+```C++
+#define TFSUITE "core.wp.impexp.table"
+```
 
 This is the id that can be passed at runtime to select test to run.
 Like:
 
-    $ abiword --plugin=AbiTest -E core.wp.impexp.table
+```shell
+$ abiword --plugin=AbiTest -E core.wp.impexp.table
+```
 
 This will only the test(s) in that suite.
 
-Debugging
-=========
+## Debugging
 
 You can set these env variable to assist in test and debugging:
 
-* ABI_TEST_SRC_DIR : set the top srcdir for the test harness. (see
+* `ABI_TEST_SRC_DIR`: set the top srcdir for the test harness. (see
   above)
-* ABI_DEBUG_SILENT : set to 1 to silence UT_DEBUGMSG() and
-  ignore UT_ASSERT() in a debug build.
+* `ABI_DEBUG_SILENT`: set to 1 to silence `UT_DEBUGMSG()` and ignore
+  `UT_ASSERT()` in a debug build.
