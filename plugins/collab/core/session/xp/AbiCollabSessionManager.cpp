@@ -699,7 +699,7 @@ AbiCollab* AbiCollabSessionManager::startSession(PD_Document* pDoc, std::string&
 	{
 		XAP_App* pApp = XAP_App::getApp();
 		UT_UUID* pUUID = pApp->getUUIDGenerator()->createUUID();
-		sSessionId = pUUID->toString().unwrap_or("");
+		sSessionId = pUUID->toString().value_or("");
 	}
 
 	if (masterDescriptor != "")

@@ -554,7 +554,7 @@ bool TelepathyAccountHandler::startSession(PD_Document* pDoc, const std::vector<
 	// generate a unique session id to use
 	std::string sSessionId;
 	UT_UUID* pUUID = XAP_App::getApp()->getUUIDGenerator()->createUUID();
-	sSessionId = pUUID->toString().unwrap_or("");
+	sSessionId = pUUID->toString().value_or("");
 	DELETEP(pUUID);
 
 	// start the session already, while we'll continue to setup a
