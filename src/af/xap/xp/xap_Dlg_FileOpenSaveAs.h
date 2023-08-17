@@ -18,13 +18,13 @@
  * 02110-1301 USA.
  */
 
-#ifndef XAP_DIALOG_FILEOPENSAVEAS_H
-#define XAP_DIALOG_FILEOPENSAVEAS_H
+#pragma once
+
+#include <functional>
 
 #include "xap_Dialog.h"
 class XAP_App;
 
-#include <boost/function.hpp>
 
 // we return some special values for file types depending
 // on how the derived classes do different things for different
@@ -69,7 +69,7 @@ public:
 	// what type of suffix (ala "*.*" or "*") is appropriate.
 	UT_sint32							getFileType(void) const;
 
-    typedef boost::function<std::string (std::string,UT_sint32)> m_appendDefaultSuffixFunctor_t;
+    typedef std::function<std::string (std::string,UT_sint32)> m_appendDefaultSuffixFunctor_t;
     void setAppendDefaultSuffixFunctor( m_appendDefaultSuffixFunctor_t f );
 
   protected:
@@ -93,5 +93,3 @@ public:
 
 ABI_EXPORT XAP_Dialog_FileOpenSaveAs::m_appendDefaultSuffixFunctor_t
 getAppendDefaultSuffixFunctorUsing_IE_Exp_preferredSuffixForFileType();
-
-#endif /* XAP_DIALOG_FILEOPENSAVEAS_H */

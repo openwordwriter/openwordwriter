@@ -28,8 +28,6 @@
 
 #include "xap_GtkUtils.h"
 
-#include <boost/function.hpp>
-
 #include <sstream>
 
 std::string

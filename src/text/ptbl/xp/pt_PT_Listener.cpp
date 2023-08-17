@@ -251,9 +251,9 @@ bool pt_PieceTable::_tellAndMaybeAddListener(PL_Listener * pListener,
 
 #include "pl_ListenerCoupleCloser.h"
 #include <set>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
-typedef boost::function< bool (PT_DocPosition, PT_DocPosition, PT_DocPosition, PL_Listener*)> f_WalkRangeFinished_t;
+
+#include <functional>
+typedef std::function< bool (PT_DocPosition, PT_DocPosition, PT_DocPosition, PL_Listener*)> f_WalkRangeFinished_t;
 
 static bool finishedFunctorEndOfRage( PT_DocPosition /*rangeStartPos*/,
                                       PT_DocPosition rangeEndPos,
@@ -501,7 +501,7 @@ bool pt_PieceTable::tellListenerSubset( PL_Listener * pListener,
         if( PL_FinishingListener* cl = closer->getBeforeContentListener() )
         {
             bool walkForwards = false;
-            f_WalkRangeFinished_t f = boost::bind( finishedFunctorFinishingListener, _1, _2, _3, _4, cl );
+            f_WalkRangeFinished_t f = std::bind( finishedFunctorFinishingListener, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, cl );
 
             PL_FinishingListener* nullListener = closer->getNullContentListener();
             closer->setDelegate( nullListener );
@@ -534,7 +534,7 @@ bool pt_PieceTable::tellListenerSubset( PL_Listener * pListener,
          */
         if( PL_FinishingListener* cl = closer->getAfterContentListener() )
         {
-            f_WalkRangeFinished_t f = boost::bind( finishedFunctorFinishingListener, _1, _2, _3, _4, cl );
+            f_WalkRangeFinished_t f = std::bind( finishedFunctorFinishingListener, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, cl );
             /*rc =*/ _tellListenerSubsetWalkRange( this, cl,
                                                pDocRange, pDocRange->m_pos2, 0,
                                                f, closerFragmentTypesToVisit );
