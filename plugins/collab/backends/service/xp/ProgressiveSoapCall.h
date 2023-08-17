@@ -24,7 +24,7 @@
 #else
 #include <stdint.h>
 #endif
-#include <boost/bind/bind.hpp>
+#include <functional>
 #include "InterruptableAsyncWorker.h"
 #include "soa_soup.h"
 
@@ -43,7 +43,7 @@ public:
 		UT_DEBUGMSG(("ProgressiveSoapCall::run()\n"));
 
 		m_worker_ptr.reset(new InterruptableAsyncWorker<bool>(
-					boost::bind(&ProgressiveSoapCall::invoke, shared_from_this())
+					std::bind(&ProgressiveSoapCall::invoke, shared_from_this())
 				));
 
 		// start the asynchronous process and display the dialog
@@ -67,7 +67,7 @@ private:
 		UT_DEBUGMSG(("ProgressiveSoapCall::invoke()\n"));
 		return soup_soa::invoke(
 						m_uri, m_mi, m_ssl_ca_file,
-						boost::bind(&ProgressiveSoapCall::_progress_cb, this, boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3),
+						std::bind(&ProgressiveSoapCall::_progress_cb, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
 						m_result
 					);
 	}

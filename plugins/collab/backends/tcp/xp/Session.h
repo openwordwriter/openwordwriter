@@ -36,7 +36,7 @@ class Session : public Synchronizer, public std::enable_shared_from_this<Session
 {
 public:
 	Session(boost::asio::io_service& io_service, std::function<void (std::shared_ptr<Session>)> ef)
-		: Synchronizer(boost::bind(&Session::_signal, this)),
+		: Synchronizer(std::bind(&Session::_signal, this)),
 		socket(io_service),
 		queue_protector(),
 		m_ef(ef)

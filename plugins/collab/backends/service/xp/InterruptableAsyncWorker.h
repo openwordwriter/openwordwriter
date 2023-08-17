@@ -25,7 +25,8 @@
 #include <stdint.h>
 #endif
 #include <memory>
-#include <boost/bind/bind.hpp>
+#include <functional>
+
 #include "xap_App.h"
 #include "xap_DialogFactory.h"
 #include "AsyncWorker.h"
@@ -54,8 +55,8 @@ public:
 	{
 		UT_DEBUGMSG(("InterruptableAsyncWorker::run()\n"));
 
-		m_worker_ptr.reset(new AsyncWorker<T>(m_async_func, boost::bind(&InterruptableAsyncWorker<T>::invoke_cb, InterruptableAsyncWorker<T>::shared_from_this(), boost::placeholders::_1)));
-		m_progressSynchronizerPtr.reset(new Synchronizer(boost::bind(&InterruptableAsyncWorker<T>::_updateDialog, InterruptableAsyncWorker<T>::shared_from_this())));
+		m_worker_ptr.reset(new AsyncWorker<T>(m_async_func, std::bind(&InterruptableAsyncWorker<T>::invoke_cb, InterruptableAsyncWorker<T>::shared_from_this(), std::placeholders::_1)));
+		m_progressSynchronizerPtr.reset(new Synchronizer(std::bind(&InterruptableAsyncWorker<T>::_updateDialog, InterruptableAsyncWorker<T>::shared_from_this())));
 
 		// get the progress dialog
 		XAP_Frame* pFrame = XAP_App::getApp()->getLastFocussedFrame();

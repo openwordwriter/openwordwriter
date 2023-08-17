@@ -27,7 +27,6 @@
 #include <functional>
 #include <memory>
 
-#include <boost/bind/bind.hpp>
 #include "ut_debugmsg.h"
 #include <sync/xp/Synchronizer.h>
 
@@ -54,11 +53,11 @@ public:
 
 	virtual void start()
 	{
-		m_synchronizer.reset(new Synchronizer(boost::bind(&AsyncWorker<T>::_signal,
+		m_synchronizer.reset(new Synchronizer(std::bind(&AsyncWorker<T>::_signal,
 												std::enable_shared_from_this<AsyncWorker<T> >::shared_from_this())));
 		m_thread_ptr.reset(
 				new std::thread(
-					boost::bind(&AsyncWorker::_thread_func,
+					std::bind(&AsyncWorker::_thread_func,
 								AsyncWorker<T>::shared_from_this())
 				)
 			);

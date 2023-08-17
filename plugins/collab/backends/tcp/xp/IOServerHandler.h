@@ -40,7 +40,7 @@ class IOServerHandler
 public:
 	IOServerHandler(int port, std::function<void (IOServerHandler*, std::shared_ptr<Session>)> af,
 					std::function<void (std::shared_ptr<Session>)> ef, boost::asio::io_service& io_service_)
-	:	accept_synchronizer(boost::bind(&IOServerHandler::_signal, this)),
+	:	accept_synchronizer(std::bind(&IOServerHandler::_signal, this)),
 		io_service(io_service_),
 		m_pAcceptor(NULL),
 		session_ptr(),

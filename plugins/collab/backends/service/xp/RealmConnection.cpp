@@ -45,7 +45,7 @@ RealmConnection::RealmConnection(const std::string& ca_file, const std::string& 
 	m_session_id(_session_id),
 	m_pDoc(NULL),
 	m_buf(1024), // always have a reasonable block of free memory available to cut back on the memory allocations a bit,
-	m_packet_queue(boost::bind(&RealmConnection::_signal, this)), // TODO: shouldn't this be a shared pointer? Can't we handle signals in this way while this object has been already deleted? - MARCM
+          m_packet_queue(std::bind(&RealmConnection::_signal, this)), // TODO: shouldn't this be a shared pointer? Can't we handle signals in this way while this object has been already deleted? - MARCM
 	m_sig(sig),
 	m_buddies(),
 	m_pdp_ptr(),
@@ -69,7 +69,7 @@ bool RealmConnection::connect()
 			// setup our local TLS tunnel to the realm
 			m_tls_tunnel_ptr.reset(new tls_tunnel::ClientProxy(m_address, m_port, m_ca_file, false));
 			m_tls_tunnel_ptr->setup();
-			std::thread thread(boost::bind(&tls_tunnel::ClientProxy::run, m_tls_tunnel_ptr));
+			std::thread thread(std::bind(&tls_tunnel::ClientProxy::run, m_tls_tunnel_ptr));
 
 			// make sure we connect to the tunnel, and not directly to the realm
 			address = m_tls_tunnel_ptr->local_address();

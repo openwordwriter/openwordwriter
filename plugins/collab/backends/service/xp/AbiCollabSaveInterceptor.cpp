@@ -16,7 +16,8 @@
  * 02110-1301 USA.
  */
 
-#include <boost/bind/bind.hpp>
+#include <functional>
+
 #include "xap_App.h"
 #include "ev_Menu_Actions.h"
 #include "ap_Menu_Id.h"
@@ -178,8 +179,8 @@ bool AbiCollabSaveInterceptor::save(PD_Document* pDoc)
 			std::shared_ptr<std::string> result_ptr(new std::string());
 			std::shared_ptr<AsyncWorker<bool> > async_save_ptr(
 						new AsyncWorker<bool>(
-							boost::bind(&AbiCollabSaveInterceptor::_save, this, uri, verify_webapp_host, ssl_ca_file, fc_ptr, result_ptr),
-							boost::bind(&AbiCollabSaveInterceptor::_save_cb, this, boost::placeholders::_1, pServiceHandler, pSession, connection_ptr, fc_ptr, result_ptr)
+							std::bind(&AbiCollabSaveInterceptor::_save, this, uri, verify_webapp_host, ssl_ca_file, fc_ptr, result_ptr),
+							std::bind(&AbiCollabSaveInterceptor::_save_cb, this, std::placeholders::_1, pServiceHandler, pSession, connection_ptr, fc_ptr, result_ptr)
 						)
 					);
 			async_save_ptr->start();
@@ -267,8 +268,8 @@ void AbiCollabSaveInterceptor::_save_cb(bool success, ServiceAccountHandler* pAc
 						// re-attempt the save
 						std::shared_ptr<AsyncWorker<bool> > async_save_ptr(
 									new AsyncWorker<bool>(
-										boost::bind(&AbiCollabSaveInterceptor::_save, this, uri, verify_webapp_host, ssl_ca_file, fc_ptr, result_ptr),
-										boost::bind(&AbiCollabSaveInterceptor::_save_cb, this, boost::placeholders::_1, pAccount, pSession, connection_ptr, fc_ptr, result_ptr)
+										std::bind(&AbiCollabSaveInterceptor::_save, this, uri, verify_webapp_host, ssl_ca_file, fc_ptr, result_ptr),
+										std::bind(&AbiCollabSaveInterceptor::_save_cb, this, std::placeholders::_1, pAccount, pSession, connection_ptr, fc_ptr, result_ptr)
 									)
 								);
 						async_save_ptr->start();
