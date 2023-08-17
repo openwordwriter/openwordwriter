@@ -21,6 +21,10 @@ if test "$enable_grammar_builtin" = "yes"; then
 AC_MSG_ERROR([grammar plugin: static linking not supported])
 fi
 
+if test "$abi_cv_spell" = "no"; then
+AC_MSG_ERROR([grammar plugin: spell checking needs to be enabled])
+fi
+
 PKG_CHECK_MODULES(GRAMMAR,[ $grammar_pkgs ])
 PKG_CHECK_EXISTS([ link-grammar >= 5.1.0 ], 
 [
