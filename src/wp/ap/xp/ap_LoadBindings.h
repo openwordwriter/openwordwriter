@@ -1,5 +1,6 @@
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (C) 2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,8 +18,8 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_LOADBINDINGS_H
-#define AP_LOADBINDINGS_H
+#pragma once
+
 #include "xap_LoadBindings.h"
 #include "ev_EditBits.h"
 #include "ut_vector.h"
@@ -115,10 +116,7 @@ public:
 			const ap_bs_Mouse*		pMouseTable,
 			UT_uint32			cMouseTable);
 
-	const char * getNextInCycle(const char * szCurrent);
+	const char * getNextInCycle(const char * szCurrent) const;
  private:
 	UT_GenericVector<c_lb *>         m_vecBindings;
 };
-
-#endif /* AP_LOADBINDINGS_H */
-

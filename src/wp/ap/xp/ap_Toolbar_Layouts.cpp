@@ -2,21 +2,21 @@
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2003 Hubert Figuiere
- * 
+ * Copyright (C) 2003-2023 Hubert Figuière
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA.
  */
 
@@ -138,7 +138,7 @@ XAP_Toolbar_Factory_vec::~XAP_Toolbar_Factory_vec(void)
 }
 
 
-UT_uint32 XAP_Toolbar_Factory_vec::getNrEntries(void)
+UT_uint32 XAP_Toolbar_Factory_vec::getNrEntries(void) const
 {
 	return m_Vec_lt.getItemCount();
 }
@@ -152,7 +152,7 @@ void XAP_Toolbar_Factory_vec::add_lt(XAP_Toolbar_Factory_lt * plt)
 	m_Vec_lt.addItem(plt);
 }
 
-XAP_Toolbar_Factory_lt * XAP_Toolbar_Factory_vec::getNth_lt(UT_uint32 i)
+XAP_Toolbar_Factory_lt * XAP_Toolbar_Factory_vec::getNth_lt(UT_uint32 i) const
 {
 	XAP_Toolbar_Factory_lt * plt = m_Vec_lt.getNthItem(i);
 	return plt;
@@ -227,17 +227,17 @@ bool XAP_Toolbar_Factory_vec::removeToolbarId(XAP_Toolbar_Id id)
 	return true;
 }
 
-const char * XAP_Toolbar_Factory_vec::getToolbarName(void)
+const char * XAP_Toolbar_Factory_vec::getToolbarName(void) const
 {
 	return m_name.c_str();
 }
 
-XAP_String_Id XAP_Toolbar_Factory_vec::getLabelStringID(void)
+XAP_String_Id XAP_Toolbar_Factory_vec::getLabelStringID(void) const
 {
 	return m_label;
 }
 
-const gchar * XAP_Toolbar_Factory_vec::getPrefKey(void)
+const gchar * XAP_Toolbar_Factory_vec::getPrefKey(void) const
 {
 	return m_prefKey;
 }
@@ -666,6 +666,3 @@ bool  XAP_Toolbar_Factory::restoreToolbarsFromCurrentScheme(void)
 	}
 	return true;
 }
-
-
-

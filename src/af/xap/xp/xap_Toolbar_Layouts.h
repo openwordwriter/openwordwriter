@@ -1,5 +1,6 @@
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (C) 2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,9 +18,7 @@
  * 02110-1301 USA.
  */
 
-
-#ifndef XAP_TOOLBAR_LAYOUTS_H
-#define XAP_TOOLBAR_LAYOUTS_H
+#pragma once
 
 #include "ut_string_class.h"
 #include "ut_vector.h"
@@ -55,16 +54,16 @@ public:
   XAP_Toolbar_Factory_vec(XAP_Toolbar_Factory_tt * orig);
   XAP_Toolbar_Factory_vec(EV_Toolbar_Layout *  orig);
   ~XAP_Toolbar_Factory_vec();
-  UT_uint32 getNrEntries(void);
+  UT_uint32 getNrEntries(void) const;
   void add_lt(XAP_Toolbar_Factory_lt * plt);
-  XAP_Toolbar_Factory_lt * getNth_lt(UT_uint32 i);
+  XAP_Toolbar_Factory_lt * getNth_lt(UT_uint32 i) const;
   void insertLastItem(XAP_Toolbar_Factory_lt * p);
   void insertItemBefore(XAP_Toolbar_Factory_lt * p, XAP_Toolbar_Id id);
   void insertItemAfter(XAP_Toolbar_Factory_lt * p, XAP_Toolbar_Id id);
   bool removeToolbarId(XAP_Toolbar_Id id);
-  const char * getToolbarName(void);
-  XAP_String_Id getLabelStringID(void);
-  const gchar * getPrefKey(void);
+  const char * getToolbarName(void) const;
+  XAP_String_Id getLabelStringID(void) const;
+  const gchar * getPrefKey(void) const;
 private:
   std::string m_name;
   XAP_String_Id m_label;
@@ -101,11 +100,3 @@ private:
   XAP_App * m_pApp;
   UT_GenericVector<UT_UTF8String*> m_tbNames;
 };
-
-
-#endif /* XAP_TOOLBAR_LAYOUTS_H */
-
-
-
-
-
