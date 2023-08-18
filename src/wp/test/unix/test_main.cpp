@@ -1,5 +1,5 @@
 /* AbiSource Application Framework
- * Copyright (C) 2005 Hubert Figuiere
+ * Copyright (C) 2005-2023 Hubert Figuière
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,12 +23,11 @@
 #include "all_test_unix.h"
 #include "ap_UnixApp.h"
 
-#include <gtk/gtk.h>
-
+static AP_UnixApp *app = nullptr;
 
 void init_platform(void)
 {
-	AP_UnixApp *app = new AP_UnixApp(PACKAGE);
+	app = new AP_UnixApp(PACKAGE);
 	app->initialize(TRUE);
 }
 
@@ -36,5 +35,6 @@ void init_platform(void)
 
 void terminate_platform(void)
 {
-
+	delete app;
+	app = nullptr;
 }
