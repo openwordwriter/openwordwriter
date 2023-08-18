@@ -2,6 +2,7 @@
 
 /* AbiSource Program Utilities
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (C) 2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -229,3 +230,23 @@ extern int ABI_EXPORT UT_Win32ThrowAssert(const char * pCondition, const char * 
  * Continue if this condition fails
  */
 #define UT_continue_if_fail(cond) if (!(cond)) { UT_ASSERT(cond); continue; }
+
+
+// Assertions for nonnull. These assertion are mean to provide a semantic meaning
+// of "a nullptr is an error".
+
+/*!
+ * Break out of loop if pointer is nullptr
+ */
+#define UT_nonnull_or_break(ptr) if (!ptr) { UT_ASSERT(ptr); break; }
+
+/*!
+ * Continue lookp if pointer is nullptr
+ */
+#define UT_nonnull_or_continue(ptr) if (!ptr) { UT_ASSERT(ptr); continue; }
+
+/*!
+ * Return if pointer is nullptr. Make `value` empty (still with the comma) to return
+ * `void`.
+ */
+#define UT_nonnull_or_return(ptr, value) if (!ptr) { UT_ASSERT(ptr); return value; }
