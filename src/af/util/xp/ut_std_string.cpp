@@ -170,8 +170,6 @@ std::string UT_std_string_unicode(const UT_UCS4Char * unicode,
 std::string UT_std_stringFromEncoding(const char* bytes,
                                       const char *encoding)
 {
-    UT_ASSERT(bytes);
-    UT_ASSERT(encoding);
     std::string output;
 
 	UT_uint32 iRead, iWritten;

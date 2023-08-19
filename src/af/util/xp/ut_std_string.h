@@ -1,6 +1,6 @@
 /* AbiSource Program Utilities
  * Copyright (C) 1998,1999 AbiSource, Inc.
- * Copyright (C) 2009-2015 Hubert Figuiere
+ * Copyright (C) 2009-2023 Hubert Figuiere
  * Copyright (C) 2011 Ben Martin
  *
  * This program is free software; you can redistribute it and/or
@@ -19,9 +19,7 @@
  * 02110-1301 USA.
  */
 
-
-#ifndef __UT_STD_STRING_H__
-#define __UT_STD_STRING_H__
+#pragma once
 
 #include <string>
 #include <vector>
@@ -67,7 +65,7 @@ ABI_EXPORT std::string UT_std_string_unicode(const UT_UCS4Char * unicode,
  * \return an UTF-8 enconded std::string
  */
 ABI_EXPORT std::string UT_std_stringFromEncoding(const char* bytes,
-                                                 const char* encoding);
+                                                 const char* encoding) ABI_NONNULL(1,2);
 
 /**
  * true if fullstring starts with exactly prefix.
@@ -110,9 +108,3 @@ ABI_EXPORT const std::string StreamToString( std::istream& iss );
 ABI_EXPORT std::string toTimeString( time_t TT );
 ABI_EXPORT time_t toTime( struct tm *tm );
 ABI_EXPORT time_t parseTimeString( const std::string& stddatestr );
-
-
-
-
-#endif
-
