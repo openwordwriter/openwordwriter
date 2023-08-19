@@ -273,8 +273,9 @@ void fl_EmbedLayout::redrawUpdate(void)
 void fl_EmbedLayout::setNeedsReformat(fl_ContainerLayout * /*pCL*/, UT_uint32 /*offset*/)
 {
   m_bNeedsReformat = true;
-  if(getSectionLayout())
-    getSectionLayout()->setNeedsReformat(this);
+  auto sectionLayout = getSectionLayout();
+  if (sectionLayout)
+    sectionLayout->setNeedsReformat(this);
 }
 
 void fl_EmbedLayout::updateLayout(bool /*bDoAll*/)

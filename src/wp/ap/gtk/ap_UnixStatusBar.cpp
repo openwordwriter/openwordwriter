@@ -135,8 +135,8 @@ GtkWidget * AP_UnixStatusBar::createWidget(void)
 	gtk_widget_show(m_wStatusBar);
 
 	for (UT_sint32 k=0; k<getFields()->getItemCount(); k++) {
- 		AP_StatusBarField * pf = (AP_StatusBarField *)m_vecFields.getNthItem(k);
-		UT_ASSERT(pf); // we should NOT have null elements
+		AP_StatusBarField * pf = (AP_StatusBarField *)m_vecFields.getNthItem(k);
+		UT_nonnull_or_continue(pf); // we should NOT have null elements
 
 		// set up a frame for status bar elements so they look like status bar elements, 
 		// and not just normal widgets

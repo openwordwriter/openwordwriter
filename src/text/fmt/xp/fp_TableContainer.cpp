@@ -3493,6 +3493,7 @@ UT_sint32 fp_TableContainer::getRowHeight(UT_sint32 iRow, UT_sint32 iMeasHeight)
 		return iMeasHeight;
 	}
 	fl_RowProps * pRowProps = pVecRow->getNthItem(iRow);
+	UT_nonnull_or_return(pRowProps, 0);
 	UT_sint32 iRowHeight = pRowProps->m_iRowHeight;
 	FL_RowHeightType rowType = pRowProps->m_iRowHeightType;
 	if(rowType == FL_ROW_HEIGHT_EXACTLY )
@@ -4396,6 +4397,7 @@ UT_sint32 fp_TableContainer::sumFootnoteHeight(void) const
 		for(i = 0; i < vecFootnotes.getItemCount(); i++)
 		{
 			fp_FootnoteContainer * pFC = vecFootnotes.getNthItem(i);
+			UT_nonnull_or_continue(pFC);
 			iSum += pFC->getHeight();
 		}
 		vecFootnotes.clear();
@@ -4409,6 +4411,7 @@ UT_sint32 fp_TableContainer::sumFootnoteHeight(void) const
 		for(i = 0; i < vecAnnotations.getItemCount(); i++)
 		{
 			fp_AnnotationContainer * pAC = vecAnnotations.getNthItem(i);
+			UT_nonnull_or_continue(pAC);
 			iSum += pAC->getHeight();
 		}
 		vecAnnotations.clear();
@@ -5979,6 +5982,7 @@ void fp_TableContainer::sizeRequest(fp_Requisition * pRequisition)
 	  if(bDefinedColWidth && (col < pVecColProps->getItemCount()) )
 	  {
 		  fl_ColProps * pColProp = pVecColProps->getNthItem(col);
+		  UT_nonnull_or_continue(pColProp);
 		  getNthCol(col)->requisition = pColProp->m_iColWidth;
 	  }
 	  pRequisition->width += getNthCol(col)->requisition;

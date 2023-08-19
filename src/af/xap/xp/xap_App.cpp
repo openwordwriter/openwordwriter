@@ -230,11 +230,14 @@ XAP_Module* XAP_App::getPlugin(const char* szPluginName) const
      for (UT_sint32 i = 0; (i < pVec->size()) && !bFound; i++)
      {
           pModule = pVec->getNthItem (i);
-	  const char * szName = pModule->getModuleInfo()->name;
-	  if(g_ascii_strcasecmp(szName,szPluginName) == 0)
-	  {
-	        bFound = true;
-	  }
+          UT_nonnull_or_continue(pModule);
+          UT_nonnull_or_continue(pModule->getModuleInfo());
+
+          const char * szName = pModule->getModuleInfo()->name;
+          if(g_ascii_strcasecmp(szName,szPluginName) == 0)
+          {
+              bFound = true;
+          }
      }
      if(!bFound)
      {
@@ -482,6 +485,7 @@ bool XAP_App::notifyListeners(AV_View * pView, const AV_ChangeMask hint, void * 
 	for (lid=0; lid<lidCount; lid++)
 	{
 		AV_Listener * pListener = static_cast<AV_Listener *>(m_vecPluginListeners.getNthItem(lid));
+		UT_nonnull_or_continue(pListener);
 		if(pListener->getType()!= AV_LISTENER_PLUGIN_EXTRA )
 		{
 				pListener->notify(pView,hint);

@@ -1001,6 +1001,7 @@ UT_sint32 fb_ColumnBreaker::_breakSection(fp_Page * pStartPage)
 						{
 							xxx_UT_DEBUGMSG(("Found reference %d in broken table %x \n",i,pCurTable));
 							fp_FootnoteContainer * pFC = vecFootnotes.getNthItem(i);
+							UT_nonnull_or_continue(pFC);
 							fp_Page * myPage = pFC->getPage();
 							xxx_UT_DEBUGMSG(("Footnote %x is on Page %x \n",pFC,myPage));
 							if(myPage != pCurPage)
@@ -1033,6 +1034,7 @@ UT_sint32 fb_ColumnBreaker::_breakSection(fp_Page * pStartPage)
 						{
 							xxx_UT_DEBUGMSG(("Found reference %d in broken table %x \n",i,pCurTable));
 							fp_AnnotationContainer * pAC = vecAnnotations.getNthItem(i);
+							UT_nonnull_or_continue(pAC);
 							fp_Page * myPage = pAC->getPage();
 							xxx_UT_DEBUGMSG(("Annotation %x is on Page %x \n",pAC,myPage));
 							if(myPage != pCurPage)

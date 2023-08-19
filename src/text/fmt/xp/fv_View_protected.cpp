@@ -3934,6 +3934,8 @@ bool FV_View::_drawOrClearBetweenPositions(PT_DocPosition iPos1, PT_DocPosition 
 	for(i=0; i< vecTables.getItemCount(); i++)
 	{
  		CellLine * pCellLine = vecTables.getNthItem(i);
+		UT_nonnull_or_continue(pCellLine);
+		UT_nonnull_or_continue(pCellLine->m_pCell);
 		bool bLineDrawn = pCellLine->m_pCell->drawLines(pCellLine->m_pBrokenTable,getGraphics(),true);
 		if (bLineDrawn)
 		{

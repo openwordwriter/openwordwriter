@@ -506,24 +506,28 @@ bool GR_GOComponentManager::convert(G_GNUC_UNUSED UT_uint32 iConType, G_GNUC_UNU
 bool GR_GOComponentManager::isEdittable(UT_sint32 uid)
 {
 	GOComponentView * pGOComponentView = m_vecGOComponentView.getNthItem(uid);
+	UT_nonnull_or_return(pGOComponentView, false);
 	return pGOComponentView->IsEdittable ();
 }
 
 bool GR_GOComponentManager::isResizeable(UT_sint32 uid)
 {
 	GOComponentView * pGOComponentView = m_vecGOComponentView.getNthItem(uid);
+	UT_nonnull_or_return(pGOComponentView, false);
 	return pGOComponentView->IsResizable ();
 }
 
 void GR_GOComponentManager::setRun(UT_sint32 uid, fp_Run *pRun)
 {
 	GOComponentView * pGOComponentView = m_vecGOComponentView.getNthItem(uid);
+	UT_nonnull_or_return(pGOComponentView, );
 	pGOComponentView->SetRun (pRun);
 }
 
 bool GR_GOComponentManager::setFont(UT_sint32 uid, const GR_Font * pFont)
 {
 	GOComponentView * pGOComponentView = m_vecGOComponentView.getNthItem(uid);
+	UT_nonnull_or_return(pGOComponentView, false);
 	return pGOComponentView->setFont (pFont);
 }
 

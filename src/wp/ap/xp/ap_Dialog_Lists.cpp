@@ -364,6 +364,7 @@ void AP_Dialog_Lists::Apply(void)
 		for(i=0;i < count; i++)
 		{
 			fl_BlockLayout * pBlock = (fl_BlockLayout *) vBlock.getNthItem(i);
+			UT_nonnull_or_continue(pBlock);
 			if(pBlock->isListItem() == true)
 			{
 				getView()->getDocument()->StopList(pBlock->getStruxDocHandle());
@@ -396,6 +397,7 @@ void AP_Dialog_Lists::Apply(void)
 		for(i=0;i < count; i++)
 		{
 			fl_BlockLayout * pBlock2 = (fl_BlockLayout *) vBlock.getNthItem(i);
+			UT_nonnull_or_continue(pBlock2);
 			if(pBlock2->isListItem() == true && m_NewListType == NOT_A_LIST)
 			{
 //

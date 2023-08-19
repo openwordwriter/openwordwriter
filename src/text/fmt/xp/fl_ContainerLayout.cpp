@@ -1299,6 +1299,7 @@ fp_FrameContainer * fl_ContainerLayout::getNthFrameContainer(UT_sint32 i) const
 		return nullptr;
 	}
 	fl_FrameLayout * pFrame= m_vecFrames.getNthItem(i);
+	UT_nonnull_or_return(pFrame, nullptr);
 	fp_FrameContainer * pFC = static_cast<fp_FrameContainer *>(pFrame->getFirstContainer());
 	return pFC;
 }

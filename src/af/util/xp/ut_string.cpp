@@ -1268,9 +1268,6 @@ UT_uint32 UT_UCS4_strlen_as_char(const UT_UCS4Char * string)
 
 UT_UCS4Char * UT_UCS4_strcpy(UT_UCS4Char * dest, const UT_UCS4Char * src)
 {
-	UT_ASSERT(dest);
-	UT_ASSERT(src);
-
 	UT_UCS4Char * d = dest;
 	const UT_UCS4Char * s = static_cast<const UT_UCS4Char *>(src);
 

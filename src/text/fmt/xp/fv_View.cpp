@@ -2380,16 +2380,22 @@ void FV_View:: getTextInDocument(UT_GrowBuf & buf) const
 	UT_sint32 x2, y2;
 	bool bDirection;
 	_findPositionCoords(pos, FALSE, x, y, x2, y2, height, bDirection, &pBlock, &pRun);
-	if (!pRun) return FALSE;
-fp_Line *line = pRun->getLine();
+	if (!pRun) {
+		return FALSE;
+	}
+	fp_Line *line = pRun->getLine();
+	UT_nonnull_or_return(line, false);
 	PT_DocPosition blockpos = pBlock->getPosition();
 	if (start)
 	{
-		*start = blockpos + line->getFirstRun()->getBlockOffset();
+		auto firstRun = line->getFirstRun();
+		UT_nonnull_or_return(firstRun, false);
+		*start = blockpos + firstRun->getBlockOffset();
 	}
 	if (end)
 	{
 		fp_Run *lastrun = line->getLastRun();
+		UT_nonnull_or_return(lastrun, false);
 		*end = blockpos + lastrun->getBlockOffset() + lastrun->getLength();
 	}
 	return TRUE;
@@ -2948,6 +2954,7 @@ PT_DocPosition FV_View::getSelectedImage(const char **dataId, const fp_Run **pIm
 			else
 			{
 				pBlock = vBlock.getNthItem(i);
+				UT_nonnull_or_continue(pBlock);
 				pRun = pBlock->getFirstRun();
 			}
 
@@ -3011,6 +3018,7 @@ fp_Run *FV_View::getSelectedObject() const
 			else
 			{
 				pBlock = vBlock.getNthItem(i);
+				UT_nonnull_or_continue(pBlock);
 				pRun = pBlock->getFirstRun();
 			}
 
@@ -3483,6 +3491,7 @@ void FV_View::processSelectedBlocks(FL_ListType listType)
 	for(i=0; i< vBlock.getItemCount(); i++)
 	{
 		fl_BlockLayout * pBlock =  vBlock.getNthItem(i);
+		UT_nonnull_or_continue(pBlock);
 		if(pBlock->isListItem())
 		{
 			vListBlocks.addItem(pBlock);
@@ -5399,6 +5408,7 @@ bool FV_View::getCharFormat(PP_PropertyVector & props, bool bExpandStyles, PT_Do
 	{
 		f = v.getNthItem(i-1);
 		i--;
+		UT_nonnull_or_continue(f);
 
 		props.push_back(f->m_prop);
 		props.push_back(f->m_val);
@@ -5505,6 +5515,7 @@ bool FV_View::setBlockIndents(bool doLists, double indentChange, double page_siz
 	for(i = 0; i<v.getItemCount();i++)
 	{
 		pBlock = v.getNthItem(i);
+		UT_nonnull_or_continue(pBlock);
 		if(pBlock->getDominantDirection() == UT_BIDI_RTL) {
 			indent = "margin-right";
 		} else {
@@ -6137,6 +6148,7 @@ bool FV_View::getSectionFormat(PP_PropertyVector & props) const
 	{
 		f = v.getNthItem(i-1);
 		i--;
+		UT_nonnull_or_continue(f);
 
 		props.push_back(f->m_prop);
 		props.push_back(f->m_val);
@@ -6332,6 +6344,7 @@ bool FV_View::getBlockFormat(PP_PropertyVector & props,bool bExpandStyles) const
 	{
 		f = v.getNthItem(i-1);
 		i--;
+		UT_nonnull_or_continue(f);
 
 		props.push_back(f->m_prop);
 		props.push_back(f->m_val);
@@ -7435,6 +7448,7 @@ bool FV_View::gotoTarget(AP_JumpTarget type, const char *numberString)
 			}
 			fp_Run* frun = pLine->getFirstRun ();
 			fl_BlockLayout* fblock = pLine->getBlock ();
+			UT_nonnull_or_return(frun, false);
 			PT_DocPosition dp = frun->getBlockOffset () + fblock->getPosition ();
 			moveInsPtTo (dp);
 		}
@@ -11111,7 +11125,12 @@ FV_DocCount FV_View::countWords(bool bActuallyCountWords)
 		while (pLine)
 		{
 			pNextLine = static_cast<fp_Line*>(pLine->getNext());
-			if (!pNextLine || (pNextLine->getFirstRun()->getBlockOffset() > static_cast<UT_uint32>(iStartOffset)))
+			if (!pNextLine) {
+				break;
+			}
+			auto firstRun = pNextLine->getFirstRun();
+			UT_nonnull_or_break(firstRun);
+			if (firstRun->getBlockOffset() > static_cast<UT_uint32>(iStartOffset))
 			{
 				break;
 			}
@@ -11146,7 +11165,8 @@ FV_DocCount FV_View::countWords(bool bActuallyCountWords)
 		UT_uint32 len = gb.getLength();
 
 		// Count lines and pages
-		while (pLine && (!bEndInThisBlock || (pLine->getFirstRun()->getBlockOffset() < iMaxOffset)))
+		const fp_Run* firstRun = nullptr;
+		while (pLine && (!bEndInThisBlock || ((firstRun = pLine->getFirstRun()) && firstRun->getBlockOffset() < iMaxOffset)))
 		{
 			wCount.line++;
 
@@ -12898,7 +12918,7 @@ void FV_View::killAnnotationPreview()
 
 	AP_Preview_Annotation * pPview
 		= static_cast<AP_Preview_Annotation *>(pDialogFactory->requestDialog(	AP_DIALOG_ID_ANNOTATION_PREVIEW));
-	UT_ASSERT(pPview);
+	UT_nonnull_or_return(pPview, );
     pDialogFactory->releaseDialog(pPview);
 	pPview->destroy();
 	setAnnotationPreviewActive(false);

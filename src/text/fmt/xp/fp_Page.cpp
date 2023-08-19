@@ -451,7 +451,10 @@ fp_Container * fp_Page::updatePageForWrapping(fp_Column *& pNextCol)
 						if(!pNewFirstCon)
 						{
 							pBL = vecCollapse.getNthItem(0);
-							pNewFirstCon = static_cast<fp_Container *>(pBL->getFirstRun()->getLine());
+							UT_nonnull_or_return(pBL, nullptr);
+							auto firstRun = pBL->getFirstRun();
+							UT_nonnull_or_return(firstRun, nullptr);
+							pNewFirstCon = static_cast<fp_Container *>(firstRun->getLine());
 						}
 						return pNewFirstCon;
 					}
@@ -513,6 +516,7 @@ fp_Container * fp_Page::updatePageForWrapping(fp_Column *& pNextCol)
 							for(k=0; k<vecBL.getItemCount(); k++)
 							{
 								_BL * ppBL = vecBL.getNthItem(k);
+								UT_nonnull_or_continue(ppBL);
 								if(ppBL->m_pBL == pBL)
 								{
 									bPrev = true;
@@ -641,6 +645,7 @@ fp_Container * fp_Page::updatePageForWrapping(fp_Column *& pNextCol)
 							for(k=0; k<vecBL.getItemCount(); k++)
 							{
 								_BL * ppBL = vecBL.getNthItem(k);
+								UT_nonnull_or_continue(ppBL);
 								if(ppBL->m_pBL == pBL)
 								{
 									bPrev = true;
@@ -684,10 +689,12 @@ fp_Container * fp_Page::updatePageForWrapping(fp_Column *& pNextCol)
 		return nullptr;
 	}
 	_BL * pBLine = vecBL.getNthItem(0);
+	UT_nonnull_or_return(pBLine, nullptr)
 	pFirstBL = pBLine->m_pBL;
 	for(i=0; i<vecBL.getItemCount(); i++)
 	{
 		pBLine = vecBL.getNthItem(i);
+		UT_nonnull_or_continue(pBLine);
 		xxx_UT_DEBUGMSG((" Doing line %x \n",pBLine->m_pL));
 #if DEBUG
 		if(m_iCountWrapPasses > 100)
@@ -1224,6 +1231,7 @@ void fp_Page::draw(dg_DrawArgs* pDA, bool /*bAlwaysUseWhiteBackground*/)
 	for (i=0; i<count; i++)
 	{
 		fp_FrameContainer* pFC = m_vecAboveFrames.getNthItem(i);
+		UT_nonnull_or_continue(pFC);
 		if(!pFC->isTightWrapped())
 			continue;
 		UT_Rect r(pFC->getX(),pFC->getY(),pFC->getWidth(),pFC->getHeight());
@@ -1337,6 +1345,7 @@ void fp_Page::draw(dg_DrawArgs* pDA, bool /*bAlwaysUseWhiteBackground*/)
 	for (i=0; i<count; i++)
 	{
 		fp_FrameContainer* pFC = m_vecAboveFrames.getNthItem(i);
+		UT_nonnull_or_continue(pFC);
 		if(pFC->isTightWrapped())
 			continue;
 		UT_Rect r(pFC->getX(),pFC->getY(),pFC->getWidth(),pFC->getHeight());
@@ -1602,8 +1611,11 @@ bool fp_Page::breakPage(void)
 			(pCol->getFirstContainer()->getContainerType() == FP_CONTAINER_LINE))
 		{
 			fp_Line * pLine = static_cast <fp_Line*>(pCol->getFirstContainer());
-			if (pLine->getFirstRun() &&
-				(pLine->getFirstRun()->getType() == FPRUN_FORCEDPAGEBREAK))
+			UT_nonnull_or_return(pLine, false);
+			auto firstRun = pLine->getFirstRun();
+			UT_nonnull_or_return(firstRun, false);
+			if (firstRun &&
+				(firstRun->getType() == FPRUN_FORCEDPAGEBREAK))
 			{
 				return true;
 			}
@@ -2374,7 +2386,7 @@ PT_DocPosition fp_Page::getFirstLastPos(bool bFirst) const
 		
 		fp_Run* pFirstRun = static_cast<fp_Line *>(pFirstContainer)->getFirstRun();
 		fl_BlockLayout* pFirstBlock = static_cast<fp_Line *>(pFirstContainer)->getBlock(); // SEVIOR This needs fix me, FIXME
-
+		UT_nonnull_or_return(pFirstRun, 2);
 		pos = pFirstRun->getBlockOffset() + pFirstBlock->getPosition();
 	}
 	else

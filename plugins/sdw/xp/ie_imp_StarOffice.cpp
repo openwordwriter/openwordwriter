@@ -808,6 +808,7 @@ UT_Error IE_Imp_StarOffice::_loadFile(GsfInput * input)
 									for (UT_sint32 j = 0; j < charAttributes.getItemCount(); j++) {
 										const TextAttr* a = reinterpret_cast<const TextAttr*>(charAttributes[j]);
 										// clear the last attribute, if set
+										UT_nonnull_or_continue(a);
 										if (a->endSet && a->end == (i - 1)) {
 											if (a->isOff) {
 												std::string propval = UT_std_string_getPropVal(pca, a->attrName);

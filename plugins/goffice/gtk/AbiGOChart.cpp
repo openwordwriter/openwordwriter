@@ -641,6 +641,7 @@ bool GR_GOChartManager::convert(G_GNUC_UNUSED UT_uint32 iConType, G_GNUC_UNUSED 
 void GR_GOChartManager::setRun(UT_sint32 uid, fp_Run *pRun)
 {
 	GOChartView * pGOChartView = m_vecGOChartView.getNthItem(uid);
+	UT_nonnull_or_return(pGOChartView, );
 	pGOChartView->SetRun (pRun);
 }
 

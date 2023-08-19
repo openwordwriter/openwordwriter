@@ -1058,19 +1058,21 @@ void fp_Run::Run_ClearScreen(bool bFullLineHeightRect)
 					UT_sint32 xRight = xLeft + getWidth();
 					UT_sint32 x1,y1,x2,y2,height;
 					bool bDir;
+					auto view = _getView();
+					UT_nonnull_or_return(view, );
 					if(posSelLow() > getBlock()->getPosition(true) + getBlockOffset())
 					{
 						findPointCoords(posSelLow() - getBlock()->getPosition(true), x1,y1,x2,y2,height,bDir);
 
 					    if(bRTL) //rtl needs translation
 						{
-							xRight = x1 + _getView()->getPageViewLeftMargin();
-							xRight -= _getView()->getXScrollOffset();
+							xRight = x1 + view->getPageViewLeftMargin();
+							xRight -= view->getXScrollOffset();
 						}
 						else
 						{
-							xLeft = x1 + _getView()->getPageViewLeftMargin();
-							xLeft -= _getView()->getXScrollOffset();
+							xLeft = x1 + view->getPageViewLeftMargin();
+							xLeft -= view->getXScrollOffset();
 						}
 						
 					}
@@ -1302,7 +1304,9 @@ void fp_Run::draw(dg_DrawArgs* pDA)
 			bool bDir;
 			FL_DocLayout * pLayout = getBlock()->getDocLayout();
 			UT_uint32 iPageNumber = pLayout->findPage(pLine->getPage());
-			UT_uint32 widthPrevPageInRow = _getView()->getWidthPrevPagesInRow(iPageNumber);
+			auto view = _getView();
+			UT_nonnull_or_return(view, );
+			UT_uint32 widthPrevPageInRow = view->getWidthPrevPagesInRow(iPageNumber);
 			if(posSelLow() > getBlock()->getPosition(true) + getBlockOffset())
 			{
 				findPointCoords(posSelLow() - getBlock()->getPosition(true), x1,y1,x2,y2,height,bDir);
@@ -1310,13 +1314,13 @@ void fp_Run::draw(dg_DrawArgs* pDA)
 				x2 += widthPrevPageInRow;
 				if(bRTL)
 				{
-					xRight = x1 + _getView()->getPageViewLeftMargin();
-					xRight -= _getView()->getXScrollOffset();
+					xRight = x1 + view->getPageViewLeftMargin();
+					xRight -= view->getXScrollOffset();
 				}
 				else
 				{
-					xLeft = x1 + _getView()->getPageViewLeftMargin();
-					xLeft -= _getView()->getXScrollOffset();
+					xLeft = x1 + view->getPageViewLeftMargin();
+					xLeft -= view->getXScrollOffset();
 				}
 			}
 			if(posSelHigh() < getBlock()->getPosition(true) + getBlockOffset() + getLength())
@@ -1326,13 +1330,13 @@ void fp_Run::draw(dg_DrawArgs* pDA)
 				x2 += widthPrevPageInRow;
 				if(bRTL)
 				{
-					xLeft = x1 + _getView()->getPageViewLeftMargin();
-					xLeft -= _getView()->getXScrollOffset();
+					xLeft = x1 + view->getPageViewLeftMargin();
+					xLeft -= view->getXScrollOffset();
 				}
 				else
 				{
-					xRight = x1 + _getView()->getPageViewLeftMargin();
-					xRight -= _getView()->getXScrollOffset();
+					xRight = x1 + view->getPageViewLeftMargin();
+					xRight -= view->getXScrollOffset();
 				}
 			}
 			UT_sint32 width = xRight-xLeft;
@@ -1509,6 +1513,7 @@ bool fp_Run::isHidden() const
 bool fp_Run::_wouldBeHidden(FPVisibility eVisibility) const
 {
 	FV_View* pView = _getView();
+	UT_nonnull_or_return(pView, false);
 	bool bShowHidden = pView->getShowPara();
 
 	bool bHidden = ((eVisibility == FP_HIDDEN_TEXT && !bShowHidden)
@@ -3779,7 +3784,9 @@ void fp_ImageRun::_draw(dg_DrawArgs* pDA)
 	else
 	{
 		getLine()->getOffsets(this, xoff, yoff);
-		if(_getView()->getViewMode() != VIEW_PRINT)
+		auto view = _getView();
+		UT_nonnull_or_return(view, );
+		if(view->getViewMode() != VIEW_PRINT)
 		{
 			yoff += static_cast<fl_DocSectionLayout *>(getBlock()->getDocSectionLayout())->getTopMargin();
 		}
@@ -3853,7 +3860,7 @@ void fp_ImageRun::_draw(dg_DrawArgs* pDA)
 	}
 
 	FV_View* pView = _getView();
-
+	UT_nonnull_or_return(pView, );
 	GR_Painter painter(pG);
 
 	if (m_pImage)
@@ -5684,8 +5691,8 @@ void fp_ForcedColumnBreakRun::_draw(dg_DrawArgs* pDA)
     }
 
     FV_View* pView = _getView();
-    UT_ASSERT(pView);
-    if(!pView->getShowPara()){
+    UT_nonnull_or_return(pView, );
+    if (!pView->getShowPara()) {
         return;
     }
 
@@ -5780,6 +5787,7 @@ void fp_ForcedPageBreakRun::findPointCoords(UT_uint32 iOffset, UT_sint32& x, UT_
 	if (iOffset == getBlockOffset()+1)
 	{
 	    FV_View* pView = _getView();
+	    UT_nonnull_or_return(pView, );
 	    if (pView->getShowPara())
 		{
 			x += getWidth();
@@ -5810,7 +5818,7 @@ void fp_ForcedPageBreakRun::_draw(dg_DrawArgs* pDA)
     }
 
     FV_View* pView = _getView();
-    UT_ASSERT(pView);
+    UT_nonnull_or_return(pView, );
     if(!pView->getShowPara()){
         return;
     }

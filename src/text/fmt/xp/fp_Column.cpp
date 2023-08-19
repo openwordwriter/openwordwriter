@@ -462,6 +462,8 @@ void fp_VerticalContainer::getOffsets(const fp_ContainerObject* pContainer, UT_s
 		}
 	}
 
+	UT_nonnull_or_return(pCon, );
+
 	UT_sint32 col_x =0;
 	UT_sint32 col_y =0;
 	if(pPrev && ((pPrev->getContainerType() == FP_CONTAINER_TABLE) ||

@@ -1500,6 +1500,7 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		for(i=0; i<	m_vecColProps.getItemCount();i++)
 		{
 			pColP = m_vecColProps.getNthItem(i);
+			UT_nonnull_or_continue(pColP);
 			pColP->m_iColWidth = static_cast<double>(m_iTableWidth)*pColP->m_dColRelWidth/tot;
 		}
  	}
@@ -1613,6 +1614,7 @@ void fl_TableLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 		for(i=0; i< m_vecRowProps.getItemCount(); i++)
 		{
 			fl_RowProps * pRowP = m_vecRowProps.getNthItem(i);
+			UT_nonnull_or_continue(pRowP);
 			pRowP->m_iRowHeight = 0;
 		}
 	}
@@ -2039,6 +2041,7 @@ void fl_CellLayout::createCellContainer(void)
 		pCL = pCL->myContainingLayout();
 	}
 	fl_DocSectionLayout * pDSL = nullptr;
+	UT_nonnull_or_return(pCL, );
 	if(pCL->getContainerType() == FL_CONTAINER_HDRFTR)
 	{
 		pDSL = static_cast<fl_HdrFtrSectionLayout *>(pCL)->getDocSectionLayout();
@@ -2789,6 +2792,7 @@ void fl_CellLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 			for(i=getLeftAttach(); i<getRightAttach() && i<pVecCols->getItemCount();i++)
 			{
 				fl_ColProps* pCol = pVecCols->getNthItem(i);
+				UT_nonnull_or_continue(pCol);
 				cellW += pCol->m_iColWidth;
 			}
 			m_iCellWidth = cellW;
@@ -2804,6 +2808,7 @@ void fl_CellLayout::_lookupProperties(const PP_AttrProp* pSectionAP)
 			for(i=getTopAttach(); i<getBottomAttach() && i<pVecRows->getItemCount();i++)
 			{
 				fl_RowProps* pRow = pVecRows->getNthItem(i);
+				UT_nonnull_or_continue(pRow);
 				cellH += pRow->m_iRowHeight;
 			}
 			m_iCellHeight = cellH;

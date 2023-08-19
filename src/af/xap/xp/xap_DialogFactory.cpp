@@ -1,4 +1,4 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; ident-tabs-mode: t; -*- */
 
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
@@ -74,11 +74,12 @@ XAP_DialogFactory::~XAP_DialogFactory(void)
 bool XAP_DialogFactory::_findDialogInTable(XAP_Dialog_Id id, UT_sint32 * pIndex) const
 {
 	// search the table and return the index of the entry with this id.
-	UT_return_val_if_fail(pIndex, false);
 
 	for (UT_sint32 k=0; k < m_vec_dlg_table.getItemCount(); k++)
 	{
-		if (m_vec_dlg_table.getNthItem(k)->m_id == id)
+		auto dialog = m_vec_dlg_table.getNthItem(k);
+		UT_nonnull_or_continue(dialog);
+		if (dialog->m_id == id)
 		{
 			*pIndex = k;
 			return true;
@@ -91,8 +92,10 @@ bool XAP_DialogFactory::_findDialogInTable(XAP_Dialog_Id id, UT_sint32 * pIndex)
 
 XAP_Dialog_Id XAP_DialogFactory::getNextId(void) const
 {
-       UT_sint32 i = m_vec_dlg_table.getItemCount()-1;
-	UT_sint32 id = static_cast<UT_sint32>(m_vec_dlg_table.getNthItem(i)->m_id);
+	UT_sint32 i = m_vec_dlg_table.getItemCount()-1;
+	auto dialog = m_vec_dlg_table.getNthItem(i);
+	UT_nonnull_or_return(dialog, 0);
+	UT_sint32 id = static_cast<UT_sint32>(dialog->m_id);
 	return static_cast<XAP_Dialog_Id>(id+1);
 }
 
@@ -154,6 +157,7 @@ XAP_Dialog * XAP_DialogFactory::requestDialog(XAP_Dialog_Id id)
 	if(_findDialogInTable(id, &index))
 	{
 		dlg = m_vec_dlg_table.getNthItem(index);
+		UT_nonnull_or_return(dlg, nullptr);
 		switch (dlg->m_type)
 		{
 		case XAP_DLGT_NON_PERSISTENT:	
@@ -240,13 +244,14 @@ void XAP_DialogFactory::releaseDialog(XAP_Dialog * pDialog)
 	// can just delete it.  otherwise, we should just store it for later
 	// reuse.
 
-	UT_return_if_fail(pDialog);
 	XAP_Dialog_Id id = pDialog->getDialogId();
 	
 	UT_sint32 index = 0;
 	_findDialogInTable(id,&index);
 
-	switch (m_vec_dlg_table.getNthItem(index)->m_type)
+	auto dialog = m_vec_dlg_table.getNthItem(index);
+	UT_nonnull_or_return(dialog, );
+	switch (dialog->m_type)
 	{
 	case XAP_DLGT_NON_PERSISTENT:						// for non-persistent dialog objects, we
 		delete pDialog;									// just delete it now.

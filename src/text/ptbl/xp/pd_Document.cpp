@@ -3834,6 +3834,7 @@ bool PD_Document::removeStyle(const gchar * pszName)
 	for(j = 0; j<countChanges; j++)
 	{
 		prevStuff * pStuff = static_cast<prevStuff *>(vFrag.getNthItem(j));
+		UT_nonnull_or_continue(pStuff);
 		if(pStuff->fragType == pf_Frag::PFT_Strux)
 		{
 			pfsLast = pStuff->thisFrag;
@@ -4455,8 +4456,8 @@ const PP_AttrProp * PD_Document::explodeRevisions(std::unique_ptr<PP_RevisionAtt
 			while(!pRev && i <= iMaxId);
 			
 				
-			if(  (pRev->getType() == PP_REVISION_ADDITION)
-			   ||(pRev->getType() == PP_REVISION_ADDITION_AND_FMT))
+			if(pRev && ((pRev->getType() == PP_REVISION_ADDITION)
+						||(pRev->getType() == PP_REVISION_ADDITION_AND_FMT)))
 			{
 				bHiddenRevision = true;
 				return nullptr;

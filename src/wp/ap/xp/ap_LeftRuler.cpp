@@ -1452,6 +1452,8 @@ void AP_LeftRuler::_getCellMarkerRects(const AP_LeftRulerInfo * pInfo, UT_sint32
 //	UT_sint32 yOrigin = pInfo->m_yPageStart + pInfo->m_yTopMargin - m_yScrollOffset;
 	UT_sint32 yOrigin = pInfo->m_yPageStart - m_yScrollOffset;
 	UT_sint32 pos =0;
+	UT_nonnull_or_return(pLInfo, );
+	UT_nonnull_or_return(pLInfo->m_pCell, );
 	fp_TableContainer * pTab = static_cast<fp_TableContainer *>(pLInfo->m_pCell->getContainer());
 	UT_return_if_fail(pTab);
 	fp_Page * pPage = nullptr;

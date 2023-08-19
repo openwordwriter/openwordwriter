@@ -11903,6 +11903,7 @@ bool IE_Imp_RTF::HandleStyleDefinition(void)
 		// Reset
 		attribs.clear();
 		UT_GenericVector<const gchar*> * pCurStyleVec = vecStyles.getNthItem(i);
+		UT_nonnull_or_continue(pCurStyleVec);
 		UT_sint32 nAtts = pCurStyleVec->getItemCount();
 		UT_sint32 j = 0;
 		const char * szName = nullptr;

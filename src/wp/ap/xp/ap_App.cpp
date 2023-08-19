@@ -141,7 +141,7 @@ bool AP_App::openCmdLinePlugins(const AP_Args * Args, bool &bSuccess)
 	    const char * szName = nullptr;
 		XAP_Module * pModule = nullptr;
 		const char * szRequest = nullptr;
-		bool bFound = false;	
+		bool bFound = false;
 		if(Args->m_sPluginArgs[0])
 		{
 			szRequest = Args->m_sPluginArgs[0];
@@ -150,7 +150,10 @@ bool AP_App::openCmdLinePlugins(const AP_Args * Args, bool &bSuccess)
 			for (UT_sint32 i = 0; (i < pVec->size()) && !bFound; i++)
 			{
 				pModule = pVec->getNthItem (i);
-				szName = pModule->getModuleInfo()->name;
+				UT_nonnull_or_continue(pModule);
+				auto moduleInfo = pModule->getModuleInfo();
+				UT_nonnull_or_continue(moduleInfo);
+				szName = moduleInfo->name;
 				UT_DEBUGMSG(("%s\n", szName));
 				if(strcmp(szName,szRequest) == 0)
 				{

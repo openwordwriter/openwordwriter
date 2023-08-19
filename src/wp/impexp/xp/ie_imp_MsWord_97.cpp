@@ -1263,6 +1263,7 @@ void IE_Imp_MsWord_97::_flush ()
 		  for(i=0;i< m_vecEmObjects.getItemCount(); i++)
 		  {
 			  pObject = m_vecEmObjects.getNthItem(i);
+			  UT_nonnull_or_continue(pObject);
 			  if(pObject->objType == PTO_Bookmark)
 			  {
 				  PP_PropertyVector propsArray = {
@@ -3020,6 +3021,7 @@ int IE_Imp_MsWord_97::_beginPara (wvParseStruct *ps, UT_uint32 /*tag*/,
 		for(UT_sint32 n = m_vLists.getItemCount(); n > 0; n--)
 		{
 			ListIdLevelPair * llp = (ListIdLevelPair *)(m_vLists.getNthItem(n - 1));
+			UT_nonnull_or_continue(llp);
 			if(llp->level < apap->ilvl)
 			{
 				myParentID = llp->listId;
@@ -4560,6 +4562,7 @@ bool IE_Imp_MsWord_97::_build_ColumnWidths(UT_NumberVector & colWidths)
 	for(i=0; i< iSize;i++)
 	{
 		MsColSpan * pSpan = reinterpret_cast<MsColSpan *>(m_vecColumnWidths.getNthItem(i));
+		UT_nonnull_or_continue(pSpan);
 		iLeft = pSpan->iLeft;
 		iRight = pSpan->iRight;
 		if(iMaxRight < iRight)
@@ -4599,6 +4602,7 @@ bool IE_Imp_MsWord_97::_build_ColumnWidths(UT_NumberVector & colWidths)
 		for(i=0; i<static_cast<UT_sint32>(m_vecColumnWidths.size()); i++)
 		{
 			MsColSpan * pSpan = reinterpret_cast<MsColSpan *>(m_vecColumnWidths.getNthItem(i));
+			UT_nonnull_or_continue(pSpan);
 			iLeft = pSpan->iLeft;
 			iRight = pSpan->iRight;
 			xxx_UT_DEBUGMSG(("Loop %d iLeft %d,iRight %d colWidth[iLeft] %d colWidth[iRight-1] %d\n",iLoop,iLeft,iRight,colWidths[iLeft],colWidths[iRight -1]));
@@ -4644,6 +4648,7 @@ bool IE_Imp_MsWord_97::_build_ColumnWidths(UT_NumberVector & colWidths)
 					for(k=0; k<static_cast<UT_sint32>(m_vecColumnWidths.size()); k++)
 					{
 						MsColSpan * pMulSpan = m_vecColumnWidths.getNthItem(i);
+						UT_nonnull_or_continue(pMulSpan);
 						UT_sint32 iMulLeft = pMulSpan->iLeft;
 						UT_sint32 iMulRight = pMulSpan->iRight;
 						if(iMulLeft == iLeft && iMulRight < iRight)
@@ -4697,6 +4702,7 @@ bool IE_Imp_MsWord_97::findMatchSpan(UT_sint32 iLeft,UT_sint32 iRight)
 	for(i=0; i< static_cast<UT_sint32>(m_vecColumnWidths.size());i++)
 	{
 		MsColSpan * pSpan = m_vecColumnWidths.getNthItem(i);
+		UT_nonnull_or_continue(pSpan);
 		if(pSpan->iLeft == iLeft && pSpan->iRight == iRight)
 		{
 			return true;
@@ -6362,6 +6368,7 @@ bool IE_Imp_MsWord_97::_findNextTextboxSection()
 	}
 
 	textboxPos * pPos = m_vecTextboxPos.getNthItem(m_iNextTextbox);
+	UT_nonnull_or_return(pPos, false);
 	m_pTextboxEndSection = pPos->endFrame;
 
 	if(!m_pTextboxEndSection)

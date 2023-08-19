@@ -1,4 +1,4 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 
 /* AbiWord
  * Copyright (C) 2002 Martin Sevior <msevior@physics.unimelb.edu.au>
@@ -929,6 +929,7 @@ UT_sint32 ie_imp_table::OpenCell(void)
 	while((pNewCell->getRow() == m_iRowCounter) && (i>= 0))
 	{
 		pNewCell = m_vecCells.getNthItem(i);
+		UT_nonnull_or_break(pNewCell);
 		if(pNewCell->getRow() == m_iRowCounter)
 		{
 			count++;
@@ -952,6 +953,7 @@ bool ie_imp_table::getVecOfCellsOnRow(UT_sint32 row, UT_GenericVector<ie_imp_cel
 	for(i=0; !bFound && (i < m_vecCells.getItemCount()); i++)
 	{
 		pCell = m_vecCells.getNthItem(i);
+		UT_nonnull_or_continue(pCell);
 		if(pCell->getRow() == row)
 		{
 			bFound = true;
@@ -966,6 +968,7 @@ bool ie_imp_table::getVecOfCellsOnRow(UT_sint32 row, UT_GenericVector<ie_imp_cel
 	for(i=iFound; !bEnd && (i<m_vecCells.getItemCount()); i++)
 	{
 		pCell = m_vecCells.getNthItem(i);
+		UT_nonnull_or_continue(pCell);
 		if(pCell->getRow() != row)
 		{
 			bEnd = true;
@@ -1122,6 +1125,7 @@ void ie_imp_table::setCellRowNthCell(UT_sint32 row, UT_sint32 col)
 	for(i=0; !bFound && (i < m_vecCells.getItemCount()); i++)
 	{
 		pCell = m_vecCells.getNthItem(i);
+		UT_nonnull_or_continue(pCell);
 		if(pCell->getRow() == row)
 		{
 			xxx_UT_DEBUGMSG(("SEVIOR: col %d colcount %d \n",col,ColCount));
@@ -1247,6 +1251,7 @@ void ie_imp_table::writeAllCellPropsInDoc(void)
 	for(i=0; i< m_vecCells.getItemCount();i++)
 	{
 		pCell = m_vecCells.getNthItem(i);
+		UT_nonnull_or_continue(pCell);
 		if(!pCell->isMergedAbove() && !pCell->isMergedRight() && !pCell->isMergedLeft())
 		{
 			bool bCellPresent = pCell->writeCellPropsInDoc();
@@ -1590,6 +1595,7 @@ UT_sint32  ie_imp_table::getNumRows(void) const
 	for(i= m_vecCells.getItemCount() -1; i >=0 ; i--)
 	{
 		pCell = m_vecCells.getNthItem(i);
+		UT_nonnull_or_continue(pCell);
 		if(pCell->getRow() > numrows)
 		{
 			numrows = pCell->getRow();
@@ -1619,6 +1625,7 @@ void ie_imp_table::deleteRow(UT_sint32 row)
 	for(i= m_vecCells.getItemCount() -1; i>=0; i--)
 	{
 		pCell = m_vecCells.getNthItem(i);
+		UT_nonnull_or_continue(pCell);
 		UT_DEBUGMSG(("Look at Cell %d row %d cellx %d \n",i,pCell->getRow(),pCell->getCellX()));
 		if(pCell->getRow() == row)
 		{
@@ -1758,6 +1765,7 @@ bool ie_imp_table::removeRow(UT_sint32 row)
 	for(i=0; !bFound &&  (i< m_vecCells.getItemCount()); i++)
 	{
 		pCell = m_vecCells.getNthItem(i);
+		UT_nonnull_or_continue(pCell);
 		bFound = (pCell->getRow() == row);
 		iFound = i;
 	}
@@ -1773,6 +1781,7 @@ bool ie_imp_table::removeRow(UT_sint32 row)
 		if(i<m_vecCells.getItemCount())
 		{
 			pCell = m_vecCells.getNthItem(i);
+			UT_nonnull_or_continue(pCell);
 			if(pCell->getRow() != row)
 			{
 				pCell = nullptr;
@@ -1799,6 +1808,7 @@ void ie_imp_table::appendRow(UT_GenericVector<ie_imp_cell*>* pVecRowOfCells)
 	for(i=0; i <pVecRowOfCells->getItemCount(); i++)
 	{
 		pCell = pVecRowOfCells->getNthItem(i);
+		UT_nonnull_or_continue(pCell);
 		pCell->setImpTable(this);
 		pCell->setRow(iNew);
 		m_vecCells.addItem(pCell);
@@ -1819,6 +1829,7 @@ ie_imp_cell * ie_imp_table::getNthCellOnRow(UT_sint32 iCell) const
 	for(i=0; !bFound &&  (i< m_vecCells.getItemCount()); i++)
 	{
 		pCell = m_vecCells.getNthItem(i);
+		UT_nonnull_or_continue(pCell);
 		if(pCell->getRow() == m_iRowCounter)
 		{
 			if(iCellOnRow == iCell)
@@ -2255,6 +2266,7 @@ void IE_Imp_TableHelper::padAllRowsWithCells(UT_GenericVector<CellHelper *> & ve
 			return;
 		}
 	CellHelper * pCell = vecCells.getNthItem(0);
+	UT_nonnull_or_return(pCell,);
 	UT_sint32 FirstRow = pCell->m_top;
 	pCell = static_cast<CellHelper *>(vecCells.getNthItem(vecCells.getItemCount()-1));
 	LastRow = pCell->m_top;
@@ -2277,6 +2289,7 @@ void IE_Imp_TableHelper::padRowWithCells(UT_GenericVector<CellHelper *>& vecCell
 	for(i= vecCells.getItemCount()-1; i>=0;i--)
 		{
 			pCell = vecCells.getNthItem(i);
+			UT_nonnull_or_continue(pCell);
 			if(pCell->m_top == row)
 				{
 					bFoundRow = true;
@@ -2324,6 +2337,7 @@ CellHelper * IE_Imp_TableHelper::getCellAtRowCol(UT_GenericVector<CellHelper *> 
 	for(i=vecCells.getItemCount()-1; i>=0;i--)
 		{
 			pCell = vecCells.getNthItem(i);
+			UT_nonnull_or_continue(pCell);
 			if((pCell->m_left <= col) && (pCell->m_right > col) && (pCell->m_top == row))
 				{
 					return pCell;

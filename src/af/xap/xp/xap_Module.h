@@ -95,8 +95,8 @@ private:
 	bool unregisterThySelf ();
 	bool supportsAbiVersion (UT_uint32 major, UT_uint32 minor,
 							 UT_uint32 release);
-	inline void setCreator (XAP_ModuleManager * creator) {m_creator = creator;}
-	inline void setLoaded (bool bLoaded) {m_bLoaded = bLoaded;}
+	inline void setCreator (XAP_ModuleManager * creator) ABI_NONNULL(1) {m_creator = creator;}
+	inline void setLoaded (bool bLoaded) ABI_NONNULL(1) {m_bLoaded = bLoaded;}
 
 public:
 

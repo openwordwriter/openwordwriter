@@ -167,6 +167,7 @@ void XAP_Toolbar_Factory_vec::insertItemBefore(XAP_Toolbar_Factory_lt * p,
 	for(i=0; !bFound && (i< m_Vec_lt.getItemCount()); i++)
 	{
 		XAP_Toolbar_Factory_lt * plt = m_Vec_lt.getNthItem(i);
+		UT_nonnull_or_continue(plt);
 		if(plt->m_id == id)
 		{
 			m_Vec_lt.insertItemAt(p,i);
@@ -186,6 +187,7 @@ void XAP_Toolbar_Factory_vec::insertItemAfter(XAP_Toolbar_Factory_lt * p,
 	for(i=0; !bFound && (i< m_Vec_lt.getItemCount()); i++)
 	{
 		XAP_Toolbar_Factory_lt * plt = m_Vec_lt.getNthItem(i);
+		UT_nonnull_or_continue(plt);
 		if(plt->m_id == id)
 		{
 			if((i+1) == m_Vec_lt.getItemCount())
@@ -215,6 +217,7 @@ bool XAP_Toolbar_Factory_vec::removeToolbarId(XAP_Toolbar_Id id)
 	for(i=0; !bFound && (i< m_Vec_lt.getItemCount()); i++)
 	{
 		XAP_Toolbar_Factory_lt * plt = m_Vec_lt.getNthItem(i);
+		UT_nonnull_or_continue(plt);
 		if(plt->m_id == id)
 		{
 			m_Vec_lt.deleteNthItem(i);

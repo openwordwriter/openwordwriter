@@ -375,7 +375,7 @@ public:
 	{ m_iAccumulatedHeight =i;}
 	UT_sint32               getAccumHeight(void) const
 	{ return m_iAccumulatedHeight;}
-	static bool 		s_EnumTabStops(void * myThis, UT_uint32 k, fl_TabStop *pTabInfo);
+	static bool 		s_EnumTabStops(void * myThis, UT_uint32 k, fl_TabStop *pTabInfo) ABI_NONNULL(1, 3);
 
 	inline void 		addBackgroundCheckReason(UT_uint32 reason) {m_uBackgroundCheckReasons |= reason;}
 	inline void 		removeBackgroundCheckReason(UT_uint32 reason) {m_uBackgroundCheckReasons &= ~reason;}

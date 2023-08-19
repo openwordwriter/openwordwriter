@@ -87,6 +87,7 @@
 				for(i=0; i< m_Vec_lt.getItemCount() && !bFound; i++)
 				{
 					_lt * plt = m_Vec_lt.getNthItem(i);
+					UT_nonnull_or_continue(plt);
 					if(plt->m_id == id)
 					{
 						if((i+1) == m_Vec_lt.getItemCount())
@@ -109,6 +110,7 @@
 				for(i=0; i< m_Vec_lt.getItemCount() && !bFound; i++)
 				{
 					_lt * plt = m_Vec_lt.getNthItem(i);
+					UT_nonnull_or_continue(plt);
 					if(plt->m_id == id)
 					{
 						if((i+1) == m_Vec_lt.getItemCount())
@@ -131,6 +133,7 @@
 				for(i=0; i< m_Vec_lt.getItemCount() && !bFound; i++)
 				{
 					_lt * plt = m_Vec_lt.getNthItem(i);
+					UT_nonnull_or_continue(plt);
 					if(plt->m_id == id)
 					{
 						m_Vec_lt.deleteNthItem(i);
@@ -271,6 +274,7 @@ XAP_Menu_Id XAP_Menu_Factory::getNewID(void)
 		for(j=0; j < pTT->getNrEntries(); j++)
 		{
 			_lt * plt = (_lt *) pTT->getNth_lt(j);
+			UT_nonnull_or_continue(plt);
 			if(plt->m_id > m_maxID)
 			{
 				m_maxID = plt->m_id;

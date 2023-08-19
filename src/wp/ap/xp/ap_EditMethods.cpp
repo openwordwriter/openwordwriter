@@ -11098,6 +11098,7 @@ Defun1(setPosImage)
 			return false;
 		}
 	}
+	UT_nonnull_or_return(pRun, false);
 	pLine = pRun->getLine();
 	if(pLine == nullptr)
 	{

@@ -77,7 +77,7 @@ public:
 
 	XAP_Dialog *		requestDialog(XAP_Dialog_Id id);
 	XAP_Dialog *		justMakeTheDialog(XAP_Dialog_Id id);
-	void				releaseDialog(XAP_Dialog * pDialog);
+	void				releaseDialog(XAP_Dialog * pDialog) ABI_NONNULL(1, 2);
 	XAP_Dialog_Id getNextId(void) const;
 	XAP_Dialog_Id		registerDialog(XAP_Dialog *(*pStaticConstructor)(XAP_DialogFactory *, XAP_Dialog_Id id),XAP_Dialog_Type iDialogType);
 	void				unregisterDialog(XAP_Dialog_Id id);
@@ -86,7 +86,7 @@ public:
 	bool				unregisterNotebookPage(XAP_Dialog_Id dialog, const XAP_NotebookDialog::Page * page);
 
 protected:
-	bool				_findDialogInTable(XAP_Dialog_Id id, UT_sint32 * pIndex) const;
+	bool				_findDialogInTable(XAP_Dialog_Id id, UT_sint32 * pIndex) const ABI_NONNULL(1, 3);
 
 	XAP_App *			m_pApp;
 	XAP_Frame *			m_pFrame;

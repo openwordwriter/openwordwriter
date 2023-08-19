@@ -1863,7 +1863,9 @@ fp_Line * fl_BlockLayout::findLineWithFootnotePID(UT_uint32 pid) const
 			for(i=0; i< vecFoots.getItemCount(); i++)
 			{
 				fp_FootnoteContainer * pFC = vecFoots.getNthItem(i);
+				UT_nonnull_or_continue(pFC);
 				fl_FootnoteLayout * pFL = static_cast<fl_FootnoteLayout *>(pFC->getSectionLayout());
+				UT_nonnull_or_continue(pFL);
 				if(pFL->getFootnotePID() == pid)
 				{
 					bFound = true;
@@ -5409,8 +5411,10 @@ bool	fl_BlockLayout::_doInsertTextSpan(PT_BlockOffset blockOffset, UT_uint32 len
 			UT_return_val_if_fail(pNewRun && pNewRun->getType() == FPRUN_TEXT, false);
 			pNewRun->setDirOverride(m_iDirOverride);
 
-			GR_Item * pItem = I.getNthItem(i)->makeCopy();
-			UT_ASSERT( pItem );
+			auto item = I.getNthItem(i);
+			UT_nonnull_or_return(item, false);
+			GR_Item * pItem = item->makeCopy();
+			UT_nonnull_or_return(pItem, false);
 			pNewRun->setItem(pItem);
 		
 			if(!_doInsertRun(pNewRun))
@@ -7412,8 +7416,8 @@ fl_BlockLayout::doclistener_deleteStrux(const PX_ChangeRecord_Strux* pcrx)
 	}
 
 	// We use the offset we calculated earlier.
- 
-	if (m_pFirstRun)
+	UT_ASSERT(pPrevBL);
+	if (m_pFirstRun && pPrevBL)
 	{
 		// Figure out where the merge point is
 		fp_Run * pRun = pPrevBL->m_pFirstRun;
@@ -9683,6 +9687,7 @@ bool fl_BlockLayout::s_EnumTabStops( void * myThis, UT_uint32 k, fl_TabStop *pTa
 		return false;
 
 	fl_TabStop * pTab = static_cast<fl_TabStop *>(pBL->m_vecTabs.getNthItem(k));
+	UT_nonnull_or_return(pTab, false);
 
 	*pTabInfo = *pTab;
 	return true;

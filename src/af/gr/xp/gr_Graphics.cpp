@@ -1,4 +1,4 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
  * Copyright (C) 2002 Tomas Frydrych, <tomas@frydrych.uklinux.net>
@@ -234,7 +234,9 @@ void		AllCarets::setInsertMode (bool mode)
 		(*m_pLocalCaret)->setInsertMode(mode);
 	for(UT_sint32 i =0; i< m_vecCarets->getItemCount();i++)
 	{
-		m_vecCarets->getNthItem(i)->setInsertMode(mode);
+		auto caret = m_vecCarets->getNthItem(i);
+		UT_nonnull_or_continue(caret);
+		caret->setInsertMode(mode);
 	}
 }
 

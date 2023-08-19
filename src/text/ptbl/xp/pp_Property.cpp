@@ -337,6 +337,7 @@ void PP_setDefaultFontFamily(const char* pszFamily)
 {
 	static std::string family(pszFamily ? pszFamily : "");
 	PP_Property* prop = static_cast<PP_Property*>(bsearch ("font-family", _props, G_N_ELEMENTS(_props), sizeof(_props[0]), s_compare));
+	UT_nonnull_or_return(prop, );
 	prop->m_pszInitial = family.c_str();
 }
 

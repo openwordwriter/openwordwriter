@@ -247,7 +247,7 @@ gint AP_UnixRuler::_fe::configure_event(GtkWidget* w, GdkEventConfigure * e)
 {
     AP_UnixRuler* pRuler = static_cast<AP_UnixRuler*>(g_object_get_data(G_OBJECT(w), "user_data"));
     AP_Ruler* ruler = dynamic_cast<AP_Ruler*>(pRuler);
-    UT_ASSERT(ruler);
+    UT_nonnull_or_return(ruler, 0);
 
     // nb: we'd convert here, but we can't: have no graphics class!
     ruler->setHeight(e->height);

@@ -1,4 +1,4 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
@@ -102,23 +102,32 @@ const char * AP_BindingSet::getNextInCycle(const char * szCurrent) const
 
 	int kMatch = -1;
 	UT_sint32 k;
-	
-	for (k=0; k<m_vecBindings.getItemCount(); k++)
-	  if (g_ascii_strcasecmp(m_vecBindings.getNthItem(k)->m_name,szCurrent) == 0)
+
+	for (k=0; k<m_vecBindings.getItemCount(); k++) {
+		auto binding = m_vecBindings.getNthItem(k);
+		UT_nonnull_or_continue(binding);
+
+		if (g_ascii_strcasecmp(binding->m_name,szCurrent) == 0)
 		{
 			kMatch = k;
 			break;
 		}
-
+	}
 	if (kMatch == -1)
 		return nullptr;
 
-	for (k=kMatch+1; k<m_vecBindings.getItemCount(); k++)
-	  if (m_vecBindings.getNthItem(k)->m_bCanCycle)
-			return m_vecBindings.getNthItem(k)->m_name;
-	for (k=0; k<kMatch; k++)
-		if (m_vecBindings.getNthItem(k)->m_bCanCycle)
-			return m_vecBindings.getNthItem(k)->m_name;
+	for (k=kMatch+1; k<m_vecBindings.getItemCount(); k++) {
+		auto binding = m_vecBindings.getNthItem(k);
+		UT_nonnull_or_continue(binding);
+		if (binding->m_bCanCycle)
+			return binding->m_name;
+	}
+	for (k=0; k<kMatch; k++) {
+		auto binding = m_vecBindings.getNthItem(k);
+		UT_nonnull_or_continue(binding);
+		if (binding->m_bCanCycle)
+			return binding->m_name;
+	}
 
 	return nullptr;
 }
@@ -177,24 +186,25 @@ EV_EditBindingMap * AP_BindingSet::getMap(const char * szName)
 	//
 	// NOTE: the returned map should be treated as 'const' since
 	// NOTE: it is shared by all windows.
-	
-  for (UT_sint32 k=0; k< m_vecBindings.getItemCount(); k++)
-    if (g_ascii_strcasecmp(szName,m_vecBindings.getNthItem(k)->m_name)==0)
-		{
+
+  for (UT_sint32 k=0; k< m_vecBindings.getItemCount(); k++) {
+	  auto binding = m_vecBindings.getNthItem(k);
+	  UT_nonnull_or_continue(binding);
+	  if (g_ascii_strcasecmp(szName, binding->m_name) == 0) {
 			// we now share maps.  any given map is loaded exactly once.
 			// if we haven't loaded this map before, load it and remember
 			// it in our table.
 			
-		  if (!m_vecBindings.getNthItem(k)->m_pebm)
+		  if (!binding->m_pebm)
 			{
-				m_vecBindings.getNthItem(k)->m_pebm = new EV_EditBindingMap(m_pemc);
-				if (!m_vecBindings.getNthItem(k)->m_pebm)
+				binding->m_pebm = new EV_EditBindingMap(m_pemc);
+				if (!binding->m_pebm)
 					return nullptr;
-				(m_vecBindings.getNthItem(k)->m_fn)(this,m_vecBindings.getNthItem(k)->m_pebm);
+				(binding->m_fn)(this, binding->m_pebm);
 			}
-			return m_vecBindings.getNthItem(k)->m_pebm;
+			return binding->m_pebm;
 		}
-	
+  }	
 	return nullptr;
 }
 

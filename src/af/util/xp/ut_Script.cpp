@@ -1,4 +1,4 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 /* AbiWord
  * Copyright (C) 2001 Dom Lachowicz
  * 
@@ -155,6 +155,7 @@ UT_ScriptIdType	UT_ScriptLibrary::typeForContents(const char * szBuf,
 	for (UT_uint32 k=0; k < nrElements; k++)
     {
 		const UT_ScriptSniffer * s = mSniffers->getNthItem (k);
+		UT_nonnull_or_continue(s);
 		if (s->recognizeContents(szBuf, iNumbytes))
 		{
 			for (UT_sint32 a = 0; a < static_cast<int>(nrElements); a++)
@@ -188,6 +189,7 @@ UT_ScriptIdType	UT_ScriptLibrary::typeForSuffix(const char * szSuffix)
 	for (UT_uint32 k=0; k < nrElements; k++)
     {
 		const UT_ScriptSniffer * s = mSniffers->getNthItem(k);
+		UT_nonnull_or_continue(s);
 		if (s->recognizeSuffix(szSuffix))
 		{
 			for (UT_sint32 a = 0; a < static_cast<int>(nrElements); a++)
@@ -219,6 +221,7 @@ const char * UT_ScriptLibrary::suffixesForType(UT_ScriptIdType ieft)
 	for (UT_uint32 k=0; k < nrElements; k++)
     {
 		const UT_ScriptSniffer * s = mSniffers->getNthItem(k);
+		UT_nonnull_or_continue(s);
 		if (s->supportsType(ieft))
 		{
 			const char *szDummy;
@@ -281,6 +284,7 @@ UT_Error UT_ScriptLibrary::constructScript(const char * szFilename,
 	for (UT_uint32 k=0; k < nrElements; k++)
     {
 		const UT_ScriptSniffer * s = mSniffers->getNthItem (k);
+		UT_nonnull_or_continue(s);
 		if (s->supportsType(ieft))
 			return s->constructScript(ppscript);
     }
@@ -298,6 +302,7 @@ bool UT_ScriptLibrary::enumerateDlgLabels(UT_uint32 ndx,
 	if (ndx < nrElements)
 	{
 		const UT_ScriptSniffer * s = mSniffers->getNthItem (ndx);
+		UT_nonnull_or_return(s, false);
 		return s->getDlgLabels(pszDesc,pszSuffixList,ft);
 	}
 

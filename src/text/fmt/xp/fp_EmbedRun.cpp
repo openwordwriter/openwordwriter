@@ -239,7 +239,9 @@ void fp_EmbedRun::_lookupProperties(const PP_AttrProp * pSpanAP,
 
 void fp_EmbedRun::_drawResizeBox(UT_Rect box)
 {
-        _getView()->drawSelectionBox(box,isResizeable());
+	auto view = _getView();
+	UT_nonnull_or_return(view, );
+	view->drawSelectionBox(box,isResizeable());
 }
 
 bool fp_EmbedRun::canBreakAfter(void) const

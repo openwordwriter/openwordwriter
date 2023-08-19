@@ -1,4 +1,4 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
@@ -586,6 +586,7 @@ IE_ExpSniffer * IE_Exp::snifferForFileType(IEFileType ieft)
 	for (UT_uint32 k=0; k < nrElements; k++)
 	{
 		IE_ExpSniffer * s = m_sniffers.getNthItem(k);
+		UT_nonnull_or_continue(s);
 		if (s->supportsFileType(ieft))
 			return s;
 	}
@@ -721,6 +722,7 @@ UT_Error IE_Exp::constructExporter(PD_Document * pDocument,
 	for (UT_uint32 k=0; k < nrElements; k++)
 	{
 		IE_ExpSniffer * s = m_sniffers.getNthItem (k);
+		UT_nonnull_or_continue(s);
 		if (s->supportsFileType(ieft))
 		{
 			return s->constructExporter (pDocument, ppie);

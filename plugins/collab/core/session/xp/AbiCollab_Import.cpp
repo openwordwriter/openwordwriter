@@ -1,4 +1,4 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 
 /* AbiCollab- Code to enable the modification of remote documents.
  * Copyright (C) 2005 by Martin Sevior
@@ -113,6 +113,7 @@ void ABI_Collab_Import::_calculateCollisionSeqence(UT_sint32 iIncomingRemoteRev,
 	for (; iStart < UT_sint32(pExpAdjusts->getItemCount()); iStart++)
 	{
 		ChangeAdjust * pChange = pExpAdjusts->getNthItem(iStart);
+		UT_nonnull_or_break(pChange);
 		if (pChange->getRemoteDocUUID() != sIncomingDocUUID)
 		{
 			// not the same document anymore, we can stop
@@ -134,6 +135,7 @@ UT_sint32 ABI_Collab_Import::_getIncomingAdjustmentForState(const UT_GenericVect
 	for (UT_sint32 j = iEnd-1; j>=iStart; j--)
 	{
 		ChangeAdjust* pPrev = pExpAdjusts->getNthItem(j);
+		UT_nonnull_or_continue(pPrev);
 		if (sIncomingUUID == pPrev->getRemoteDocUUID())
 		{
 			UT_DEBUGMSG(("Looking at possible adjustment with queue pos: %d, -adjust: %d\n", j, -pPrev->getLocalAdjust()));

@@ -1826,9 +1826,9 @@ void AP_TopRuler::_getCellMarkerRect(AP_TopRulerInfo * pInfo, UT_sint32 kCell,
 		if(kCell < nCells)
 		{
 			AP_TopRulerTableInfo * pCellInfo = static_cast<AP_TopRulerTableInfo *>(pInfo->m_vecTableColInfo->getNthItem(kCell));
+			UT_nonnull_or_return(pCellInfo, );
 
 			UT_sint32 xAbsLeft = widthPrevPagesInRow + _getFirstPixelInColumn(pInfo,pInfo->m_iCurrentColumn);
-			
 			UT_sint32 pos = xAbsLeft + pCellInfo->m_iLeftCellPos;
 			UT_sint32 ileft = pView->getGraphics()->tlu(s_iFixedHeight)/4;
 			prCell->set(pos-ileft,ileft,pView->getGraphics()->tlu(s_iFixedHeight)/2,pView->getGraphics()->tlu(s_iFixedHeight)/2); // left/top/width/height
@@ -1836,6 +1836,7 @@ void AP_TopRuler::_getCellMarkerRect(AP_TopRulerInfo * pInfo, UT_sint32 kCell,
 		else if(nCells > 0)
 		{
 			AP_TopRulerTableInfo * pCellInfo = static_cast<AP_TopRulerTableInfo *>(pInfo->m_vecTableColInfo->getNthItem(nCells-1));
+			UT_nonnull_or_return(pCellInfo, );
 
 			UT_sint32 xAbsLeft = widthPrevPagesInRow + _getFirstPixelInColumn(pInfo,pInfo->m_iCurrentColumn);
 			UT_sint32 pos = xAbsLeft + pCellInfo->m_iRightCellPos;
@@ -2040,6 +2041,7 @@ void AP_TopRuler::_drawCellGap(AP_TopRulerInfo * pInfo, UT_sint32 iCell)
 			else
 			{
 				AP_TopRulerTableInfo * pPI = static_cast<AP_TopRulerTableInfo *>(pInfo->m_vecTableColInfo->getNthItem(iCell-1));
+				UT_nonnull_or_return(pPI, );
 				left = xAbsLeft +  pCellInfo->m_iLeftCellPos - pPI->m_iRightSpacing;
 			}
 			right = xAbsLeft + pCellInfo->m_iLeftCellPos + pCellInfo->m_iLeftSpacing;
@@ -2148,14 +2150,16 @@ UT_sint32 AP_TopRuler::setTableLineDrag(PT_DocPosition pos, UT_sint32 x, UT_sint
 				if (i == 0)
 				{
 					AP_TopRulerTableInfo * pCurrentCellInfo = static_cast<AP_TopRulerTableInfo *>(m_infoCache.m_vecTableColInfo->getNthItem(i));
-					
+					UT_nonnull_or_continue(pCurrentCellInfo);
+
 					m_iMinCellPos = 0;
 					m_iMaxCellPos = xAbsLeft + pCurrentCellInfo->m_iRightCellPos - pCurrentCellInfo->m_iRightSpacing - pCurrentCellInfo->m_iLeftSpacing - xExtraMargin;
 				}
 				else if (i == m_infoCache.m_iCells)
 				{
 					AP_TopRulerTableInfo * pPrevCellInfo = static_cast<AP_TopRulerTableInfo *>(m_infoCache.m_vecTableColInfo->getNthItem(i-1));
-					
+					UT_nonnull_or_continue(pPrevCellInfo);
+
 					m_iMinCellPos = xAbsLeft + pPrevCellInfo->m_iLeftCellPos + pPrevCellInfo->m_iLeftSpacing + pPrevCellInfo->m_iRightSpacing + xExtraMargin;
 					m_iMaxCellPos = 99999999;
 				}
@@ -2163,7 +2167,9 @@ UT_sint32 AP_TopRuler::setTableLineDrag(PT_DocPosition pos, UT_sint32 x, UT_sint
 				{
 					AP_TopRulerTableInfo * pPrevCellInfo = static_cast<AP_TopRulerTableInfo *>(m_infoCache.m_vecTableColInfo->getNthItem(i-1));
 					AP_TopRulerTableInfo * pCurrentCellInfo = static_cast<AP_TopRulerTableInfo *>(m_infoCache.m_vecTableColInfo->getNthItem(i));
-					
+					UT_nonnull_or_continue(pPrevCellInfo);
+					UT_nonnull_or_continue(pCurrentCellInfo);
+
 					m_iMinCellPos = xAbsLeft + pPrevCellInfo->m_iLeftCellPos + pPrevCellInfo->m_iLeftSpacing + pPrevCellInfo->m_iRightSpacing + xExtraMargin;
 					m_iMaxCellPos = xAbsLeft + pCurrentCellInfo->m_iRightCellPos - pCurrentCellInfo->m_iRightSpacing - pCurrentCellInfo->m_iLeftSpacing - xExtraMargin;
 //					m_iMaxCellPos = 999999999;
@@ -3093,6 +3099,7 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 				
 				//
 					pTInfo = static_cast<AP_TopRulerTableInfo *>(m_infoCache.m_vecFullTable->getNthItem(i-1));
+					UT_nonnull_or_continue(pTInfo);
 					bool bOnDraggingRight = false;
 					xxx_UT_DEBUGMSG(("ap_TopRuler: leftDrag FullTable %d i %d pTInfo->m_iLeftCellPos %d \n",leftDrag,i,pTInfo->m_iLeftCellPos));
 					if(leftDrag != pTInfo->m_iLeftCellPos)
@@ -3102,6 +3109,7 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 					if(i < m_infoCache.m_vecFullTable->getItemCount())
 					{
 						pTInfo = static_cast<AP_TopRulerTableInfo *>(m_infoCache.m_vecFullTable->getNthItem(i));
+						UT_nonnull_or_continue(pTInfo);
 						bOnDraggingRight = (leftDrag == pTInfo->m_iLeftCellPos);
 					}
 //
@@ -3110,11 +3118,13 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 					if(i != m_infoCache.m_vecFullTable->getItemCount() && !bOnDraggingRight)
 					{
 						pTInfo = static_cast<AP_TopRulerTableInfo *>(m_infoCache.m_vecFullTable->getNthItem(i));
+						UT_nonnull_or_continue(pTInfo);
 						right = pTInfo->m_iLeftCellPos + xAbsLeft1 + pTInfo->m_iLeftSpacing;
 					}
 					else if(i == m_infoCache.m_vecFullTable->getItemCount() && !bDragRightMost)
 					{
 						pTInfo = static_cast<AP_TopRulerTableInfo *>(m_infoCache.m_vecFullTable->getNthItem(i-1));
+						UT_nonnull_or_continue(pTInfo);
 						right = pTInfo->m_iRightCellPos + xAbsLeft1 - pTInfo->m_iLeftSpacing;
 					}
 					else if(i == m_infoCache.m_vecFullTable->getItemCount() && bDragRightMost )
@@ -3169,12 +3179,14 @@ void AP_TopRuler::mouseRelease(EV_EditModifierState ems, EV_EditMouseButton /* e
 						UT_sint32 width = 0;
 				//
 						pTInfo = static_cast<AP_TopRulerTableInfo *>(m_infoCache.m_vecFullTable->getNthItem(i-1));
+						UT_nonnull_or_continue(pTInfo);
 						if(i != m_draggingCell)
 						{
 							left = pTInfo->m_iLeftCellPos + xAbsLeft1 + pTInfo->m_iLeftSpacing;
 							if(i < iNumCells)
 							{
 								pTInfo = static_cast<AP_TopRulerTableInfo *>(m_infoCache.m_vecFullTable->getNthItem(i));
+								UT_nonnull_or_continue(pTInfo);
 								right = pTInfo->m_iLeftCellPos + xAbsLeft1 + pTInfo->m_iLeftSpacing;
 							}
 							else

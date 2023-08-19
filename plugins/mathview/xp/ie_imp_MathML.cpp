@@ -196,6 +196,7 @@ bool IE_Imp_MathML_EntityTable::convert(const char * buffer, unsigned long lengt
 				if (pos >= 0)
 				{
 					AbiMathViewEntityMapItem * pE = m_vecEntityMap.getNthItem(pos);
+					UT_nonnull_or_continue(pE);
 
 					const char * szEntVal = pE->szVal;
 

@@ -1,3 +1,4 @@
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4;  indent-tabs-mode: t -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
  * 
@@ -513,7 +514,9 @@ pf_Fragments::erase(Iterator it)
 {
 	if (!it.is_valid())
 	{
-	        UT_DEBUGMSG(("Inavlid frag %p in erase \n", (void*)it.getNode()->item));
+		auto node = it.getNode();
+		UT_nonnull_or_return(node, );
+		UT_DEBUGMSG(("Invalid frag %p in erase \n", (void*)node->item));
 		return;
 	}
 	Node* pNode = it.getNode();

@@ -245,6 +245,7 @@ PT_DocPosition FV_Selection::getSelectionAnchor(void) const
 		return m_iSelectAnchor;
 	}
 	PD_DocumentRange * pDocRange = m_vecSelRanges.getNthItem(0);
+	UT_nonnull_or_return(pDocRange, 0);
 	return pDocRange->m_pos1;
 }
 
@@ -277,6 +278,7 @@ PT_DocPosition FV_Selection::getSelectionLeftAnchor(void) const
 		return m_iSelectLeftAnchor;
 	}
 	PD_DocumentRange * pDocRange = m_vecSelRanges.getNthItem(0);
+	UT_nonnull_or_return(pDocRange, 0);
 	return pDocRange->m_pos1;
 }
 
@@ -301,6 +303,7 @@ PT_DocPosition FV_Selection::getSelectionRightAnchor(void) const
 		return m_iSelectRightAnchor;
 	}
 	PD_DocumentRange * pDocRange = m_vecSelRanges.getNthItem(0);
+	UT_nonnull_or_return(pDocRange, 0);
 	return pDocRange->m_pos2;
 }
 
@@ -313,7 +316,7 @@ void FV_Selection::setSelectionRightAnchor(PT_DocPosition pos)
 	m_pView->getEditableBounds(false,posBeg);
 	m_pView->getEditableBounds(true,posEnd);
 	bool bSelAll = ((posBeg >= m_iSelectLeftAnchor) && (posEnd <= m_iSelectRightAnchor));
-	 xxx_UT_DEBUGMSG(("setRight posBeg %d left %d posEnd %d right %d\n",posBeg,m_iSelectLeftAnchor,posEnd,m_iSelectRightAnchor));
+	xxx_UT_DEBUGMSG(("setRight posBeg %d left %d posEnd %d right %d\n",posBeg,m_iSelectLeftAnchor,posEnd,m_iSelectRightAnchor));
 	setSelectAll(bSelAll);
 }
 
@@ -343,6 +346,7 @@ bool FV_Selection::isPosSelected(PT_DocPosition pos) const
 	for(i=0; i < m_vecSelRanges.getItemCount(); i++)
 	{
 		PD_DocumentRange * pDocRange = m_vecSelRanges.getNthItem(i);
+		UT_nonnull_or_continue(pDocRange);
 		xxx_UT_DEBUGMSG(("Looking at pos %d low %d high %d \n",pos, pDocRange->m_pos1,pDocRange->m_pos2 ));
 		if ((pos >= pDocRange->m_pos1) && (pos <= pDocRange->m_pos2+1))
 		{

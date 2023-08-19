@@ -5226,6 +5226,7 @@ UT_Error FV_View::cmdInsertPositionedGraphic(const FG_ConstGraphicPtr& pFG, UT_s
 	{
 		pRun = pBlock->findPointCoords(pos,bEOL,x1,y1,x2,y2,iHeight,bDir);
 	}
+	UT_nonnull_or_return(pRun, false);
 	fp_Line * pLine = pRun->getLine();
 	if(pLine == nullptr)
 	{

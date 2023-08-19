@@ -714,6 +714,7 @@ void fl_TOCLayout::_addBlockInVec(fl_BlockLayout * pBlock, UT_UTF8String & sStyl
 	for(i=0; i< m_vecEntries.getItemCount(); i++)
 	{
 		pEntry = m_vecEntries.getNthItem(i);
+		UT_nonnull_or_continue(pEntry);
 		pPrevBL = pEntry->getBlock();
 
 		if(pPrevBL->getPosition() > posNew)
@@ -729,6 +730,7 @@ void fl_TOCLayout::_addBlockInVec(fl_BlockLayout * pBlock, UT_UTF8String & sStyl
 		if(i > 0)
 		{
 			pEntry =  m_vecEntries.getNthItem(i-1);
+			UT_nonnull_or_return(pEntry,);
 			pPrevBL =  pEntry->getBlock();
 		}
 		else
@@ -815,7 +817,9 @@ UT_sint32 fl_TOCLayout::isInVector(fl_BlockLayout * pBlock,
 	{
 
 		pThisEntry = pVecEntries->getNthItem(i);
+		UT_nonnull_or_continue(pThisEntry);
 		pThisBL = pThisEntry->getBlock();
+		UT_nonnull_or_continue(pThisBL);
 		if(pThisBL->getStruxDocHandle() == pBlock->getStruxDocHandle())
 		{
 			return i;
@@ -859,7 +863,9 @@ fl_BlockLayout * fl_TOCLayout::findMatchingBlock(fl_BlockLayout * pBlock)
 	for(i=0; i< m_vecEntries.getItemCount(); i++)
 	{
 		pThisEntry = m_vecEntries.getNthItem(i);
+		UT_nonnull_or_continue(pThisEntry);
 		pThisBL = pThisEntry->getBlock();
+		UT_nonnull_or_continue(pThisBL);
 		if(pThisBL->getStruxDocHandle() == pBlock->getStruxDocHandle())
 		{
 			bFound = true;
@@ -888,6 +894,7 @@ void fl_TOCLayout::_removeBlockInVec(fl_BlockLayout * pBlock, bool /*bDontRecurs
 	for(i=0; i< m_vecEntries.getItemCount(); i++)
 	{
 		pThisEntry = m_vecEntries.getNthItem(i);
+		UT_nonnull_or_continue(pThisEntry);
 		pThisBL = pThisEntry->getBlock();
 		if(pThisBL->getStruxDocHandle() == pBlock->getStruxDocHandle())
 		{
@@ -999,6 +1006,7 @@ void fl_TOCLayout::_calculateLabels(void)
 			continue;
 		}
 		pThisEntry = m_vecEntries.getNthItem(i);
+		UT_nonnull_or_continue(pThisEntry);
 		UT_ASSERT(pThisEntry->getLevel() >= 0);
 		if(pThisEntry->getLevel() == pPrevEntry->getLevel())
 		{
@@ -1132,7 +1140,9 @@ bool fl_TOCLayout::isBlockInTOC(fl_BlockLayout * pBlock)
 	{
 
 		pEntry = m_vecEntries.getNthItem(i);
+		UT_nonnull_or_continue(pEntry);
 		fl_BlockLayout *pBL = pEntry->getBlock();
+		UT_nonnull_or_continue(pBL);
 		if(pBL->getStruxDocHandle() == sdh)
 		{
 			return true;
@@ -1154,7 +1164,9 @@ UT_UTF8String & fl_TOCLayout::getTOCListLabel(fl_BlockLayout * pBlock)
 	{
 
 		pEntry = m_vecEntries.getNthItem(i);
+		UT_nonnull_or_continue(pEntry);
 		fl_BlockLayout *pBL = pEntry->getBlock();
+		UT_nonnull_or_continue(pBL);
 		if(pBL->getStruxDocHandle() == sdh)
 		{
 			bFound = true;

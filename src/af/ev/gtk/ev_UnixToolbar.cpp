@@ -1345,9 +1345,11 @@ bool EV_UnixToolbar::refreshToolbar(AV_View * pView, AV_ChangeMask mask)
 				case EV_TBIT_ComboBox:
 				{
 					bool bGrayed = EV_TIS_ShouldBeGray(tis);
-					
 					_wd * wd = m_vecToolbarWidgets.getNthItem(k);
-					UT_ASSERT(wd);
+
+					UT_nonnull_or_return(wd, false);
+					UT_nonnull_or_return(wd->m_widget, false);
+
 					GtkComboBox * combo = GTK_COMBO_BOX(wd->m_widget);
 					UT_ASSERT(combo);
 					// Disable/enable toolbar combo

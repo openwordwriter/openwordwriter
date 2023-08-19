@@ -752,6 +752,7 @@ void GR_LasemMathManager::releaseEmbedView(UT_sint32 uid)
 void GR_LasemMathManager::setRun(UT_sint32 uid, fp_Run *pRun)
 {
 	LasemMathView * pLasemMathView = m_vecLasemMathView.getNthItem(uid);
+	UT_nonnull_or_return(pLasemMathView, );
 	pLasemMathView->SetRun (pRun);
 }
 

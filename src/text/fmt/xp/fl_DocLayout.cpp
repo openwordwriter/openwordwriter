@@ -1272,6 +1272,7 @@ fp_FrameContainer * FL_DocLayout::findFramesToBeInserted(fp_Page * pPage)
 	for (k = 0;k < count;k++)
 	{
 		pFrame = m_vecFramesToBeInserted.getNthItem(k);
+		UT_nonnull_or_continue(pFrame);
 		if (pFrame->getPreferedPageNo() == iPage)
 		{
 			return pFrame;
@@ -2578,7 +2579,10 @@ fl_BlockLayout* FL_DocLayout::findBlockAtPosition(PT_DocPosition pos, bool bLook
 	{
 	  pMyC = pMyC->myContainingLayout();
 	}
-	if((pMyC->getContainerType() == FL_CONTAINER_HDRFTR)
+	if (!pMyC) {
+		UT_ASSERT(UT_SHOULD_NOT_HAPPEN);
+	}
+	if (pMyC && (pMyC->getContainerType() == FL_CONTAINER_HDRFTR)
 	      || (pMyC->getContainerType() == FL_CONTAINER_SHADOW))
 	{
 		fl_HdrFtrShadow * pShadow = nullptr;
@@ -2881,6 +2885,7 @@ void FL_DocLayout::rebuildFromHere( fl_DocSectionLayout * pFirstDSL)
 	for(UT_sint32 k=0; k< m_vecPages.getItemCount(); k++)
 	{
 		fp_Page * pPage = m_vecPages.getNthItem(k);
+		UT_nonnull_or_continue(pPage);
 		if(pPage->getOwningSection() == pFirstDSL)
 		{
 			UT_DEBUGMSG(("SEVIOR: Rebuilding from page %d \n",k));

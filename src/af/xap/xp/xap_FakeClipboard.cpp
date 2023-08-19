@@ -1,3 +1,4 @@
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
  * 
@@ -110,6 +111,8 @@ _ClipboardItem* XAP_FakeClipboard::_findFormatItem(const char* format)
 	for (UT_uint32 i=0; i<iCount; i++)
 	{
 		_ClipboardItem* pItem = m_vecData.getNthItem(i);
+		UT_nonnull_or_return(pItem, nullptr);
+
 		if (g_ascii_strcasecmp(format, pItem->m_szFormat) == 0)
 			return pItem;
 	}

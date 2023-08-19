@@ -362,13 +362,14 @@ static void _ev_strip_underline(char * bufResult,
 	*b = 0;
 }
 
+static void _ev_convert(char * bufResult,
+						const char * szString) ABI_NONNULL(1, 2);
+
 // change the first '&' character, which we assume to be an accelerator character, to a '_' character as used 
 // by GTK+. Furthermore, escape all '_' characters with another '_' character for a literal '_'
 static void _ev_convert(char * bufResult,
 						const char * szString)
 {
-	UT_ASSERT(szString && bufResult);
-
 	bool foundAmpersand = false;
 	const char * src = szString;
 	char * dest = bufResult;

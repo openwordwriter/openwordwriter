@@ -85,6 +85,7 @@ bool Abi_GrammarCheck::CheckBlock(fl_BlockLayout * pB)
   if(m_vecSentences.getItemCount() == 1)
   {
     PieceOfText * pTxt = m_vecSentences.getNthItem(0);
+    UT_nonnull_or_return(pTxt, false);
     pTxt->countWords();
     if(!pTxt->bHasStop && pTxt->nWords <8) // Likely a heading
     {

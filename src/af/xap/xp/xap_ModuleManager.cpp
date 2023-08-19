@@ -298,6 +298,7 @@ void XAP_ModuleManager::unloadModule (UT_sint32 ndx)
 	//
 	// so it had better damn well work in the opposite direction!
 
+	UT_nonnull_or_return(pModule,);
 	pModule->unregisterThySelf ();
 	pModule->setLoaded (false);
 

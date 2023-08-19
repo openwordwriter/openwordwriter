@@ -940,12 +940,17 @@ bool fp_Line::isLastLineInBlock(void) const
  */
 void fp_Line::setReformat(void)
 {
-  if(!getFirstRun())
-      return;
-  UT_sint32 iOff = getFirstRun()->getBlockOffset();
-  if(getBlock())
-      getBlock()->setNeedsReformat(getBlock(),iOff);
+	auto firstRun = getFirstRun();
+	if (!firstRun) {
+		return;
+	}
+	UT_sint32 iOff = firstRun->getBlockOffset();
+	auto block = getBlock();
+	if (block) {
+		block->setNeedsReformat(block, iOff);
+	}
 }
+
 void fp_Line::setMaxWidth(UT_sint32 iMaxWidth)
 {
 	if(iMaxWidth < 60) // This is hardwired to disallow -ve or too small values
@@ -1061,6 +1066,7 @@ UT_sint32 fp_Line::getFilledWidth(void) const
 	for(i=0;i<count;i++)
 	{
 		fp_Run * pRun = m_vecRuns.getNthItem(i);
+		UT_nonnull_or_continue(pRun);
 		width += (incr = pRun->getWidth());
 		/* return the largest possible value if there is an obvious overflow.
 		 * See 13709 */
@@ -1687,7 +1693,7 @@ void fp_Line::clearScreen(void)
 		for (j = 0; j < count; j++)
 		{
 			pRun = m_vecRuns.getNthItem(j);
-
+			UT_nonnull_or_continue(pRun);
 			if(!pRun->isDirty())
 			{
 				bNeedsClearing = true;
@@ -3238,7 +3244,9 @@ bool fp_Line::getFootnoteContainers(UT_GenericVector<fp_FootnoteContainer*> * pv
 	fp_FootnoteContainer * pFC = nullptr;
 	PT_DocPosition posStart = getBlock()->getPosition();
 	PT_DocPosition posEnd = posStart + getLastRun()->getBlockOffset() + getLastRun()->getLength();
-	posStart += getFirstRun()->getBlockOffset();
+	auto firstRun = getFirstRun();
+	UT_nonnull_or_return(firstRun, false);
+	posStart += firstRun->getBlockOffset();
 	for(i=0; (i< static_cast<UT_uint32>(countRuns())); i++)
 	{
 		pRun = getRunFromIndex(i);
@@ -3300,7 +3308,9 @@ bool fp_Line::getAnnotationContainers(UT_GenericVector<fp_AnnotationContainer*> 
 	fp_AnnotationContainer * pAC = nullptr;
 	PT_DocPosition posStart = getBlock()->getPosition();
 	PT_DocPosition posEnd = posStart + getLastRun()->getBlockOffset() + getLastRun()->getLength();
-	posStart += getFirstRun()->getBlockOffset();
+	auto firstRun = getFirstRun();
+	UT_nonnull_or_return(firstRun, false);
+	posStart += firstRun->getBlockOffset();
 	for(i=0; (i< static_cast<UT_uint32>(countRuns())); i++)
 	{
 		pRun = getRunFromIndex(i);
@@ -3455,7 +3465,7 @@ bool fp_Line::recalculateFields(UT_uint32 iUpdateCount)
 	for (UT_sint32 i = 0; i < iNumRuns; i++)
 	{
 		fp_Run* pRun = m_vecRuns.getNthItem(i);
-
+		UT_nonnull_or_continue(pRun);
 		if (pRun->getType() == FPRUN_FIELD)
 		{
 			fp_FieldRun* pFieldRun = static_cast<fp_FieldRun*>(pRun);
@@ -3821,6 +3831,7 @@ void fp_Line::coalesceRuns(void)
 	for (UT_sint32 i=0; i < static_cast<UT_sint32>(count-1); i++)
 	{
 		fp_Run* pRun = m_vecRuns.getNthItem(static_cast<UT_uint32>(i));
+		UT_nonnull_or_continue(pRun);
 		if (pRun->getType() == FPRUN_TEXT)
 		{
 			fp_TextRun* pTR = static_cast<fp_TextRun *>(pRun);
@@ -3862,7 +3873,7 @@ UT_sint32 fp_Line::calculateWidthOfLine(void)
 	for (UT_sint32 i = 0; i < iCountRuns; ++i)
 	{
 		const fp_Run* pRun = m_vecRuns.getNthItem(i);
-
+		UT_nonnull_or_continue(pRun);
 		if(pRun->isHidden())
 			continue;
 
@@ -3896,7 +3907,7 @@ UT_sint32 fp_Line::calculateWidthOfTrailingSpaces(void)
 		// work from the run on the visual end of the line
 		UT_sint32 k = iBlockDir == UT_BIDI_LTR ? i : iCountRuns - i - 1;
 		fp_Run* pRun = m_vecRuns.getNthItem(_getRunLogIndx(k));
-
+		UT_nonnull_or_continue(pRun);
 		if(pRun->isHidden())
 			continue;
 
@@ -3929,7 +3940,7 @@ UT_uint32 fp_Line::countJustificationPoints(void)
 		// work from the run on the visual end of the line
 		UT_sint32 k = iBlockDir == UT_BIDI_LTR ? i : iCountRuns - i - 1;
 		fp_Run* pRun = m_vecRuns.getNthItem(_getRunLogIndx(k));
-
+		UT_nonnull_or_continue(pRun);
 		if (pRun->getType() == FPRUN_TAB)
 		{
 			// when we hit a tab, we stop this, since tabs "swallow" justification of the
@@ -4000,7 +4011,7 @@ void fp_Line::resetJustification(bool bPermanent)
 	for (UT_sint32 i=0; i<count; i++)
 	{
 		fp_Run* pRun = m_vecRuns.getNthItem(i);
-
+		UT_nonnull_or_continue(pRun);
 		if (pRun->getType() == FPRUN_TEXT)
 		{
 			fp_TextRun* pTR = static_cast<fp_TextRun *>(pRun);
@@ -4051,7 +4062,7 @@ void fp_Line::justify(UT_sint32 iAmount)
 				// work from the run on the visual end of the line
 				UT_sint32 k = iBlockDir == UT_BIDI_LTR ? i : count  - i - 1;
 				fp_Run* pRun = m_vecRuns.getNthItem(_getRunLogIndx(k));
-
+				UT_nonnull_or_continue(pRun);
 				if (pRun->getType() == FPRUN_TAB)
 				{
 					UT_ASSERT(iSpaceCount == 0);
@@ -4118,7 +4129,7 @@ void fp_Line::_splitRunsAtSpaces(void)
 	for (UT_sint32 i = 0; i < count; i++)
 	{
 		fp_Run* pRun = m_vecRuns.getNthItem(i);
-
+		UT_nonnull_or_continue(pRun);
 		if (pRun->getType() == FPRUN_TEXT)
 		{
 			fp_TextRun* pTR = static_cast<fp_TextRun *>(pRun);
@@ -4286,7 +4297,9 @@ UT_sint32 fp_Line::_createMapOfRuns()
 
 			for(i = 0; i < count; i++)
 			{
-				iRunDirection = m_vecRuns.getNthItem(i)->getDirection();
+				auto run = m_vecRuns.getNthItem(i);
+				UT_nonnull_or_continue(run);
+				iRunDirection = run->getDirection();
 				switch(iRunDirection)
 				{
 					case UT_BIDI_LTR : s_pPseudoString[i] = static_cast<UT_UCS4Char>('a'); break;
@@ -4499,6 +4512,7 @@ void fp_Line::_updateContainsFootnoteRef(void)
 	for (UT_sint32 i = 0; i < count; i++)
 	{
 		const fp_Run * r = static_cast<const fp_Run *>(m_vecRuns.getNthItem(i));
+		UT_nonnull_or_continue(r);
 		if (r->getType() == FPRUN_FIELD)
 		{
 			const fp_FieldRun * fr = static_cast<const fp_FieldRun*>(r);

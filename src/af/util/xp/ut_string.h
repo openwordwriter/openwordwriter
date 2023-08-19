@@ -140,7 +140,7 @@ ABI_EXPORT UT_UCS4Char * 	 UT_UCS4_strstr(const UT_UCS4Char * phaystack, const U
 ABI_EXPORT UT_UCS4Char * 	 UT_UCS4_stristr(const UT_UCS4Char * phaystack, const UT_UCS4Char * pneedle);
 ABI_EXPORT UT_uint32 		 UT_UCS4_strlen(const UT_UCS4Char * string);
 ABI_EXPORT UT_uint32		 UT_UCS4_strlen_as_char(const UT_UCS4Char * string);
-ABI_EXPORT UT_UCS4Char * 	 UT_UCS4_strcpy(UT_UCS4Char * dest, const UT_UCS4Char * src);
+ABI_EXPORT UT_UCS4Char * 	 UT_UCS4_strcpy(UT_UCS4Char * dest, const UT_UCS4Char * src) __attribute__((nonnull (1, 2)));
 ABI_EXPORT UT_UCS4Char * 	 UT_UCS4_strcpy_char(UT_UCS4Char * dest, const char * src);
 ABI_EXPORT UT_UCS4Char * 	 UT_UCS4_strncpy_char(UT_UCS4Char * dest, const char * src, int);
 ABI_EXPORT UT_UCS4Char * 	 UT_UCS4_strcpy_utf8_char(UT_UCS4Char * dest, const char * src);

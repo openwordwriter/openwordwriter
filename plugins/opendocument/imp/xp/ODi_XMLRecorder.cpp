@@ -116,26 +116,25 @@ ODi_XMLRecorder& ODi_XMLRecorder::operator=(const ODi_XMLRecorder& rXMLRecorder)
 
     count = rXMLRecorder.getCallCount();
     for (i=0; i<count; i++) {
-        switch ( rXMLRecorder.getCall(i)->getType() ) {
+        auto call = rXMLRecorder.getCall(i);
+        UT_nonnull_or_continue(call);
+        switch ( call->getType() ) {
 
             case ODi_XMLRecorder::XMLCallType_StartElement:
-                pStartCall = (const ODi_XMLRecorder::StartElementCall*)
-                                rXMLRecorder.getCall(i);
+                pStartCall = (const ODi_XMLRecorder::StartElementCall*)call;
 
                 this->startElement(pStartCall->m_pName,
                                    (const gchar**) pStartCall->m_ppAtts);
                 break;
 
             case ODi_XMLRecorder::XMLCallType_EndElement:
-                pEndCall = (const ODi_XMLRecorder::EndElementCall*)
-                                rXMLRecorder.getCall(i);
+                pEndCall = (const ODi_XMLRecorder::EndElementCall*)call;
 
                 this->endElement(pEndCall->m_pName);
                 break;
 
             case ODi_XMLRecorder::XMLCallType_CharData:
-                pCharDataCall = (const ODi_XMLRecorder::CharDataCall*)
-                                rXMLRecorder.getCall(i);
+                pCharDataCall = (const ODi_XMLRecorder::CharDataCall*)call;
 
                 this->charData(pCharDataCall->m_pBuffer, pCharDataCall->m_length);
                 break;

@@ -52,15 +52,16 @@ XAP_Dialog::~XAP_Dialog(void)
 int XAP_Dialog::getWidgetValueInt(xap_widget_id wid)
 {
 	XAP_Widget *w =	getWidget(wid);
+	UT_nonnull_or_return(w, 0);
 	int retval = w->getValueInt();
 	delete w;
 	return retval;
 }
 
-
 void XAP_Dialog::setWidgetValueInt(xap_widget_id wid, int value)
 {
 	XAP_Widget *w = getWidget(wid);
+	UT_nonnull_or_return(w,);
 	w->setValueInt(value);
 	delete w;
 }
@@ -68,6 +69,7 @@ void XAP_Dialog::setWidgetValueInt(xap_widget_id wid, int value)
 void XAP_Dialog::setWidgetLabel(xap_widget_id wid, const UT_UTF8String &val)
 {
 	XAP_Widget *w = getWidget(wid);
+	UT_nonnull_or_return(w,);
 	w->setLabel(val);
 	delete w;
 }
@@ -75,6 +77,7 @@ void XAP_Dialog::setWidgetLabel(xap_widget_id wid, const UT_UTF8String &val)
 void XAP_Dialog::setWidgetLabel(xap_widget_id wid, const std::string &val)
 {
 	XAP_Widget *w = getWidget(wid);
+	UT_nonnull_or_return(w,);
 	w->setLabel(val);
 	delete w;
 }

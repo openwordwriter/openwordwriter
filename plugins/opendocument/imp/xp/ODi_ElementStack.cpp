@@ -126,6 +126,7 @@ bool ODi_ElementStack::hasElement(const gchar* pName) const {
     
     for (i=0; i<m_stackSize; i++) {
         pStartTag = (*m_pStartTags)[i];
+        UT_nonnull_or_continue(pStartTag);
         if (!strcmp(pStartTag->getName(), pName)) {
             return true;
         }
@@ -156,6 +157,7 @@ const ODi_StartTag* ODi_ElementStack::getClosestElement(
             // so, level 0 is m_pStartTags[lastIndex] and
             // level max is m_pStartTags[0]
             pStartTag = (*m_pStartTags)[m_stackSize - (level+1)];
+            UT_nonnull_or_continue(pStartTag);
             if (!strcmp(pStartTag->getName(), pName)) {
                 return pStartTag;
             }
@@ -181,6 +183,7 @@ UT_sint32 ODi_ElementStack::getElementLevel(const gchar* pName) const {
             // so, level 0 is m_pStartTags[lastIndex] and
             // level max is m_pStartTags[0]
             pStartTag = (*m_pStartTags)[m_stackSize - (level+1)];
+            UT_nonnull_or_continue(pStartTag);
             if (!strcmp(pStartTag->getName(), pName)) {
                 return level;
             }

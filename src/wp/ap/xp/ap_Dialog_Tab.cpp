@@ -185,7 +185,7 @@ void AP_Dialog_Tab::_event_TabSelected( UT_sint32 index )
 		UT_return_if_fail (index < m_tabInfo.getItemCount());
 
 		fl_TabStop *pTabInfo = (fl_TabStop *)m_tabInfo.getNthItem(index);
-
+		UT_nonnull_or_return(pTabInfo, );
 		// HACK - iType if 1..5 to be LEFT..BAR in the same order.  We SHOULD make
 		// an enumerated type in block layout or something, or atleast define the
 		// common set of constants.  ap_TopRuler.cpp defines all the constants
@@ -570,7 +570,7 @@ char *AP_Dialog_Tab::_getTabDimensionString(UT_sint32 tabIndex)
 	UT_return_val_if_fail (tabIndex < m_tabInfo.getItemCount(), nullptr);
 
 	fl_TabStop *pTabInfo = m_tabInfo.getNthItem(tabIndex);
-
+	UT_nonnull_or_return(pTabInfo, nullptr);
 	const char* pStart = &m_pszTabStops[pTabInfo->getOffset()];
 	const char* pEnd = pStart;
 	while (*pEnd && (*pEnd != '/'))

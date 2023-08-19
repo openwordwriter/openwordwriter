@@ -1,3 +1,4 @@
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 /* AbiSource Application Framework
  * Copyright (C) 1998-2000 AbiSource, Inc.
  * 
@@ -233,6 +234,7 @@ void AV_View::sendVerticalScrollEvent(UT_sint32 yoff, UT_sint32 ylimit)
 	for (UT_sint32 i = 0; i < count; i++)
 	{
 		AV_ScrollObj* pObj = m_scrollListeners.getNthItem(i);
+		UT_nonnull_or_continue(pObj);
 		pObj->m_pfnY(pObj->m_pData, yoff, ylimit);
 	}
 }
@@ -249,7 +251,7 @@ void AV_View::sendHorizontalScrollEvent(UT_sint32 xoff, UT_sint32 xlimit)
 	for (UT_sint32 i = 0; i < count; i++)
 	{
 		AV_ScrollObj* pObj = m_scrollListeners.getNthItem(i);
-
+		UT_nonnull_or_continue(pObj);
 		pObj->m_pfnX(pObj->m_pData, xoff, xlimit);
 	}
 }

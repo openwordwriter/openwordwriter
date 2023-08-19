@@ -1,8 +1,8 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2021 Hubert Figuière
+ * Copyright (C) 2021-2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -1298,6 +1298,7 @@ void IE_Exp_RTF::_write_tabdef(const char * szTabStops)
 		{
 			_t * p_t = (_t *)vecTabs.getNthItem(k);
 			// write <tabkind>
+			UT_nonnull_or_continue(p_t);
 			if (p_t->m_szTabKindKeyword && *p_t->m_szTabKindKeyword)
 				_rtf_keyword(p_t->m_szTabKindKeyword);
 			if (p_t->m_szTabLeaderKeyword && *p_t->m_szTabLeaderKeyword)
