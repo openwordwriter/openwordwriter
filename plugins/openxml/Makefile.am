@@ -133,6 +133,7 @@ install-data-hook:
 		$(DESTDIR)/$(plugindir)/openxml.so
 endif # TOOLKIT_COCOA
 
+# This is checked into the repository.
 common/xp/OXML_LangToScriptConverter.h: $(srcdir)/common/xp/OXML_LangToScriptConverter.gperf
 	gperf $< >$@
 
