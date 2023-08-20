@@ -201,9 +201,14 @@ ostream& operator<<( ostream& ss, const PD_RDFStatement& st )
 
 
 class ABI_EXPORT PD_RDFModelIterator
-    :
-    public std::iterator< std::forward_iterator_tag, PD_RDFStatement >
 {
+  public:
+    using iterator_category = std::forward_iterator_tag;
+    using difference_type   = std::ptrdiff_t;
+    using value_type        = PD_RDFStatement;
+    using pointer           = PD_RDFStatement*;
+    using reference         = PD_RDFStatement&;
+  private:
     PD_RDFModelHandle   m_model;
     const PP_AttrProp*  m_AP;
     bool                m_end;
