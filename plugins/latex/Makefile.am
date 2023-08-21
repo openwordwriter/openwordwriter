@@ -1,9 +1,7 @@
 
-if HAVE_LIBXSLT
-SUBDIRS = xp xsltml
-else
-SUBDIRS = xp
-endif
+AM_CPPFLAGS = \
+	$(LATEX_CFLAGS) \
+	-DABI_BUILD_VERSION=\"$(VERSION)\"
 
 if LATEX_BUILTIN
 noinst_LTLIBRARIES = latex.la
@@ -16,7 +14,6 @@ plugin_LTLIBRARIES = latex.la
 endif
 
 latex_la_LIBADD = \
-	xp/libxp.la \
 	$(LATEX_LIBS)
 
 latex_la_LDFLAGS = \
@@ -27,8 +24,14 @@ if TOOLKIT_COCOA
 latex_la_LDFLAGS += -headerpad_max_install_names
 endif # TOOLKIT_COCOA
 
-latex_la_SOURCES = 
-nodist_EXTRA_latex_la_SOURCES = dummy.cpp
+latex_la_SOURCES = \
+	xp/ie_exp_LaTeX.cpp \
+	xp/ie_exp_LaTeX.h
+
+if HAVE_LIBXSLT
+xslt_DATA = $(EXTRA_DIST)
+xsltdir = $(ABIWORD_XSLTMLDIR)
+endif
 
 if TOOLKIT_COCOA
 install-data-hook:
@@ -38,5 +41,13 @@ install-data-hook:
 endif # TOOLKIT_COCOA
 
 EXTRA_DIST = \
+	xsltml/cmarkup.xsl \
+	xsltml/entities.xsl \
+	xsltml/glayout.xsl \
+	xsltml/mmltex.xsl \
+	xsltml/scripts.xsl \
+	xsltml/tables.xsl \
+	xsltml/tokens.xsl \
+	xsltml/README \
 	plugin.m4
 
