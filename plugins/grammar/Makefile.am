@@ -1,12 +1,11 @@
-
-SUBDIRS = linkgrammarwrap xp
+AM_CPPFLAGS = \
+	$(GRAMMAR_CFLAGS) \
+	-DABI_BUILD_VERSION=\"$(VERSION)\"
 
 plugindir = $(ABIWORD_PLUGINSDIR)
 plugin_LTLIBRARIES = grammar.la
 
 grammar_la_LIBADD = \
-	linkgrammarwrap/liblinkgrammarwrap.la \
-	xp/libxp.la \
 	$(GRAMMAR_LIBS)
 
 grammar_la_LDFLAGS = \
@@ -14,8 +13,14 @@ grammar_la_LDFLAGS = \
 	-module \
 	-no-undefined
 
-nodist_EXTRA_grammar_la_SOURCES = dummy.cpp
-grammar_la_SOURCES = 
+grammar_la_SOURCES = \
+	xp/AbiGrammarCheck.cpp \
+	xp/AbiGrammarCheck.h \
+	xp/AbiGrammar.cpp \
+	xp/AbiGrammarUtil.cpp \
+	xp/AbiGrammarUtil.h \
+	linkgrammarwrap/LinkGrammarWrap.cpp \
+	linkgrammarwrap/LinkGrammarWrap.h
 
 EXTRA_DIST = \
 	plugin.m4
