@@ -16,8 +16,6 @@ fi
 if test "$enable_docbook" = "yes" || \
    test "$docbook_deps" = "yes"; then
 
-AC_HEADER_TIME
-
 PKG_CHECK_MODULES(DOCBOOK,[ $docbook_pkgs ])
 
 test "$enable_docbook" = "auto" && PLUGINS="$PLUGINS docbook"

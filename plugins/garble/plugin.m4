@@ -16,8 +16,6 @@ fi
 if test "$enable_garble" = "yes" || \
    test "$garble_deps" = "yes"; then
 
-AC_HEADER_TIME
-
 PKG_CHECK_MODULES(GARBLE,[ $garble_pkgs ])
 
 test "$enable_garble" = "auto" && PLUGINS="$PLUGINS garble"
