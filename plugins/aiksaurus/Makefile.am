@@ -1,20 +1,31 @@
-SUBDIRS =
-
 if TOOLKIT_GTK
 
 if WITH_BUILTIN_AIKSAURUS_GTK
-SUBDIRS += aiksaurusgtk3
+SUBDIRS = aiksaurusgtk3
 platform_lib = aiksaurusgtk3/libAiksaurusGtk3.la
 endif
 
 endif
 
-DIST_SUBDIRS = win aiksaurusgtk3 xp
-SUBDIRS += xp
+AM_CPPFLAGS = \
+	$(AIKSAURUS_CFLAGS) \
+	-I$(srcdir) \
+	-DABI_BUILD_VERSION=\"$(VERSION)\"
+
+aiksaurus_la_SOURCES = \
+	xp/AiksaurusABI.cpp
 
 if TOOLKIT_WIN
-SUBDIRS += win
-platform_lib = win/libwin.la
+aiksaurus_la_SOURCES += \
+	win/AiksaurusApp.cpp \
+	win/AiksaurusApp.h \
+	win/AiksaurusDlg.cpp \
+	win/AiksaurusDlg.h \
+	win/resource.h
+
+Aiksaurus.lo: $(srcdir)/win/Aiksaurus.rc
+	$(top_srcdir)/lt-compile-resource $< $@
+platform_lib = Aiksaurus.lo
 endif
 
 plugindir = $(ABIWORD_PLUGINSDIR)
@@ -22,7 +33,6 @@ plugin_LTLIBRARIES = aiksaurus.la
 
 aiksaurus_la_LIBADD = \
 	$(platform_lib) \
-	xp/libxp.la \
 	$(AIKSAURUS_LIBS)
 
 aiksaurus_la_LDFLAGS = \
@@ -30,10 +40,14 @@ aiksaurus_la_LDFLAGS = \
 	-module \
 	-no-undefined
 
-aiksaurus_la_SOURCES = 
-
-nodist_EXTRA_aiksaurus_la_SOURCES = dummy.cpp
-
 EXTRA_DIST = \
+	win/Aiksaurus.ico \
+	win/Aiksaurus.rc \
+	win/back_hover.ico \
+	win/back.ico \
+	win/forward_hover.ico \
+	win/forward.ico \
+	win/readme.txt \
+	win/search_hover.ico \
+	win/search.ico \
 	plugin.m4
-

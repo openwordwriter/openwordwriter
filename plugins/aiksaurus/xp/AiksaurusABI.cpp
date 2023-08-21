@@ -25,9 +25,9 @@
 #endif
 
 #ifdef _WIN32
-	#include "../win/AiksaurusApp.h"
+	#include "win/AiksaurusApp.h"
 #else
-	#include <../aiksaurusgtk3/AiksaurusGTK.h>
+	#include "aiksaurusgtk3/AiksaurusGTK.h"
 #endif
 #include "xap_Module.h"
 #include "xap_App.h"
