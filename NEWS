@@ -1,0 +1,78 @@
+3.next -
+========
+
+oldest revision 9ddd1529ca49e734d4fd6914029c709baab8f948
+
+## General
+- Large reliability improvements (crashes, memory leaks)
+
+## UI
+
+- Fixed touch pad scrolling.
+- Removed about GNOME Office
+
+## macOS
+
+The build is still not usable
+
+- Reworked character shaping to be more accurate
+- File dialog improvements
+
+## Plugins
+
+- Removed freetranslation plugin as the service no
+  longer exist.
+- Removed babelfish plugin.
+- RTF export: fixed some memory leaks.
+- HTML export: fixed some unclosed tags.
+
+## Build requirements
+
+- Requires C++17
+  - Fix build issues with more recent gcc.
+- rsvg 2.51 is now required on Gtk.
+- Gtk 3.24 is required.
+- Enchant 2 is required
+
+## Development
+
+- Some plugins are build in non-recursive Make
+- Some non null pointer checks
+- Code cleanups
+  - nullptr instead of 0
+- Removed boost wherever lib stdc++:
+  - shared_ptr, function, bind
+  - use boost::asio instead of separate boost
+- Replaced many use of the custom container with
+  standard C++ containers.
+- Compiling grammar require spelling enabled.
+- ut_units refactor
+  - removed DIM_STAR (never used)
+  - DIM_PERCENT formatting was wrong
+- Reworked a bit the drawing architecture with the
+  introduction of `XAP_Drawable`
+- Removed some macOS deprecated API.
+  - ATSUI was replaced by CoreText (it didn't survive
+  the 64-bits transition)
+- Introducted PP_PropertyVector in an attempt to fix
+  all the memory leaks.
+- Removed more const_cast<>.
+- Fix use-after-free
+  - xap_Prefs
+  - opendocument
+  - RTF export
+  - ut_color
+  - RDF
+  - text export
+- Build with -Wsuggest-override
+- Gtk
+  - the icons are now resources.
+  - Use more modern API, fix deprecations.
+
+Testing
+
+- Better test harness.
+- Added tests
+  - ut_units
+  - xap_Prefs
+  - ut_string
