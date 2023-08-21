@@ -603,6 +603,7 @@ AX_APPEND_COMPILE_FLAGS([ \
    -Wformat \
    -Wformat-security \
    -Wformat-overflow=2 \
+   -Wformat-truncation=2 \
    -Wheader-guard \
    -Wimplicit-fallthrough=2 \
    -Wlogical-not-parentheses \

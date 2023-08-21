@@ -718,7 +718,7 @@ void s_LaTeX_Listener::_openParagraph(PT_AttrPropIndex api)
 				// TODO: Clean this...
 				char			szChapterNumber[12];
 				m_iBlockType = BT_HEADING1;
-				sprintf(szChapterNumber, "%d", ChapterNumber++);
+				snprintf(szChapterNumber, 12, "%d", ChapterNumber++);
 				m_pie->write ("\n\\newpage \\section*{\\LARGE\\chaptername\\ ");
 				m_pie->write(szChapterNumber);
 				m_pie->write(" ");	  // \\newline");
@@ -769,16 +769,16 @@ void s_LaTeX_Listener::_openParagraph(PT_AttrPropIndex api)
 
 				if (height < 0.9 || height > 1.1)
 				{
-				    	char strH[8];
-					
+					char strH[314];
+
 					/* Assume $baselineskip/fontsize \approx 1.2$, reasonable in most cases */
-					snprintf(strH, 8, "%.2f", height / 1.2);
+					snprintf(strH, 314, "%.2f", height / 1.2);
 					strH[7] = '\0';
-					
+
 					m_pie->write("\\begin{spacing}{");
 					xxx_UT_DEBUGMSG(("m_bLineHeight = true\n"));
 					m_bLineHeight = true;
-					
+
 					m_pie->write(strH);
 					m_pie->write("}\n");
 				}
