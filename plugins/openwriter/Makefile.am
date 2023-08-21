@@ -1,5 +1,7 @@
 
-SUBDIRS = xp
+AM_CPPFLAGS = \
+	$(OPENWRITER_CFLAGS) \
+	-DABI_BUILD_VERSION=\"$(VERSION)\"
 
 if OPENWRITER_BUILTIN
 noinst_LTLIBRARIES = openwriter.la
@@ -12,7 +14,6 @@ plugin_LTLIBRARIES = openwriter.la
 endif
 
 openwriter_la_LIBADD = \
-	xp/libxp.la \
 	$(OPENWRITER_LIBS)
 
 openwriter_la_LDFLAGS = \
@@ -23,8 +24,12 @@ if TOOLKIT_COCOA
 openwriter_la_LDFLAGS += -headerpad_max_install_names
 endif # TOOLKIT_COCOA
 
-openwriter_la_SOURCES = 
-nodist_EXTRA_openwriter_la_SOURCES = dummy.cpp
+openwriter_la_SOURCES = \
+	xp/ie_exp_OpenWriter.cpp \
+	xp/ie_exp_OpenWriter.h	\
+	xp/ie_impexp_OpenWriter.cpp \
+	xp/ie_impexp_OpenWriter.h \
+	xp/ie_imp_OpenWriter.cpp
 
 if TOOLKIT_COCOA
 install-data-hook:
