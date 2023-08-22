@@ -86,7 +86,6 @@ GtkWidget* abiAddButton(GtkDialog * me, std::string label, gint response_id);
 
 GtkWidget * abiDialogNew(const char * role, gboolean resizable = FALSE);
 GtkWidget * abiDialogNew(const char * role, gboolean resizable, const char * title, ...);
-GtkWidget * abiGtkMenuFromCStrVector(const UT_GenericVector<const char*> & vec, GCallback cb, gpointer data);
 
 void abiDialogSetTitle(GtkWidget * dlg, const char * title, ...)
     ABI_PRINTF_FORMAT(2,3);
