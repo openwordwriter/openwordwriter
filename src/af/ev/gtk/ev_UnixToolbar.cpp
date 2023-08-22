@@ -3,20 +3,21 @@
 /* AbiSource Program Utilities
  * Copyright (C) 1998-2000 AbiSource, Inc.
  * Copyright (C) 2006 Robert Staudinger <robert.staudinger@gmail.com>
- * 
+ * Copyright (c) 2023 Hubert Figuière
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA.
  */
 
@@ -72,6 +73,9 @@
 #include "ev_UnixMenuBar.h"
 #endif
 
+#define TOOLBAR_HSPACING 6
+#define TOOLBAR_VSPACING 3
+
 #define PROP_HANDLER_ID "handler-id"
 
 #ifndef UINT_RGBA_R
@@ -82,121 +86,69 @@
 
 class _wd;
 
-static void s_proxy_activated(GtkMenuItem * , _wd * wd);
-
-static const GtkTargetEntry s_AbiTBTargets[] = {{(gchar*)"abi-toolbars",0,0}};
-
-static GtkWidget *
-toolbar_append_item_with_proxy (GtkToolbar *toolbar,
-                                GtkWidget	*widget,
-                                const char *text,
-                                gboolean	 show,
-                                /* for the proxy action */
-                                const char     *action_name,
-                                gpointer        data)
-{
-	GtkToolItem *tool_item;
-
-	UT_ASSERT(GTK_IS_TOOLBAR (toolbar));
-	UT_ASSERT(widget != nullptr);
-
-	if (GTK_IS_TOOL_ITEM (widget)) {
-		tool_item = GTK_TOOL_ITEM (widget);
-		gtk_tool_item_set_tooltip_text(tool_item, text);
-	}
-	else {
-		tool_item = gtk_tool_item_new ();
-		GtkWidget *box = gtk_event_box_new ();
-		gtk_container_add (GTK_CONTAINER (tool_item), box);
-		gtk_container_add (GTK_CONTAINER (box), widget);
-		gtk_tool_item_set_tooltip_text(tool_item, text);
-		if (action_name && data) {
-			GtkWidget	*menu_item;
-            menu_item = gtk_menu_item_new_with_label(text);
-			g_object_set_data(G_OBJECT(menu_item),
-							  "abi_action", (gpointer)action_name);
-			g_signal_connect (menu_item, "activate",
-							  G_CALLBACK (s_proxy_activated), data);
-			gtk_tool_item_set_proxy_menu_item (tool_item, text, menu_item);
-		}
-	}
-	gtk_toolbar_insert (toolbar, tool_item, -1);
-	if (show) {
-		gtk_widget_show_all (GTK_WIDGET (tool_item));
-	}
-
-	return GTK_WIDGET (tool_item);
-}
-
 /*!
  * Append a widget to the toolbar,
- * wrap it in a GtkToolItem if it isn't one already.
  */
 static GtkWidget *
-toolbar_append_item (GtkToolbar *toolbar,
+toolbar_append_item (GtkBox *toolbar,
 					 GtkWidget  *widget,
 					 const char *text,
 					 gboolean	 show)
 {
-	return toolbar_append_item_with_proxy(toolbar, widget, text,
-                                          show, nullptr, nullptr);
+	UT_ASSERT(GTK_IS_BOX (toolbar));
+	UT_ASSERT(widget != nullptr);
+
+	gtk_widget_set_tooltip_text(widget, text);
+
+	gtk_box_pack_start(GTK_BOX(toolbar), widget, false, false, 0);
+	if (show) {
+		gtk_widget_show_all(widget);
+	}
+
+	return widget;
 }
 
 /*!
- * Append a GtkToolButton to the toolbar.
+ * Append a GtkButton to the toolbar.
  */
 static GtkWidget *
-toolbar_append_button (GtkToolbar 	*toolbar,
+toolbar_append_button (GtkBox 	*toolbar,
 					   const gchar	*icon_name,
-					   const gchar	*label,
 					   const gchar  *tooltip,
 					   GCallback	 handler,
 					   gpointer		 data,
 					   gulong		*handler_id)
 {
-	GtkToolItem *item;
-	GtkWidget *icon;
-	gchar		*stock_id;
-
-	stock_id = abi_stock_from_toolbar_id (icon_name);
-	icon = gtk_image_new_from_icon_name (stock_id, GTK_ICON_SIZE_LARGE_TOOLBAR);
-	item = gtk_tool_button_new (icon, label);
-	g_free (stock_id);
+	gchar* stock_id = abi_stock_from_toolbar_id(icon_name);
+	GtkWidget* item = gtk_button_new_from_icon_name(stock_id, GTK_ICON_SIZE_LARGE_TOOLBAR);
+	g_free(stock_id);
 	stock_id = nullptr;
-	*handler_id = g_signal_connect (G_OBJECT (item), "clicked", handler, data);
+	*handler_id = g_signal_connect(G_OBJECT(item), "clicked", handler, data);
 
-	return (GtkWidget *) toolbar_append_item (toolbar, GTK_WIDGET (item),
-											  tooltip, TRUE);
+	return toolbar_append_item(toolbar, GTK_WIDGET(item), tooltip, TRUE);
 }
 
 /*!
- * Append a GtkToggleToolButton to the toolbar.
+ * Append a GtkToggleButton to the toolbar.
  */
 static GtkWidget *
-toolbar_append_toggle (GtkToolbar 	*toolbar,
+toolbar_append_toggle (GtkBox 	*toolbar,
 					   const gchar	*icon_name,
-					   const gchar	*label,
 					   const gchar  *tooltip,
 					   GCallback	 handler,
 					   gpointer		 data,
 					   gboolean		 show,
 					   gulong		*handler_id)
 {
-	GtkToolItem *item;
-	GtkWidget *icon;
-	gchar		*stock_id;
-
-	stock_id = abi_stock_from_toolbar_id (icon_name);
-	icon = gtk_image_new_from_icon_name (stock_id, GTK_ICON_SIZE_LARGE_TOOLBAR);
-	item = gtk_toggle_tool_button_new ();
-	gtk_tool_button_set_icon_widget(GTK_TOOL_BUTTON(item), icon);
-	gtk_tool_button_set_label(GTK_TOOL_BUTTON(item), label);
+	gchar* stock_id = abi_stock_from_toolbar_id(icon_name);
+	GtkWidget* icon = gtk_image_new_from_icon_name(stock_id, GTK_ICON_SIZE_LARGE_TOOLBAR);
+	GtkWidget* item = gtk_toggle_button_new();
+	gtk_button_set_image(GTK_BUTTON(item), icon);
 	g_free (stock_id);
 	stock_id = nullptr;
 	*handler_id = g_signal_connect (G_OBJECT (item), "toggled", handler, data);
 
-	return (GtkWidget *) toolbar_append_item (toolbar, GTK_WIDGET (item),
-											  tooltip, show);
+	return toolbar_append_item (toolbar, item, tooltip, show);
 }
 
 #ifdef ENABLE_MENUBUTTON
@@ -208,10 +160,10 @@ menubutton_show_cb (GtkWidget *widget, gpointer data)
 }
 
 /*!
- * Append a GtkMenuToolButton to the toolbar.
+ * Append a GtkMenuButton to the toolbar.
  */
 static GtkWidget *
-toolbar_append_menubutton (GtkToolbar 	*toolbar,
+toolbar_append_menubutton (GtkBox 	*toolbar,
 						   GtkWidget    *menu,
 						   const gchar	*icon_name, 
 						   const gchar	*label, 
@@ -221,8 +173,8 @@ toolbar_append_menubutton (GtkToolbar 	*toolbar,
 						   gpointer		 data, 
 						   gulong		*handler_id)
 {
-	GtkToolItem *item = gtk_menu_tool_button_new (nullptr, nullptr);
-	gtk_menu_tool_button_set_menu (GTK_MENU_TOOL_BUTTON (item), menu);
+	GtkWidget *item = gtk_menu_button_new (nullptr, nullptr);
+	gtk_menu_button_set_menu (GTK_MENU_BUTTON (item), menu);
 
 	/* We want to hide the button part of the menu button -- to prevent
 	 * it from showing again when gtk_widget_show () is called on the
@@ -253,16 +205,14 @@ toolbar_append_menubutton (GtkToolbar 	*toolbar,
 #endif
 
 /*!
- * Append a GtkSeparatorToolItem to the toolbar.
+ * Append a GtkSeparator to the toolbar.
  */
 static void
-toolbar_append_separator (GtkToolbar *toolbar)
+toolbar_append_separator (GtkBox *toolbar)
 {
-	GtkToolItem *item;
-
-	item = gtk_separator_tool_item_new ();
-	gtk_toolbar_insert (toolbar, item, -1);
-	gtk_widget_show (GTK_WIDGET (item));
+	GtkWidget* item = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+	gtk_box_pack_start(toolbar, item, FALSE, FALSE, TOOLBAR_HSPACING);
+	gtk_widget_show(item);
 }
 
 /*!
@@ -375,44 +325,6 @@ public:									// we create...
 			pView->cmdInsertTable(rows, cols, PP_NOPROPS);
 		}
 	}
-
-	static void s_drag_begin(GtkWidget  *widget,
-							 GdkDragContext     * /*context*/)
-	{
-		_wd * wd = static_cast<_wd *>(g_object_get_data(G_OBJECT(widget),"wd_pointer"));
-		XAP_Frame * pFrame = static_cast<XAP_Frame *>(wd->m_pUnixToolbar->getFrame());
-		EV_Toolbar * pTBsrc = static_cast<EV_Toolbar *>(wd->m_pUnixToolbar);
-		pFrame->dragBegin(wd->m_id,pTBsrc);
-	};
-
-
-	static void s_drag_drop(GtkWidget  *widget,
-							GdkDragContext     *context,
-							gint /*x*/, gint /*y*/, guint /*time*/ )
-	{
-		_wd * wd = static_cast<_wd *>(g_object_get_data(G_OBJECT(widget),"wd_pointer"));
-		GtkWidget * src = gtk_drag_get_source_widget(context);
-		_wd * wdSrc = static_cast<_wd *>(g_object_get_data(G_OBJECT(src),"wd_pointer"));
-		
-		XAP_Frame * pFrame = static_cast<XAP_Frame *>(wd->m_pUnixToolbar->getFrame());
-		EV_Toolbar * pTBdest = static_cast<EV_Toolbar *>(wd->m_pUnixToolbar);
-		EV_Toolbar * pTBsrc = static_cast<EV_Toolbar *>(wdSrc->m_pUnixToolbar);
-		pFrame->dragDropToIcon(wdSrc->m_id,wd->m_id,pTBsrc,pTBdest);
-	};
-
-	static void s_drag_drop_toolbar(GtkWidget  * /*widget*/,
-									GdkDragContext     *context,
-									gint /*x*/, gint /*y*/, 
-									guint /*time*/, gpointer pTB)
-	{
-		GtkWidget * src = gtk_drag_get_source_widget(context);
-		_wd * wdSrc = static_cast<_wd *>(g_object_get_data(G_OBJECT(src),"wd_pointer"));
-
-		XAP_Frame * pFrame = static_cast<XAP_Frame *>(wdSrc->m_pUnixToolbar->getFrame());
-		EV_Toolbar * pTBsrc = static_cast<EV_Toolbar *>(wdSrc->m_pUnixToolbar);
-		EV_Toolbar * pTBdest = static_cast<EV_Toolbar *>(pTB);
-		pFrame->dragDropToTB(wdSrc->m_id,pTBsrc,pTBdest);
-	};
 
 	/*!
 	 * Only accept numeric input in the toolbar's font size combo.
@@ -647,21 +559,6 @@ s_back_color_changed (GOComboColor 	* /*cc*/,
 	wd->m_pUnixToolbar->toolbarEvent(wd, str.ucs4_str().ucs4_str(), str.size());
 }
 
-static void s_proxy_activated(GtkMenuItem * item, _wd * wd)
-{
-		const gchar * editMethod =
-			(const gchar *)g_object_get_data(G_OBJECT(item),
-											 "abi_action");
-		XAP_UnixApp * pUnixApp = wd->m_pUnixToolbar->getApp();
-		const EV_EditMethodContainer * pEMC = pUnixApp->getEditMethodContainer();
-		UT_return_if_fail(pEMC);
-		EV_EditMethod * pEM = nullptr;
-
-		AV_View * pView = wd->m_pUnixToolbar->getFrame()->getCurrentView();
-		pEM = pEMC->findEditMethodByName(editMethod);
-		wd->m_pUnixToolbar->invokeToolbarMethod(pView, pEM, nullptr, 0);
-}
-
 EV_UnixToolbar::EV_UnixToolbar(XAP_UnixApp 	*pUnixApp, 
 							   XAP_Frame 	*pFrame, 
 							   const char 	*szToolbarLayoutName,
@@ -729,8 +626,8 @@ bool EV_UnixToolbar::toolbarEvent(_wd 				* wd,
 			// Block the signal, throw the button back up/down
 			bool wasBlocked = wd->m_blockSignal;
 			wd->m_blockSignal = true;
-			gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(wd->m_widget),
-						     !gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(wd->m_widget)));
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wd->m_widget),
+						     !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wd->m_widget)));
 			wd->m_blockSignal = wasBlocked;
 
 			// can safely ignore this event
@@ -813,45 +710,6 @@ void EV_UnixToolbar::rebuildToolbar(UT_sint32 oldpos)
 	bindListenerToView(pView);
 }
 
-static void setDragIcon(GtkWidget * wwd, GtkImage * img)
-{
-  if (GTK_IMAGE_PIXBUF == gtk_image_get_storage_type(img))
-    {
-      GdkPixbuf * pixbuf = gtk_image_get_pixbuf ( img ) ;
-      gtk_drag_source_set_icon_pixbuf ( wwd, pixbuf ) ;
-    }
-  else if (GTK_IMAGE_STOCK == gtk_image_get_storage_type(img))
-    {
-#if 0
-      gchar * stk = nullptr ;
-      GtkIconSize icn_sz ;
-      
-      // TODO: this doesn't work, possibly a GTK2 bug...
-      gtk_image_get_stock( img, &stk, &icn_sz ) ;
-      gtk_drag_source_set_icon_stock ( wwd, stk ) ;
-#endif
-    }
-}
-
-/*
-* get toolbar button appearance from the preferences
-*/
-GtkToolbarStyle EV_UnixToolbar::getStyle(void)
-{
-	std::string value;
-	m_pUnixApp->getPrefsValue(XAP_PREF_KEY_ToolbarAppearance, value);
-	UT_ASSERT(!value.empty());
-
-	GtkToolbarStyle style = GTK_TOOLBAR_ICONS;
-	if (value == "text") {
-		style = GTK_TOOLBAR_TEXT;
-	} else if (value == "both") {
-		style = GTK_TOOLBAR_BOTH;
-	}
-
-	return style;
-}
-
 bool EV_UnixToolbar::synthesize(void)
 {
 	// create a GTK toolbar from the info provided.
@@ -864,14 +722,16 @@ bool EV_UnixToolbar::synthesize(void)
 	UT_uint32 nrLabelItemsInLayout = m_pToolbarLayout->getLayoutItemCount();
 	UT_ASSERT(nrLabelItemsInLayout > 0);
 
-	m_wToolbar = gtk_toolbar_new();
+	m_wToolbar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	UT_ASSERT(m_wToolbar);
-
-	GtkToolbarStyle style = getStyle();
-	gtk_toolbar_set_style(GTK_TOOLBAR(m_wToolbar), style );
+	gtk_widget_set_margin_top(m_wToolbar, TOOLBAR_VSPACING);
+	gtk_widget_set_margin_bottom(m_wToolbar, TOOLBAR_VSPACING);
+	gtk_widget_set_margin_start(m_wToolbar, TOOLBAR_HSPACING);
+	gtk_widget_set_margin_end(m_wToolbar, TOOLBAR_HSPACING);
 
 //	gtk_toolbar_set_tooltips(GTK_TOOLBAR(m_wToolbar), TRUE);
-	gtk_toolbar_set_show_arrow(GTK_TOOLBAR(m_wToolbar), TRUE);
+// XXX gtk3 - porting to GtkBox
+//	gtk_toolbar_set_show_arrow(GTK_TOOLBAR(m_wToolbar), TRUE);
 
 	//m_wHSizeGroup = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 	m_wVSizeGroup = gtk_size_group_new(GTK_SIZE_GROUP_VERTICAL);
@@ -905,8 +765,8 @@ bool EV_UnixToolbar::synthesize(void)
 				UT_ASSERT(g_ascii_strcasecmp(pLabel->getIconName(),"NoIcon")!=0);
 				if(pAction->getToolbarId() != AP_TOOLBAR_ID_INSERT_TABLE)
 				{
-					wd->m_widget = toolbar_append_button (GTK_TOOLBAR (m_wToolbar), pLabel->getIconName(),
-														  pLabel->getToolbarLabel(), szToolTip,
+					wd->m_widget = toolbar_append_button(GTK_BOX(m_wToolbar), pLabel->getIconName(),
+														  szToolTip,
 														  (GCallback) _wd::s_callback, (gpointer) wd, 
 														  &(wd->m_handlerId));
 				}
@@ -932,29 +792,11 @@ bool EV_UnixToolbar::synthesize(void)
 					UT_DEBUGMSG(("SEVIOR: Made connected to callback \n"));
                     std::string s;
 					pSS->getValueUTF8(XAP_STRING_ID_TB_InsertNewTable, s);
-					toolbar_append_item (GTK_TOOLBAR (m_wToolbar), abi_table, 
+					toolbar_append_item(GTK_BOX(m_wToolbar), abi_table,
 										 s.c_str(), TRUE);
 					gtk_widget_show_all(abi_table);
 					wd->m_widget = abi_table;
 				}
-				GtkWidget * wwd = wd->m_widget;
-				g_object_set_data(G_OBJECT(wwd),
-									"wd_pointer",
-									wd);
-				gtk_drag_source_set(wwd,GDK_BUTTON3_MASK,
-									s_AbiTBTargets,1,
-									GDK_ACTION_COPY);
-				GtkImage * dragimage
-					= (GtkImage*)gtk_image_new_from_icon_name(ABIWORD_INSERT_TABLE,
-															  GTK_ICON_SIZE_DND);
-				g_object_ref_sink(dragimage);
-				setDragIcon(wwd, dragimage);  // does not take ownership
-				g_object_unref(dragimage);
-				gtk_drag_dest_set(wwd, GTK_DEST_DEFAULT_ALL,
-									s_AbiTBTargets,1,
-									GDK_ACTION_COPY);
-				g_signal_connect(G_OBJECT(wd->m_widget),"drag_begin",G_CALLBACK(_wd::s_drag_begin), wd);
-				g_signal_connect(G_OBJECT(wd->m_widget),"drag_drop",G_CALLBACK(_wd::s_drag_drop), wd);
 			}
 			break;
 
@@ -964,34 +806,10 @@ bool EV_UnixToolbar::synthesize(void)
 					UT_ASSERT(g_ascii_strcasecmp(pLabel->getIconName(),"NoIcon")!=0);
 
 					gboolean bShow = TRUE;
-					wd->m_widget = toolbar_append_toggle (GTK_TOOLBAR (m_wToolbar), pLabel->getIconName(),
-														  pLabel->getToolbarLabel(), szToolTip,
+					wd->m_widget = toolbar_append_toggle(GTK_BOX(m_wToolbar), pLabel->getIconName(),
+														  szToolTip,
 														  (GCallback) _wd::s_callback, (gpointer) wd, 
 														  bShow, &(wd->m_handlerId));
-					//
-					// Add in a right drag method
-					//
-				GtkWidget * wwd = wd->m_widget;
-				g_object_set_data(G_OBJECT(wwd),
-									"wd_pointer",
-									wd);
-				gtk_drag_source_set(wwd,GDK_BUTTON3_MASK,
-									s_AbiTBTargets,1,
-									GDK_ACTION_COPY);
-				gchar *stock_id = abi_stock_from_toolbar_id(pLabel->getIconName());
-				GtkImage *dragimage
-					= (GtkImage*)gtk_image_new_from_icon_name(stock_id,
-															  GTK_ICON_SIZE_DND);
-				g_object_ref_sink(dragimage);
-				setDragIcon(wwd, dragimage); // does not take dragimage ownership
-				g_object_unref(dragimage);
-				g_free (stock_id);
-				stock_id = nullptr;
-				gtk_drag_dest_set(wwd,static_cast<GtkDestDefaults>(GTK_DEST_DEFAULT_ALL),
-									s_AbiTBTargets,1,
-									GDK_ACTION_COPY);
-				g_signal_connect(G_OBJECT(wd->m_widget),"drag_begin",G_CALLBACK(_wd::s_drag_begin), wd);
-				g_signal_connect(G_OBJECT(wd->m_widget),"drag_drop",G_CALLBACK(_wd::s_drag_drop), wd);
 				}
 				break;
 
@@ -1007,7 +825,6 @@ bool EV_UnixToolbar::synthesize(void)
 				UT_ASSERT(pControl);
 
 				GtkWidget *combo;
-				const gchar *proxy_action_name;
 				if (wd->m_id == AP_TOOLBAR_ID_FMT_SIZE) {
 					combo = gtk_combo_box_text_new_with_entry();
 					GtkEntry *entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(combo)));
@@ -1018,7 +835,6 @@ bool EV_UnixToolbar::synthesize(void)
 					g_signal_connect (G_OBJECT (entry), "key-press-event", G_CALLBACK (_wd::s_key_press_event_cb), (gpointer) wd);
 					// same size for font and font-size combos
 					// gtk_size_group_add_widget (m_wHSizeGroup, combo);
-					proxy_action_name = "dlgFont";
 				}
 				else if (wd->m_id == AP_TOOLBAR_ID_FMT_FONT) {
 					gulong handler_id;
@@ -1038,17 +854,14 @@ bool EV_UnixToolbar::synthesize(void)
 					// same size for font and font-size combos
 					// gtk_widget_set_size_request (combo, 0, -1);
 					// gtk_size_group_add_widget (m_wHSizeGroup, combo);
-					proxy_action_name = "dlgFont";
 				}
 				else if (wd->m_id == AP_TOOLBAR_ID_ZOOM) {
 					combo = gtk_combo_box_text_new();
 					gtk_widget_set_name (combo, "AbiZoomCombo");
-					proxy_action_name = "dlgZoom";
 				}
 				else if (wd->m_id == AP_TOOLBAR_ID_FMT_STYLE) {
 					combo = gtk_combo_box_text_new();
 					gtk_widget_set_name (combo, "AbiStyleCombo");
-					proxy_action_name = "dlgStyle";
 				}
 				else {
 					g_assert_not_reached();
@@ -1089,9 +902,8 @@ bool EV_UnixToolbar::synthesize(void)
 				gtk_size_group_add_widget (m_wVSizeGroup, combo);
 				gtk_widget_set_valign(combo, GTK_ALIGN_CENTER);
 				gtk_widget_show(combo);
-				toolbar_append_item_with_proxy (GTK_TOOLBAR (m_wToolbar), combo,
-												szToolTip, TRUE,
-												proxy_action_name, wd);
+				toolbar_append_item(GTK_BOX(m_wToolbar), combo,
+									szToolTip, TRUE);
 				wd->m_widget = combo;
 				// for now, we never repopulate, so can just toss it
 				DELETEP(pControl);
@@ -1106,7 +918,6 @@ bool EV_UnixToolbar::synthesize(void)
 				GOColorGroup 	*cg;
 
 				const gchar* abi_stock_id;
-				const gchar		*action_name;
 				XAP_String_Id label_id;
 				const gchar* color_group;
 				GCallback callback;
@@ -1114,13 +925,11 @@ bool EV_UnixToolbar::synthesize(void)
 				UT_ASSERT (g_ascii_strcasecmp(pLabel->getIconName(),"NoIcon") != 0);
 
 				if (pAction->getItemType() == EV_TBIT_ColorFore) {
-					action_name = "dlgColorPickerFore";
 					abi_stock_id = ABIWORD_COLOR_FORE;
 					label_id = XAP_STRING_ID_TB_ClearForeground;
 					color_group = "fore_color_group";
 					callback = G_CALLBACK(s_fore_color_changed);
 				} else {
-					action_name = "dlgColorPickerBack";
 					abi_stock_id = ABIWORD_COLOR_BACK;
 					label_id = XAP_STRING_ID_TB_ClearBackground;
 					color_group = "back_color_group";
@@ -1154,17 +963,7 @@ bool EV_UnixToolbar::synthesize(void)
 					g_object_unref (G_OBJECT (pixbuf));
 				}
 
-				toolbar_append_item_with_proxy (GTK_TOOLBAR(m_wToolbar), combo,
-												szToolTip,
-												TRUE, action_name, wd);
-
-				//
-				// Add in a right drag method
-				//
-				GtkWidget * wwd = wd->m_widget;
-				g_object_set_data(G_OBJECT(wwd),
-								  "wd_pointer",
-								  wd);
+				toolbar_append_item(GTK_BOX(m_wToolbar), combo, szToolTip, TRUE);
 			}
 			break;
 				
@@ -1198,10 +997,6 @@ bool EV_UnixToolbar::synthesize(void)
 											   nullptr,
 											   nullptr,
 											   nullptr);
-				
-				GtkWidget * wwd = wd->m_widget;
-				
-				g_object_set_data(G_OBJECT(wwd), "wd_pointer", wd);
 
 			}
 			break;
@@ -1224,7 +1019,7 @@ bool EV_UnixToolbar::synthesize(void)
 			UT_ASSERT(wd);
 			m_vecToolbarWidgets.addItem(wd);
 
-			toolbar_append_separator (GTK_TOOLBAR (m_wToolbar));
+			toolbar_append_separator(GTK_BOX(m_wToolbar));
 			break;
 		}
 		
@@ -1330,7 +1125,7 @@ bool EV_UnixToolbar::refreshToolbar(AV_View * pView, AV_ChangeMask mask)
 					// Block the signal, throw the toggle event
 					bool wasBlocked = wd->m_blockSignal;
 					wd->m_blockSignal = true;
-					gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON (wd->m_widget), bToggled);
+					gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wd->m_widget), bToggled);
 					wd->m_blockSignal = wasBlocked;
 						
 					// Disable/enable toolbar item

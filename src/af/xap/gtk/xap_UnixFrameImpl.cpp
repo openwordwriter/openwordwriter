@@ -76,10 +76,6 @@
 #include "ie_impGraphic.h"
 #include "fg_Graphic.h"
 
-#ifdef HAVE_GCONF
-#include "ev_GnomeToolbar.h"
-#endif
-
 enum {
 	TARGET_DOCUMENT, // 0, to sync with gtk_drag_dest_add_text_target's default info value
  	TARGET_IMAGE,
