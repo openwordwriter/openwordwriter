@@ -1,6 +1,7 @@
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t -*- */
 /* AbiWord
  * Copyright (C) 1998-2000 AbiSource, Inc.
- * Copyright (c) 2009-2021 Hubert Figuière
+ * Copyright (c) 2009-2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -564,7 +565,8 @@ void AP_UnixDialog_Columns::_constructWindowContents(GtkWidget * windowColumns)
 	gtk_widget_set_margin_start(wToggleOne, 18);
 	gtk_grid_attach(GTK_GRID(grid), wToggleOne, 0, 1, 1, 1);
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Column_One,s);
-	wLabelOne = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	wLabelOne = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(wLabelOne),
                                     "xalign", 0.0, "yalign", 0.5, nullptr);
 	gtk_widget_show(wLabelOne );
 	gtk_grid_attach(GTK_GRID(grid), wLabelOne, 1, 1, 1, 1);
@@ -577,7 +579,8 @@ void AP_UnixDialog_Columns::_constructWindowContents(GtkWidget * windowColumns)
 	gtk_grid_attach(GTK_GRID(grid), wToggleTwo, 0, 2, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Column_Two,s);
-	wLabelTwo = gtk_widget_new(GTK_TYPE_LABEL, "label", s.c_str(),
+	wLabelTwo = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(wLabelTwo),
                                    "xalign", 0.0, "yalign", 0.5, nullptr);
 	gtk_widget_show(wLabelTwo );
 	gtk_grid_attach(GTK_GRID(grid), wLabelTwo, 1, 2, 1, 1);
@@ -590,8 +593,9 @@ void AP_UnixDialog_Columns::_constructWindowContents(GtkWidget * windowColumns)
 	gtk_grid_attach(GTK_GRID(grid), wToggleThree, 0, 3, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Column_Three,s);
-        
-	wLabelThree = gtk_widget_new(GTK_TYPE_LABEL, "label", s.c_str(),
+
+	wLabelThree = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(wLabelThree),
                                    "xalign", 0.0, "yalign", 0.5, nullptr);
 	gtk_widget_show(wLabelThree);
 	gtk_grid_attach(GTK_GRID(grid), wLabelThree, 1, 3, 1, 1);
@@ -653,7 +657,8 @@ void AP_UnixDialog_Columns::_constructWindowContents(GtkWidget * windowColumns)
 /////////////////////////////////////////////////////////
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Column_Number_Cols,s);
-	SpinLabel = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	SpinLabel = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(SpinLabel),
                                     "xalign", 0.0, "yalign", 0.5, nullptr);
 	gtk_widget_show(SpinLabel);
 	gtk_widget_set_margin_top(SpinLabel, 12);
@@ -670,8 +675,8 @@ void AP_UnixDialog_Columns::_constructWindowContents(GtkWidget * windowColumns)
 /////////////////////////////////////////////////////////
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Column_Space_After,s);
-	GtkWidget * SpinLabelAfter = gtk_widget_new (GTK_TYPE_LABEL,
-                                                     "label", s.c_str(),
+	GtkWidget * SpinLabelAfter = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(SpinLabelAfter),
                                                      "xalign", 0.0,
                                                      "yalign", 0.5,
                                                      nullptr);
@@ -692,8 +697,8 @@ void AP_UnixDialog_Columns::_constructWindowContents(GtkWidget * windowColumns)
 // Spin Button for Column Height
 /////////////////////////////////////////////////////////
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Column_Size,s);
-	GtkWidget * SpinLabelColumnSize
-          = gtk_widget_new(GTK_TYPE_LABEL,
+	GtkWidget * SpinLabelColumnSize = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(SpinLabelColumnSize),
                            "label", s.c_str(),
                            "xalign", 0.0, "yalign", 0.5,
                            nullptr);

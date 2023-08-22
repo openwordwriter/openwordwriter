@@ -1,6 +1,7 @@
 /* Copyright (C) 2007 One Laptop Per Child
  * Copyright (C) 2009 Marc Maurer <uwog@uwog.net>
  * Copyright (C) 2010 AbiSource Corporation B.V.
+ * Copyright (c) 2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -314,9 +315,8 @@ void TelepathyAccountHandler::embedDialogWidgets(void* pEmbeddingParent)
 	GtkBox* parent = (GtkBox*)pEmbeddingParent;
 
 	// Jabber conference server
-	GtkWidget* conference_label
-          = gtk_widget_new(GTK_TYPE_LABEL,
-                           "label", "Jabber conference server:",
+	GtkWidget* conference_label = gtk_label_new("Jabber conference server:");
+	g_object_set(G_OBJECT(conference_label),
                            "xalign", 0.0, "yalign", 0.5,
                            NULL);
 	gtk_grid_attach(GTK_GRID(table), conference_label, 0, 0, 1, 1);

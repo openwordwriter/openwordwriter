@@ -1,7 +1,7 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4;  indent-tabs-mode: t -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (c) 2009-2021 Hubert Figuière
+ * Copyright (c) 2009-2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -793,7 +793,8 @@ void  AP_UnixDialog_Styles::_constructModifyDialogContents(GtkWidget * container
 
 	std::string s;
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Styles_ModifyName,s);
-	nameLabel = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	nameLabel = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(nameLabel),
                                     "xalign", 0.0, "yalign", 0.5,
                                     "justify", GTK_JUSTIFY_LEFT,
                                     "xpad", 2, "ypad", 2, "hexpand", TRUE, nullptr);
@@ -801,7 +802,8 @@ void  AP_UnixDialog_Styles::_constructModifyDialogContents(GtkWidget * container
 	gtk_grid_attach(GTK_GRID (comboTable), nameLabel, 0, 0, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Styles_ModifyType,s);
-	styleTypeLabel = gtk_widget_new(GTK_TYPE_LABEL, "label", s.c_str(),
+	styleTypeLabel = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(styleTypeLabel),
                                         "xalign", 0.0, "yalign", 0.5,
                                         "justify", GTK_JUSTIFY_LEFT,
                                         "xpad", 2, "ypad", 2, "hexpand", TRUE, nullptr);
@@ -809,7 +811,8 @@ void  AP_UnixDialog_Styles::_constructModifyDialogContents(GtkWidget * container
 	gtk_grid_attach (GTK_GRID (comboTable), styleTypeLabel, 1, 0, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Styles_ModifyBasedOn,s);
-	basedOnLabel = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	basedOnLabel = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(basedOnLabel),
                                        "xalign", 0.0, "yalign", 0.5,
                                        "justify", GTK_JUSTIFY_LEFT,
                                        "xpad", 2, "ypad", 2, nullptr);
@@ -817,7 +820,8 @@ void  AP_UnixDialog_Styles::_constructModifyDialogContents(GtkWidget * container
 	gtk_grid_attach (GTK_GRID (comboTable), basedOnLabel, 0, 2, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Styles_ModifyFollowing,s);
-	followingLabel = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	followingLabel = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(followingLabel),
                                          "xalign", 0.0, "yalign", 0.5,
                                          "xpad", 2, "ypad", 2, nullptr);
 	gtk_widget_show (followingLabel);
@@ -892,15 +896,16 @@ void  AP_UnixDialog_Styles::_constructModifyDialogContents(GtkWidget * container
 	GtkWidget *lbDescrFrame = gtk_label_new(nullptr);
 	gtk_label_set_markup(GTK_LABEL(lbDescrFrame), s.c_str());
 	gtk_widget_show(lbDescrFrame);
-	GtkWidget *descriptionFrame
-	  = gtk_widget_new(GTK_TYPE_FRAME,
+	GtkWidget *descriptionFrame = gtk_frame_new(nullptr);
+	g_object_set(G_OBJECT(descriptionFrame),
 			   "label-widget", lbDescrFrame,
 			   "shadow-type", GTK_SHADOW_NONE,
 			   "border-width", 5, nullptr);
 	gtk_widget_show (descriptionFrame);
 	gtk_box_pack_start (GTK_BOX (OverallVbox), descriptionFrame, FALSE, FALSE, 0);
 
-	DescriptionText = gtk_widget_new (GTK_TYPE_LABEL,
+	DescriptionText = gtk_label_new(nullptr);
+	g_object_set(G_OBJECT(DescriptionText),
 					  "xpad", 0, "ypad", 6,
 					  "wrap", TRUE,
 					  "max-width-chars", 64,

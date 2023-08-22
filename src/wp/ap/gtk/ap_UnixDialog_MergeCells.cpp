@@ -1,7 +1,7 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2019 Hubert Figuière
+ * Copyright (C) 2019-2023 Hubert Figuière
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -228,24 +228,28 @@ GtkWidget * AP_UnixDialog_MergeCells::_constructWindowContents(void)
 
 	std::string s;
 	pSS->getValueUTF8(AP_STRING_ID_DLG_MergeCells_Left,s);
-	wlMergeLeft = gtk_widget_new(GTK_TYPE_LABEL, "label", s.c_str(),
+	wlMergeLeft = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(wlMergeLeft),
                                      "xalign", 0.0, "yalign", 0.5, nullptr);
 	gtk_widget_show (wlMergeLeft);
 	gtk_grid_attach(GTK_GRID(grid1), wlMergeLeft, 0, 0, 1, 1);
 	pSS->getValueUTF8(AP_STRING_ID_DLG_MergeCells_Right,s);
-	wlMergeRight = gtk_widget_new(GTK_TYPE_LABEL, "label", s.c_str(),
+	wlMergeRight = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(wlMergeRight),
                                       "xalign", 0, "yalign", 0.5, nullptr);
 	gtk_widget_show (wlMergeRight);
 	gtk_grid_attach(GTK_GRID(grid1), wlMergeRight, 0, 1, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_MergeCells_Above,s);
-	wlMergeAbove = gtk_widget_new(GTK_TYPE_LABEL, "label", s.c_str(),
+	wlMergeAbove = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(wlMergeAbove),
                                       "xalign", 0.0, "yalign", 0.5, nullptr);
 	gtk_widget_show (wlMergeAbove);
 	gtk_grid_attach(GTK_GRID(grid1), wlMergeAbove, 0, 2, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_MergeCells_Below,s);
-	wlMergeBelow = gtk_widget_new(GTK_TYPE_LABEL, "label", s.c_str(),
+	wlMergeBelow = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(wlMergeBelow),
                                       "xalign", 0.0, "yalign", 0.5, nullptr);
 	gtk_widget_show (wlMergeBelow);
 	gtk_grid_attach(GTK_GRID(grid1), wlMergeBelow, 0, 3, 1, 1);

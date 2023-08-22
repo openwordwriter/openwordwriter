@@ -53,8 +53,8 @@ void XMPPUnixAccountHandler::embedDialogWidgets(void* pEmbeddingParent)
 	GtkBox* parent = (GtkBox*)pEmbeddingParent;
 
 	// username
-	GtkWidget* username_label = gtk_widget_new(GTK_TYPE_LABEL,
-                                                   "label", "Username:",
+	GtkWidget* username_label = gtk_label_new("Username:");
+	g_object_set(G_OBJECT(username_label),
                                                    "xalign", 0.0, "yalign", 0.5,
                                                    NULL);
 	gtk_grid_attach(GTK_GRID(table), username_label, 0, 0, 1, 1);
@@ -64,8 +64,8 @@ void XMPPUnixAccountHandler::embedDialogWidgets(void* pEmbeddingParent)
 	gtk_entry_set_activates_default(GTK_ENTRY(username_entry), true);
 
 	// password
-	GtkWidget* password_label = gtk_widget_new(GTK_TYPE_LABEL,
-                                                   "label", "Password:",
+	GtkWidget* password_label = gtk_label_new("Password:");
+	g_object_set(G_OBJECT(password_label),
                                                    "xalign", 0.0, "yalign", 0.5,
                                                    NULL);
 	gtk_grid_attach(GTK_GRID(table), password_label, 0, 1, 1, 1);
@@ -75,8 +75,8 @@ void XMPPUnixAccountHandler::embedDialogWidgets(void* pEmbeddingParent)
 	gtk_entry_set_activates_default(GTK_ENTRY(password_entry), true);
 
 	// server
-	GtkWidget* server_label = gtk_widget_new(GTK_TYPE_LABEL,
-                                                "label", "Server:",
+	GtkWidget* server_label = gtk_label_new("Server:");
+	g_object_set(G_OBJECT(server_label),
                                                  "xalign", 0.0, "yalign", 0.5,
                                                  NULL);
 	gtk_grid_attach(GTK_GRID(table), server_label, 0, 2, 1, 1);
@@ -85,8 +85,8 @@ void XMPPUnixAccountHandler::embedDialogWidgets(void* pEmbeddingParent)
 	gtk_entry_set_activates_default(GTK_ENTRY(server_entry), true);
 
 	// port
-	GtkWidget* port_label = gtk_widget_new(GTK_TYPE_LABEL,
-                                               "label", "Port:",
+	GtkWidget* port_label = gtk_label_new("Port:");
+	g_object_set(G_OBJECT(port_label),
                                                "xalign", 0.0, "yalign", 0.5,
                                                NULL);
 	gtk_grid_attach(GTK_GRID(table), port_label, 0, 3, 1, 1);

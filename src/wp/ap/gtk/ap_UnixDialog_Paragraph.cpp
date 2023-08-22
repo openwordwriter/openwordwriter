@@ -1,6 +1,7 @@
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2009, 2017 Hubert Figuière
+ * Copyright (C) 2009-2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -420,7 +421,8 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_LabelAlignment,s);
 	unixstr = UT_XML_cloneNoAmpersands(s);
-	labelAlignment = gtk_widget_new(GTK_TYPE_LABEL, "label", unixstr.c_str(),
+	labelAlignment = gtk_label_new(unixstr.c_str());
+	g_object_set(G_OBJECT(labelAlignment),
                                          "xalign", 1.0, "yalign", 0.5,
                                          "justify", GTK_JUSTIFY_RIGHT,
                                          nullptr);
@@ -460,7 +462,8 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_LabelIndentation,s);
 	unixstr = UT_XML_cloneNoAmpersands(s);
-	labelIndentation = gtk_widget_new(GTK_TYPE_LABEL, "label", unixstr.c_str(),
+	labelIndentation = gtk_label_new(unixstr.c_str());
+	g_object_set(G_OBJECT(labelIndentation),
                                            "xalign", 0.0, "yalign", 0.5,
                                            "justify", GTK_JUSTIFY_LEFT,
                                            "xpad", 0, "ypad", 3,
@@ -472,7 +475,8 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_LabelLeft,s);
 	unixstr = UT_XML_cloneNoAmpersands(s);
-	labelLeft = gtk_widget_new(GTK_TYPE_LABEL, "label", unixstr.c_str(),
+	labelLeft = gtk_label_new(unixstr.c_str());
+	g_object_set(G_OBJECT(labelLeft),
                                     "xalign", 1.0, "yalign", 0.5,
                                     "justify", GTK_JUSTIFY_RIGHT,
                                     nullptr);
@@ -491,7 +495,8 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_LabelRight,s);
 	unixstr = UT_XML_cloneNoAmpersands(s);
-	labelRight = gtk_widget_new(GTK_TYPE_LABEL, "label", unixstr.c_str(),
+	labelRight = gtk_label_new(unixstr.c_str());
+	g_object_set(G_OBJECT(labelRight),
                                     "xalign", 1.0, "yalign", 0.5,
                                     "justify", GTK_JUSTIFY_RIGHT,
                                     nullptr);
@@ -507,7 +512,8 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_LabelSpecial,s);
 	unixstr = UT_XML_cloneNoAmpersands(s);
-	labelSpecial = gtk_widget_new(GTK_TYPE_LABEL, "label", unixstr.c_str(),
+	labelSpecial = gtk_label_new(unixstr.c_str());
+	g_object_set(G_OBJECT(labelSpecial),
                                        "xalign", 0.0, "yalign", 0.5,
                                        "justify", GTK_JUSTIFY_LEFT,
                                        nullptr);
@@ -531,7 +537,8 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_LabelBy,s);
 	unixstr = UT_XML_cloneNoAmpersands(s);
-	labelBy = gtk_widget_new(GTK_TYPE_LABEL, "label", unixstr.c_str(),
+	labelBy = gtk_label_new(unixstr.c_str());
+	g_object_set(G_OBJECT(labelBy),
 				  "xalign", 0.0, "yalign", 0.5,
 				  "justify", GTK_JUSTIFY_LEFT,
 				  nullptr);
@@ -549,7 +556,8 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_LabelSpacing,s);
 	unixstr = UT_XML_cloneNoAmpersands(s);
-	labelSpacing = gtk_widget_new(GTK_TYPE_LABEL, "label", unixstr.c_str(),
+	labelSpacing = gtk_label_new(unixstr.c_str());
+	g_object_set(G_OBJECT(labelSpacing),
                                        "xalign", 0.0, "yalign", 0.5,
                                        "xpad", 0, "ypad", 3,
                                        nullptr);
@@ -560,7 +568,8 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_LabelBefore,s);
 	unixstr = UT_XML_cloneNoAmpersands(s);
-	labelBefore = gtk_widget_new(GTK_TYPE_LABEL, "label", unixstr.c_str(),
+	labelBefore = gtk_label_new(unixstr.c_str());
+	g_object_set(G_OBJECT(labelBefore),
                                       "justify", GTK_JUSTIFY_RIGHT,
                                       "xalign", 1.0, "yalign", 0.5,
                                       nullptr);
@@ -574,7 +583,8 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_LabelAfter,s);
 	unixstr = UT_XML_cloneNoAmpersands(s);
-	labelAfter = gtk_widget_new (GTK_TYPE_LABEL, "label", unixstr.c_str(),
+	labelAfter = gtk_label_new(unixstr.c_str());
+	g_object_set(G_OBJECT(labelAfter),
                                       "justify", GTK_JUSTIFY_RIGHT,
                                       "xalign", 1.0, "yalign", 0.5,
                                       nullptr);
@@ -588,7 +598,8 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_LabelLineSpacing,s);
 	unixstr = UT_XML_cloneNoAmpersands(s);
-	labelLineSpacing = gtk_widget_new(GTK_TYPE_LABEL, "label", unixstr.c_str(),
+	labelLineSpacing = gtk_label_new(unixstr.c_str());
+	g_object_set(G_OBJECT(labelLineSpacing),
                                       "justify", GTK_JUSTIFY_LEFT,
                                       "xalign", 0.0, "yalign", 0.5,
                                       nullptr);
@@ -616,7 +627,8 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_LabelAt,s);
 	unixstr = UT_XML_cloneNoAmpersands(s);
-	labelAt = gtk_widget_new(GTK_TYPE_LABEL, "label", unixstr.c_str(),
+	labelAt = gtk_label_new(unixstr.c_str());
+	g_object_set(G_OBJECT(labelAt),
                                       "justify", GTK_JUSTIFY_LEFT,
                                       "xalign", 0.0, "yalign", 0.5,
                                       nullptr);
@@ -661,7 +673,8 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_LabelPagination,s);
 	unixstr = UT_XML_cloneNoAmpersands(s);
-	labelPagination = gtk_widget_new(GTK_TYPE_LABEL, "label", unixstr.c_str(),
+	labelPagination = gtk_label_new(unixstr.c_str());
+	g_object_set(G_OBJECT(labelPagination),
                                           "xpad", 0, "ypad", 3,
                                           nullptr);
 	gtk_widget_show (labelPagination);
@@ -730,7 +743,8 @@ GtkWidget * AP_UnixDialog_Paragraph::_constructWindowContents(GtkWidget *windowM
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Para_LabelPreview,s);
 	unixstr = UT_XML_cloneNoAmpersands(s);
-	labelPreview = gtk_widget_new(GTK_TYPE_LABEL, "label", unixstr.c_str(),
+	labelPreview = gtk_label_new(unixstr.c_str());
+	g_object_set(G_OBJECT(labelPreview),
                                        "justify", GTK_JUSTIFY_LEFT,
                                        "xalign", 0.0, "yalign", 0.5,
                                        "xpad", 0, "ypad", 8,

@@ -2,7 +2,7 @@
 
 /* AbiSource Application Framework
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2009-2020 Hubert Figuiere
+ * Copyright (C) 2009-2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -639,12 +639,10 @@ void XAP_UnixDialog_FileOpenSaveAs::runModal(XAP_Frame * pFrame)
 	gtk_widget_show(pulldown_hbox);
 
 	// pulldown label
-	GtkWidget * filetypes_label
-        = gtk_widget_new(GTK_TYPE_LABEL,
-                         "label",
-                         convertMnemonics(szFileTypeLabel).c_str(),
-                         "xalign", 1.0,  "yalign", 0.5,
-                         "justify", GTK_JUSTIFY_RIGHT, nullptr);
+	GtkWidget * filetypes_label = gtk_label_new(convertMnemonics(szFileTypeLabel).c_str());
+	g_object_set(G_OBJECT(filetypes_label),
+						 "xalign", 1.0,	 "yalign", 0.5,
+						 "justify", GTK_JUSTIFY_RIGHT, nullptr);
 
 	gtk_box_pack_start(GTK_BOX(pulldown_hbox), filetypes_label, TRUE, TRUE, 0);
 

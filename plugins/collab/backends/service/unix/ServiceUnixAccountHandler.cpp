@@ -57,8 +57,8 @@ void ServiceUnixAccountHandler::embedDialogWidgets(void* pEmbeddingParent)
 	GtkVBox* parent = (GtkVBox*)pEmbeddingParent;
 
 	// username
-	GtkWidget* username_label
-          = gtk_widget_new(GTK_TYPE_LABEL, "label", "E-mail address:",
+	GtkWidget* username_label = gtk_label_new("E-mail address:");
+	g_object_set(G_OBJECT(username_label),
                            "xalign", 0.0, "yalign", 0.5,
                            NULL);
 	gtk_grid_attach(GTK_GRID(table), username_label, 0, 0, 1, 1);
@@ -67,8 +67,8 @@ void ServiceUnixAccountHandler::embedDialogWidgets(void* pEmbeddingParent)
 	gtk_entry_set_activates_default(GTK_ENTRY(username_entry), true);
 
 	// password
-	GtkWidget* password_label
-          = gtk_widget_new(GTK_TYPE_LABEL, "label", "Password:",
+	GtkWidget* password_label = gtk_label_new("Password:");
+	g_object_set(G_OBJECT(password_label),
                            "xalign", 0.0, "yalign", 0.5,
                            NULL);
 	gtk_grid_attach(GTK_GRID(table), password_label, 0, 1, 1, 1);
@@ -87,8 +87,8 @@ void ServiceUnixAccountHandler::embedDialogWidgets(void* pEmbeddingParent)
 
 #ifdef DEBUG
 	// uri
-	GtkWidget* uri_label
-          = gtk_widget_new(GTK_TYPE_LABEL, "label", "WebApp SOAP url:",
+	GtkWidget* uri_label = gtk_label_new("WebApp SOAP url:");
+	g_object_set(G_OBJECT(uri_label),
                            "xalign", 0.0, "yalign", 0.5,
                            NULL);
 	gtk_grid_attach(GTK_GRID(table), uri_label, 0, 4, 1, 1);

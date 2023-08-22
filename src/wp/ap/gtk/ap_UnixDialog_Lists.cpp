@@ -1,7 +1,7 @@
 /* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * Copyright (C) 2009, 2019 Hubert Figuiere
+ * Copyright (C) 2009-2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -850,13 +850,15 @@ GtkWidget *AP_UnixDialog_Lists::_constructWindowContents (void)
 	gtk_combo_box_set_active(GTK_COMBO_BOX(type_om), 0);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Lists_Type,s);
-	type_lb = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	type_lb = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(type_lb),
                               "xalign", 0.0, "yalign", 0.5,
                               nullptr);
 	gtk_widget_show (type_lb);
 	gtk_grid_attach(GTK_GRID(grid1), type_lb, 0, 0, 1, 1);
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Lists_Style,s);
-	style_lb = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	style_lb = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(style_lb),
                                "xalign", 0.0, "yalign", 0.5,
                                nullptr);
 	gtk_widget_show (style_lb);
@@ -920,42 +922,48 @@ GtkWidget *AP_UnixDialog_Lists::_constructWindowContents (void)
 	gtk_spin_button_set_wrap (GTK_SPIN_BUTTON (label_align_sb), TRUE);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Lists_Format,s);
-	format_lb = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	format_lb = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(format_lb),
                               "xalign", 0.0, "yalign", 0.5,
                               nullptr);
 	gtk_widget_show (format_lb);
 	gtk_grid_attach (GTK_GRID (grid2), format_lb, 0, 0, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Lists_Font,s);
-	font_lb = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	font_lb = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(font_lb),
                               "xalign", 0.0, "yalign", 0.5,
                               nullptr);
 	gtk_widget_show (font_lb);
 	gtk_grid_attach (GTK_GRID (grid2), font_lb, 0, 1, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Lists_DelimiterString,s);
-	delimiter_lb = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	delimiter_lb = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(delimiter_lb),
                               "xalign", 0.0, "yalign", 0.5,
                               nullptr);
 	gtk_widget_show (delimiter_lb);
 	gtk_grid_attach (GTK_GRID (grid2), delimiter_lb, 0, 2, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Lists_Start,s);
-	start_at_lb = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	start_at_lb = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(start_at_lb),
                               "xalign", 0.0, "yalign", 0.5,
                               nullptr);
 	gtk_widget_show (start_at_lb);
 	gtk_grid_attach (GTK_GRID (grid2), start_at_lb, 0, 3, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Lists_Align,s);
-	text_align_lb = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	text_align_lb = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(text_align_lb),
                               "xalign", 0.0, "yalign", 0.5,
                               nullptr);
 	gtk_widget_show (text_align_lb);
 	gtk_grid_attach (GTK_GRID (grid2), text_align_lb, 0, 4, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Lists_Indent,s);
-	label_align_lb = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	label_align_lb = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(label_align_lb),
                               "xalign", 0.0, "yalign", 0.5,
                               nullptr);
 	gtk_widget_show (label_align_lb);
@@ -965,7 +973,8 @@ GtkWidget *AP_UnixDialog_Lists::_constructWindowContents (void)
 	gtk_widget_show(grid3);
 	gtk_grid_attach(GTK_GRID(list_grid), grid3, 1, 0, 1, 2);
 	pSS->getValueUTF8(AP_STRING_ID_DLG_Lists_Preview,s);
-	preview_lb = gtk_widget_new(GTK_TYPE_LABEL, "label", s.c_str(),
+	preview_lb = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(preview_lb),
                               "xalign", 0.0, "yalign", 0.5,
                               nullptr);
 	gtk_widget_show(preview_lb);

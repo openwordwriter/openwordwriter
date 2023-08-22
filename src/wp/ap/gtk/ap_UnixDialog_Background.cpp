@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 2000-2002 AbiSource, Inc.
- * Copyright (C) 2009, 2013 Hubert Figuiere
+ * Copyright (C) 2009-2023 Hubert Figuière
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -180,8 +180,8 @@ void AP_UnixDialog_Background::_constructWindowContents (GtkWidget * parent)
 		{
 			pSS->getValueUTF8 (AP_STRING_ID_DLG_Background_ClearClr,s);
 		}
-		clearColor
-		  = gtk_widget_new(GTK_TYPE_BUTTON, "label", s.c_str(),
+		clearColor = gtk_button_new_with_label(s.c_str());
+		g_object_set(G_OBJECT(clearColor),
 				   "xalign", 1.0, "yalign", 0.5, nullptr);
 		GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_box_pack_end(GTK_BOX(hbox), clearColor, FALSE, FALSE, 0);

@@ -1,6 +1,6 @@
 /* AbiWord
  * Copyright (C) 2002 Dom Lachowicz <cinamod@hotmail.com>
- * Copyright (c) 2009 Hubert Figuiere
+ * Copyright (c) 2009-2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -166,8 +166,8 @@ void AP_UnixDialog_ListRevisions::constructWindowContents ( GtkWidget * vbDialog
   std::string s("<b>");
   s += getLabel1();
   s += "</b>";
-  lbExistingRevisions = gtk_widget_new (GTK_TYPE_LABEL,
-                                        "label", s.c_str(),
+  lbExistingRevisions = gtk_label_new (s.c_str());
+  g_object_set(G_OBJECT(lbExistingRevisions),
                                         "use-markup", TRUE,
                                         "xalign", 0.0, "yalign", 0.5,
                                         nullptr);

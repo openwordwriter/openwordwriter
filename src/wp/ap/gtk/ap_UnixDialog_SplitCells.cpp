@@ -1,5 +1,7 @@
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (C) 2023 Hubert Figuière
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -268,37 +270,43 @@ GtkWidget * AP_UnixDialog_SplitCells::_constructWindowContents(void)
 	              nullptr);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_SplitCells_Left,s);
-	wlSplitLeft = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	wlSplitLeft = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(wlSplitLeft),
                                       "xalign", 0.0, "yalign", 0.5, nullptr);
 	gtk_widget_show (wlSplitLeft);
 	gtk_grid_attach (GTK_GRID (grid1), wlSplitLeft, 0, 0, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_SplitCells_HoriMid,s);
-	wlSplitHoriMid = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	wlSplitHoriMid = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(wlSplitHoriMid),
                                          "xalign", 0.0, "yalign", 0.5, nullptr);
 	gtk_widget_show (wlSplitHoriMid);
 	gtk_grid_attach (GTK_GRID (grid1), wlSplitHoriMid, 0, 1, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_SplitCells_Right,s);
-	wlSplitRight = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
-                                      "xalign", 0.0, "yalign", 0.5, nullptr);
+	wlSplitRight = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(wlSplitRight),
+								   "xalign", 0.0, "yalign", 0.5, nullptr);
 	gtk_widget_show (wlSplitRight);
 	gtk_grid_attach (GTK_GRID (grid1), wlSplitRight, 0, 2, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_SplitCells_Above,s);
-	wlSplitAbove = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	wlSplitAbove = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(wlSplitAbove),
                                        "xalign", 0.0, "yalign", 0.5, nullptr);
 	gtk_widget_show (wlSplitAbove);
 	gtk_grid_attach (GTK_GRID (grid1), wlSplitAbove, 0, 3, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_SplitCells_VertMid,s);
-	wlSplitVertMid = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	wlSplitVertMid = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(wlSplitVertMid),
                                         "xalign", 0.0, "yalign", 0.5, nullptr);
 	gtk_widget_show (wlSplitVertMid);
 	gtk_grid_attach (GTK_GRID (grid1), wlSplitVertMid, 0, 4, 1, 1);
 
 	pSS->getValueUTF8(AP_STRING_ID_DLG_SplitCells_Below,s);
-	wlSplitBelow = gtk_widget_new (GTK_TYPE_LABEL, "label", s.c_str(),
+	wlSplitBelow = gtk_label_new(s.c_str());
+	g_object_set(G_OBJECT(wlSplitBelow),
                                        "xalign", 0.0, "yalign", 0.5, nullptr);
 	gtk_widget_show (wlSplitBelow);
 	gtk_grid_attach (GTK_GRID (grid1), wlSplitBelow, 0, 5, 1, 1);

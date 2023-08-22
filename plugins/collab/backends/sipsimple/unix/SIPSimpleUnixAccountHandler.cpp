@@ -50,8 +50,8 @@ void SIPSimpleUnixAccountHandler::embedDialogWidgets(void* pEmbeddingParent)
 	GtkBox* parent = (GtkBox*)pEmbeddingParent;
 
 	// username
-	GtkWidget* address_label = gtk_widget_new(GTK_TYPE_LABEL,
-                                                  "label", "SIP address:",
+	GtkWidget* address_label = gtk_label_new("SIP address:");
+	g_object_set(G_OBJECT(address_label),
                                                   "xalign", 0.0, "yalign", 0.5,
                                                   NULL);
 	gtk_grid_attach(GTK_GRID(table), address_label, 0, 0, 1, 1);
@@ -60,8 +60,8 @@ void SIPSimpleUnixAccountHandler::embedDialogWidgets(void* pEmbeddingParent)
 	gtk_entry_set_activates_default(GTK_ENTRY(address_entry), true);
 
 	// password
-	GtkWidget* password_label = gtk_widget_new(GTK_TYPE_LABEL,
-                                                   "label", "Password:",
+	GtkWidget* password_label = gtk_label_new("Password:");
+	g_object_set(G_OBJECT(password_label),
                                                    "xalign", 0.0, "yalign", 0.5,
                                                    NULL);
 	gtk_grid_attach(GTK_GRID(table), password_label, 0, 1, 1, 1);
@@ -71,8 +71,8 @@ void SIPSimpleUnixAccountHandler::embedDialogWidgets(void* pEmbeddingParent)
 	gtk_entry_set_activates_default(GTK_ENTRY(password_entry), true);
 
 	// outbound proxy
-	GtkWidget* proxy_label = gtk_widget_new(GTK_TYPE_LABEL,
-                                                "label", "Outbound proxy:",
+	GtkWidget* proxy_label = gtk_label_new("Outbound proxy:");
+	g_object_set(G_OBJECT(proxy_label),
                                                 "xalign", 0.0, "yalign", 0.5,
                                                 NULL);
 	gtk_grid_attach(GTK_GRID(table), proxy_label, 0, 2, 1, 1);

@@ -73,8 +73,8 @@ void TCPUnixAccountHandler::embedDialogWidgets(void* pEmbeddingParent)
 	// spacer
 
 	// host
-	GtkWidget* server_label = gtk_widget_new(GTK_TYPE_LABEL,
-                                                 "label", "Address:",
+	GtkWidget* server_label = gtk_label_new("Address:");
+	g_object_set(G_OBJECT(server_label),
                                                  "xalign", 0.0, "yalign", 0.5,
 	                                     	     "margin-start", 24,
                                                  NULL);
@@ -89,7 +89,8 @@ void TCPUnixAccountHandler::embedDialogWidgets(void* pEmbeddingParent)
 
 	// port
 	GtkWidget* portHBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
-	GtkWidget* port_label = gtk_widget_new(GTK_TYPE_LABEL, "label", "Port:",
+	GtkWidget* port_label = gtk_label_new("Port:");
+	g_object_set(G_OBJECT(port_label),
                                                "xalign", 0.0, "yalign", 0.5,
                                                NULL);
 	gtk_box_pack_start(GTK_BOX(portHBox), port_label, false, false, 0);

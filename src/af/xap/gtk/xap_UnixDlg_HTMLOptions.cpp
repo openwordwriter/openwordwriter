@@ -1,7 +1,8 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode:t; -*- */
 
 /* AbiSource Application Framework
  * Copyright (C) 2002 AbiSource, Inc.
+ * Copyright (c) 2023 Hubert Figuière
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -294,8 +295,8 @@ GtkWidget * XAP_UnixDialog_HTMLOptions::_constructWindow ()
 
 	/* The top item in the vbox is a simple label
 	 */
-	GtkWidget * labelActivate = gtk_widget_new(GTK_TYPE_LABEL,
-											   "label", label,
+	GtkWidget * labelActivate = gtk_label_new(label);
+	g_object_set(G_OBJECT(labelActivate),
 											   "xalign", 0.0,  "yalign", 0.0,
 											   "xpad", 10, "ypad", 5,
 											   "justify", GTK_JUSTIFY_LEFT,
