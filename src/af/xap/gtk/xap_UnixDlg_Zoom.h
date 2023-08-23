@@ -1,5 +1,6 @@
 /* AbiSource Application Framework
  * Copyright (C) 1998-2000 AbiSource, Inc.
+ * Copyright (c) 2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,8 +18,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef XAP_UNIXDIALOG_ZOOM_H
-#define XAP_UNIXDIALOG_ZOOM_H
+#pragma once
 
 #include "xap_Dlg_Zoom.h"
 
@@ -80,8 +80,5 @@ protected:
 	GtkWidget * m_spinPercent;
 	GtkAdjustment * m_spinAdj;
 
-	// our "group" of radio buttons
-	GSList *	m_radioGroup;
+	XAP_Frame::tZoomType m_currentZoomType;
 };
-
-#endif /* XAP_UNIXDIALOG_ZOOM_H */
