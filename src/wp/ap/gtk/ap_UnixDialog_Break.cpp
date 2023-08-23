@@ -1,19 +1,21 @@
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 /* AbiWord
  * Copyright (C) 1998-2000 AbiSource, Inc.
- * 
+ * Copyright (c) 2023 Hubert Figuière
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA.
  */
 
@@ -54,9 +56,8 @@ XAP_Dialog * AP_UnixDialog_Break::static_constructor(XAP_DialogFactory * pFactor
 AP_UnixDialog_Break::AP_UnixDialog_Break(XAP_DialogFactory * pDlgFactory,
 										 XAP_Dialog_Id id)
 	: AP_Dialog_Break(pDlgFactory,id)
+	, m_windowMain(nullptr)
 {
-	m_windowMain = nullptr;
-	m_radioGroup = nullptr;
 }
 
 AP_UnixDialog_Break::~AP_UnixDialog_Break(void)
@@ -104,7 +105,6 @@ GtkWidget * AP_UnixDialog_Break::_constructWindow(void)
 	// Update our member variables with the important widgets that 
 	// might need to be queried or altered later
 	window = GTK_WIDGET(gtk_builder_get_object(builder, "ap_UnixDialog_Break"));
-	m_radioGroup = gtk_radio_button_get_group (GTK_RADIO_BUTTON ( GTK_WIDGET(gtk_builder_get_object(builder, "rbPageBreak")) ));
 
 	// set the dialog title
 	std::string s;
@@ -114,26 +114,33 @@ GtkWidget * AP_UnixDialog_Break::_constructWindow(void)
 	// localize the strings in our dialog, and set tags for some widgets
 	
 	localizeLabelMarkup(GTK_WIDGET(gtk_builder_get_object(builder, "lbInsertBreak")), pSS, AP_STRING_ID_DLG_Break_Insert);
-	
-	localizeButton(GTK_WIDGET(gtk_builder_get_object(builder, "rbPageBreak")), pSS, AP_STRING_ID_DLG_Break_PageBreak);
-	g_object_set_data (G_OBJECT (GTK_WIDGET(gtk_builder_get_object(builder, "rbPageBreak"))), WIDGET_ID_TAG_KEY, GINT_TO_POINTER(b_PAGE));
 
-	localizeButton(GTK_WIDGET(gtk_builder_get_object(builder, "rbColumnBreak")), pSS, AP_STRING_ID_DLG_Break_ColumnBreak);
-	g_object_set_data (G_OBJECT (GTK_WIDGET(gtk_builder_get_object(builder, "rbColumnBreak"))), WIDGET_ID_TAG_KEY, GINT_TO_POINTER(b_COLUMN));
+	auto rbPageBreak = GTK_WIDGET(gtk_builder_get_object(builder, "rbPageBreak"));
+	localizeButton(rbPageBreak, pSS, AP_STRING_ID_DLG_Break_PageBreak);
+	m_radioGroup.insert(std::make_pair(b_PAGE, rbPageBreak));
+
+	auto rbColumnBreak = GTK_WIDGET(gtk_builder_get_object(builder, "rbColumnBreak"));
+	localizeButton(rbColumnBreak, pSS, AP_STRING_ID_DLG_Break_ColumnBreak);
+	m_radioGroup.insert(std::make_pair(b_COLUMN, rbColumnBreak));
 
 	localizeLabelMarkup(GTK_WIDGET(gtk_builder_get_object(builder, "lbInsertSectionBreak")), pSS, AP_STRING_ID_DLG_Break_SectionBreaks);
-	
-	localizeButton(GTK_WIDGET(gtk_builder_get_object(builder, "rbNextPage")), pSS, AP_STRING_ID_DLG_Break_NextPage);
-	g_object_set_data (G_OBJECT (GTK_WIDGET(gtk_builder_get_object(builder, "rbNextPage"))), WIDGET_ID_TAG_KEY, GINT_TO_POINTER(b_NEXTPAGE));
 
-	localizeButton(GTK_WIDGET(gtk_builder_get_object(builder, "rbContinuous")), pSS, AP_STRING_ID_DLG_Break_Continuous);
-	g_object_set_data (G_OBJECT (GTK_WIDGET(gtk_builder_get_object(builder, "rbContinuous"))), WIDGET_ID_TAG_KEY, GINT_TO_POINTER(b_CONTINUOUS));
+	auto rbNextPage = GTK_WIDGET(gtk_builder_get_object(builder, "rbNextPage"));
+	localizeButton(rbNextPage, pSS, AP_STRING_ID_DLG_Break_NextPage);
+	m_radioGroup.insert(std::make_pair(b_NEXTPAGE, rbNextPage));
 
-	localizeButton(GTK_WIDGET(gtk_builder_get_object(builder, "rbEvenPage")), pSS, AP_STRING_ID_DLG_Break_EvenPage);
-	g_object_set_data (G_OBJECT (GTK_WIDGET(gtk_builder_get_object(builder, "rbEvenPage"))), WIDGET_ID_TAG_KEY, GINT_TO_POINTER(b_EVENPAGE));
+	auto rbContinuous = GTK_WIDGET(gtk_builder_get_object(builder, "rbContinuous"));
+	localizeButton(rbContinuous, pSS, AP_STRING_ID_DLG_Break_Continuous);
+	m_radioGroup.insert(std::make_pair(b_CONTINUOUS, rbContinuous));
 
-	localizeButton(GTK_WIDGET(gtk_builder_get_object(builder, "rbOddPage")), pSS, AP_STRING_ID_DLG_Break_OddPage);
-	g_object_set_data (G_OBJECT (GTK_WIDGET(gtk_builder_get_object(builder, "rbOddPage"))), WIDGET_ID_TAG_KEY, GINT_TO_POINTER(b_ODDPAGE));
+	auto rbEvenPage = GTK_WIDGET(gtk_builder_get_object(builder, "rbEvenPage"));
+	localizeButton(rbEvenPage, pSS, AP_STRING_ID_DLG_Break_EvenPage);
+	m_radioGroup.insert(std::make_pair(b_EVENPAGE, rbEvenPage));
+
+	auto rbOddPage = GTK_WIDGET(gtk_builder_get_object(builder, "rbOddPage"));
+	localizeButton(rbOddPage, pSS, AP_STRING_ID_DLG_Break_OddPage);
+	m_radioGroup.insert(std::make_pair(b_ODDPAGE, rbOddPage));
+
 	localizeButtonUnderline(GTK_WIDGET(gtk_builder_get_object(builder, "btInsert")), pSS, AP_STRING_ID_DLG_InsertButton);
 
 	g_object_unref(G_OBJECT(builder));
@@ -141,14 +148,14 @@ GtkWidget * AP_UnixDialog_Break::_constructWindow(void)
 	return window;
 }
 
-void AP_UnixDialog_Break::_populateWindowData(void)
+void AP_UnixDialog_Break::_populateWindowData(void) const
 {
 	// We're a pretty stateless dialog, so we just set up
 	// the defaults from our members.
 
 	GtkWidget * widget = _findRadioByID(m_break);
 	UT_ASSERT(widget);
-	
+
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), TRUE);
 }
 
@@ -159,28 +166,22 @@ void AP_UnixDialog_Break::_storeWindowData(void)
 
 // TODO if this function is useful elsewhere, move it to Unix dialog
 // TODO helpers and standardize on a user-data tag for WIDGET_ID_TAG_KEY
-GtkWidget * AP_UnixDialog_Break::_findRadioByID(AP_Dialog_Break::breakType b)
+GtkWidget * AP_UnixDialog_Break::_findRadioByID(AP_Dialog_Break::breakType b) const
 {
-	UT_ASSERT(m_radioGroup);
-	for (GSList * item = m_radioGroup ; item ; item = item->next)
-	{
-		if (GPOINTER_TO_INT(g_object_get_data(G_OBJECT(item->data), WIDGET_ID_TAG_KEY)) ==
-			static_cast<gint>(b))
-			return static_cast<GtkWidget *>(item->data);
+	auto w = m_radioGroup.find(b);
+	if (w != m_radioGroup.cend()) {
+		return w->second;
 	}
 
+	UT_ASSERT(UT_SHOULD_NOT_HAPPEN);
 	return nullptr;
 }
 
-AP_Dialog_Break::breakType AP_UnixDialog_Break::_getActiveRadioItem(void)
+AP_Dialog_Break::breakType AP_UnixDialog_Break::_getActiveRadioItem(void) const
 {
-	UT_ASSERT(m_radioGroup);
-	for (GSList * item = m_radioGroup ; item ; item = item->next)
-	{
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(item->data)))
-		{
-			return (AP_Dialog_Break::breakType)
-				GPOINTER_TO_INT(g_object_get_data(G_OBJECT(item->data), WIDGET_ID_TAG_KEY));
+	for (auto item : m_radioGroup) {
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(item.second))) {
+			return item.first;
 		}
 	}
 

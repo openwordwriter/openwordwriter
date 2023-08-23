@@ -1,5 +1,7 @@
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 /* AbiWord
  * Copyright (C) 1998-2000 AbiSource, Inc.
+ * Copyright (c) 2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,8 +19,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_UNIXDIALOG_BREAK_H
-#define AP_UNIXDIALOG_BREAK_H
+#pragma once
 
 #include "ap_Dialog_Break.h"
 
@@ -39,17 +40,14 @@ public:
 protected:
 	// private construction functions
 	virtual GtkWidget * _constructWindow(void);
-	void		_populateWindowData(void);
+	void		_populateWindowData(void) const;
 	void 		_storeWindowData(void);
 
-	GtkWidget * _findRadioByID(AP_Dialog_Break::breakType b);
-	AP_Dialog_Break::breakType _getActiveRadioItem(void);
+	GtkWidget * _findRadioByID(AP_Dialog_Break::breakType b) const;
+	AP_Dialog_Break::breakType _getActiveRadioItem(void) const;
 
 	// pointers to widgets we need to query/set
 	GtkWidget * m_windowMain;
 
-	// group of radio buttons for easy traversal
-	GSList *	m_radioGroup;
+	std::map<AP_Dialog_Break::breakType, GtkWidget*> m_radioGroup;
 };
-
-#endif /* AP_UNIXDIALOG_BREAK_H */
