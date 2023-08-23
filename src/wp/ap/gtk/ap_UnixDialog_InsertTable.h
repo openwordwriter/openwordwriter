@@ -1,5 +1,7 @@
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
+ * Copyright (c) 2023 Hubert Figuière
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,8 +19,7 @@
  * 02110-1301 USA.
  */
 
-#ifndef AP_UNIXDIALOG_INSERTTABLE_H
-#define AP_UNIXDIALOG_INSERTTABLE_H
+#pragma once
 
 #include "ap_Dialog_InsertTable.h"
 
@@ -45,11 +46,9 @@ protected:
 	// pointers to widgets we need to query/set
 	GtkWidget * m_windowMain;
 
+	GtkWidget* m_autoCol;
+	GtkWidget* m_fixedCol;
 	GtkWidget * m_pColSpin;
 	GtkWidget * m_pRowSpin;
 	GtkWidget * m_pColWidthSpin;
-
-	GSList    * m_radioGroup;
 };
-
-#endif /* AP_UNIXDIALOG_INSERTTABLE_H */

@@ -1,21 +1,21 @@
-/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; -*- */
-
+/* -*- mode: C++; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t; -*- */
 /* AbiWord
  * Copyright (C) 1998 AbiSource, Inc.
- * 
+ * Copyright (c) 2023 Hubert Figuière
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA.
  */
 
@@ -61,13 +61,14 @@ XAP_Dialog * AP_UnixDialog_InsertTable::static_constructor(XAP_DialogFactory * p
 
 AP_UnixDialog_InsertTable::AP_UnixDialog_InsertTable(XAP_DialogFactory * pDlgFactory,
 										             XAP_Dialog_Id id)
-	: AP_Dialog_InsertTable(pDlgFactory,id)
+	: AP_Dialog_InsertTable(pDlgFactory, id)
+	, m_windowMain(nullptr)
+	, m_autoCol(nullptr)
+	, m_fixedCol(nullptr)
+	, m_pColSpin(nullptr)
+	, m_pRowSpin(nullptr)
+	, m_pColWidthSpin(nullptr)
 {
-	m_windowMain = nullptr;
-	m_pColSpin = nullptr;
-	m_pRowSpin = nullptr;
-	m_pColWidthSpin = nullptr;
-	m_radioGroup = nullptr;
 }
 
 AP_UnixDialog_InsertTable::~AP_UnixDialog_InsertTable(void)
@@ -112,7 +113,6 @@ GtkWidget * AP_UnixDialog_InsertTable::_constructWindow(void)
 	window = GTK_WIDGET(gtk_builder_get_object(builder, "ap_UnixDialog_InsertTable"));
     GtkWidget * widget = GTK_WIDGET(gtk_builder_get_object(builder, "rbAutoColSize"));
     UT_ASSERT(widget); // it shouldn't happen if things are propoerly installed.
-	m_radioGroup = gtk_radio_button_get_group (GTK_RADIO_BUTTON (widget));
 	m_pColSpin = GTK_WIDGET(gtk_builder_get_object(builder, "sbNumCols"));
 	m_pRowSpin = GTK_WIDGET(gtk_builder_get_object(builder, "sbNumRows"));
 	m_pColWidthSpin = GTK_WIDGET(gtk_builder_get_object(builder, "sbColSize"));
@@ -143,12 +143,13 @@ GtkWidget * AP_UnixDialog_InsertTable::_constructWindow(void)
 	localizeLabel(GTK_WIDGET(gtk_builder_get_object(builder, "lbNumRows")), pSS, AP_STRING_ID_DLG_InsertTable_NumRows);
 	
 	localizeLabelMarkup(GTK_WIDGET(gtk_builder_get_object(builder, "lbAutoFit")), pSS, AP_STRING_ID_DLG_InsertTable_AutoFit);
-	
-	localizeButton(GTK_WIDGET(gtk_builder_get_object(builder, "rbAutoColSize")), pSS, AP_STRING_ID_DLG_InsertTable_AutoColSize);
-	g_object_set_data (G_OBJECT (GTK_WIDGET(gtk_builder_get_object(builder, "rbAutoColSize"))), WIDGET_ID_TAG_KEY, GINT_TO_POINTER(b_AUTOSIZE));	
-	
-	localizeButton(GTK_WIDGET(gtk_builder_get_object(builder, "rbFixedColSize")), pSS, AP_STRING_ID_DLG_InsertTable_FixedColSize);
-	g_object_set_data (G_OBJECT (GTK_WIDGET(gtk_builder_get_object(builder, "rbFixedColSize"))), WIDGET_ID_TAG_KEY, GINT_TO_POINTER(b_FIXEDSIZE));
+
+	m_autoCol = GTK_WIDGET(gtk_builder_get_object(builder, "rbAutoColSize"));
+	localizeButton(m_autoCol, pSS, AP_STRING_ID_DLG_InsertTable_AutoColSize);
+
+	m_fixedCol = GTK_WIDGET(gtk_builder_get_object(builder, "rbFixedColSize"));
+	localizeButton(m_fixedCol, pSS, AP_STRING_ID_DLG_InsertTable_FixedColSize);
+
 	localizeButtonUnderline(GTK_WIDGET(gtk_builder_get_object(builder, "btInsert")), pSS, AP_STRING_ID_DLG_InsertButton);
 
 	g_object_unref(G_OBJECT(builder));
@@ -172,17 +173,9 @@ void AP_UnixDialog_InsertTable::_storeWindowData(void)
 
 AP_Dialog_InsertTable::columnType AP_UnixDialog_InsertTable::_getActiveRadioItem(void)
 {
-	UT_ASSERT(m_radioGroup);
-	for (GSList * item = m_radioGroup ; item ; item = item->next)
-	{
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(item->data)))
-		{
-			return (AP_Dialog_InsertTable::columnType)
-				GPOINTER_TO_INT(g_object_get_data(G_OBJECT(item->data), WIDGET_ID_TAG_KEY));
-		}
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(m_fixedCol))) {
+		return AP_Dialog_InsertTable::b_FIXEDSIZE;
 	}
-
-	UT_ASSERT(UT_SHOULD_NOT_HAPPEN);
 
 	return AP_Dialog_InsertTable::b_AUTOSIZE;
 }
