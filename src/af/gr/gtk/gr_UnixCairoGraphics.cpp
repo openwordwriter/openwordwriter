@@ -218,20 +218,14 @@ GR_Font * GR_UnixCairoGraphics::getGUIFont(void)
 {
 	if (!m_pPFontGUI)
 	{
-		// get the font resource
-		GtkStyleContext *tempCtxt = gtk_style_context_new();
-		GtkWidgetPath *path = gtk_widget_path_new();
-		gtk_widget_path_append_type (path, GTK_TYPE_WINDOW);
-		gtk_style_context_set_path(tempCtxt, path);
-		gtk_widget_path_free(path);
-		PangoFontDescription* fontDesc;
-		gtk_style_context_get(tempCtxt, GTK_STATE_FLAG_NORMAL, "font", &fontDesc, nullptr);
+		PangoContext* context = gtk_widget_get_pango_context(m_Widget);
+		const PangoFontDescription* fontDesc = pango_context_get_font_description(context);
 		const char *guiFontName = pango_font_description_get_family(fontDesc);
 
 		if (!guiFontName)
 			guiFontName = "'Times New Roman'";
 
-		UT_UTF8String s = XAP_EncodingManager::get_instance()->getLanguageISOName();
+		std::string s = XAP_EncodingManager::get_instance()->getLanguageISOName();
 
 		const char * pCountry
 			= XAP_EncodingManager::get_instance()->getLanguageISOTerritory();
@@ -242,11 +236,7 @@ GR_Font * GR_UnixCairoGraphics::getGUIFont(void)
 			s += pCountry;
 		}
 
-		m_pPFontGUI = new GR_PangoFont(guiFontName, 11.0, this, s.utf8_str(), true);
-
-		pango_font_description_free(fontDesc);
-		g_object_unref(G_OBJECT(tempCtxt));
-
+		m_pPFontGUI = new GR_PangoFont(guiFontName, 11.0, this, s.c_str(), true);
 		UT_ASSERT(m_pPFontGUI);
 	}
 
