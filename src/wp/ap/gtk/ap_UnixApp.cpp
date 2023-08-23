@@ -1194,12 +1194,8 @@ GR_Graphics * AP_UnixApp::newDefaultScreenGraphics() const
 }
 
 #ifdef WITH_CHAMPLAIN
-ABI_W_NO_DEPRECATED
-#include <champlain-gtk/champlain-gtk.h>
-ABI_W_POP
 #include <clutter-gtk/clutter-gtk.h>
 #endif
-
 /**
  * activate signale callback for the GApplication
  */
