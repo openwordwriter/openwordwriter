@@ -429,6 +429,7 @@ static gboolean
 popup_grab_on_window (GdkWindow *window,
 					  guint32    activate_time)
 {
+#if !GTK_CHECK_VERSION(3,20,0)
 	GdkEventMask emask = static_cast<GdkEventMask>(GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK |
 												   GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK |
 												   GDK_ENTER_NOTIFY_MASK) ;
@@ -446,6 +447,11 @@ popup_grab_on_window (GdkWindow *window,
 	}
 
 	return FALSE;
+#else
+	GdkSeat *seat = gdk_display_get_default_seat(gdk_window_get_display(window));
+    return gdk_seat_grab(seat, window, GDK_SEAT_CAPABILITY_ALL,
+                         FALSE, nullptr, nullptr, nullptr, nullptr) == GDK_GRAB_SUCCESS;
+#endif
 }
 
 static void
