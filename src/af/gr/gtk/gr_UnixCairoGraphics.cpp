@@ -163,6 +163,7 @@ void GR_UnixCairoGraphics::init3dColors(GtkWidget* /*w*/)
 	if (m_styleBg) {
 		g_object_unref(m_styleBg);
 	}
+	g_type_ensure(GTK_TYPE_BUTTON);
 	m_styleBg = XAP_GtkStyle_get_style(nullptr, "GtkButton"); // "button"
 	// guess colours
 	// WHITE
@@ -180,6 +181,7 @@ void GR_UnixCairoGraphics::init3dColors(GtkWidget* /*w*/)
 	if (m_styleHighlight) {
 		g_object_unref(m_styleHighlight);
 	}
+	g_type_ensure(GTK_TYPE_TREE_VIEW);
 	m_styleHighlight = XAP_GtkStyle_get_style(nullptr, "GtkTreeView.view"); // "textview.view"
 	gtk_style_context_get_color (m_styleHighlight, GTK_STATE_FLAG_NORMAL, &rgba1);
 	m_3dColors[CLR3D_Highlight] = _convertGdkRGBA(rgba1);
@@ -204,6 +206,7 @@ void GR_UnixCairoGraphics::init3dColors(GtkWidget* /*w*/)
 	m_3dColors[CLR3D_BevelDown]  = _convertGdkRGBA(rgba_);
 
 
+	g_type_ensure(GTK_TYPE_LABEL);
 	GtkStyleContext *text_style = XAP_GtkStyle_get_style(nullptr, "GtkLabel.view"); // "label.view"
 	gtk_style_context_get_color (text_style, GTK_STATE_FLAG_NORMAL, &rgba2);
 	m_3dColors[CLR3D_Foreground]	= _convertGdkRGBA(rgba2);

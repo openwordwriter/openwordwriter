@@ -569,6 +569,7 @@ abi_table_init (AbiTable* table, gpointer)
 {
 	char* text = g_strdup_printf("%d x %d ", init_rows, init_cols);
 
+	g_type_ensure(GTK_TYPE_TREE_VIEW);
 	table->style_context = XAP_GtkStyle_get_style(nullptr, "GtkTreeView.view"); // "textview.view"
 
 	table->button_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
