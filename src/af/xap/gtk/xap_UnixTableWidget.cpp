@@ -100,7 +100,7 @@ cells_to_pixels(guint cols, guint rows, guint* w, guint* h)
 {
 	UT_return_if_fail(w);
 	UT_return_if_fail(h);
-	
+
 	*w = cell_width * cols + cell_spacing * (cols + 1);
 	*h = cell_height * rows + cell_spacing * (rows + 1);
 }
@@ -110,7 +110,7 @@ pixels_to_cells(guint w, guint h, guint* cols, guint* rows)
 {
 	UT_return_if_fail(cols);
 	UT_return_if_fail(rows);
-	
+
 	*cols = w / (cell_width + cell_spacing) + 1;
 	*rows = h / (cell_height + cell_spacing) + 1;
 }
@@ -317,11 +317,20 @@ on_motion_notify_event (GtkWidget *window, GdkEventMotion *ev, gpointer user_dat
 	AbiTable* table = static_cast<AbiTable*>(user_data);
 	guint selected_cols;
 	guint selected_rows;
+	double x = ev->x;
+	double y = ev->y;
 
-	if (ev->x < 0 || ev->y < 0)
+
+#if GTK_CHECK_VERSION(3, 0, 0)
+	// In Gtk3, the coordinate of the motion event are relative to the top-level
+	x -= table->pos_x;
+	y -= table->pos_y;
+#endif
+
+	if (x < 0 || y < 0)
 		return TRUE;
-	
-	pixels_to_cells(static_cast<guint>(ev->x), static_cast<guint>(ev->y), &selected_cols, &selected_rows);
+
+	pixels_to_cells(static_cast<guint>(x), static_cast<guint>(y), &selected_cols, &selected_rows);
 
 	if ((selected_cols != table->selected_cols) || (selected_rows != table->selected_rows))
 	{
@@ -459,8 +468,9 @@ on_pressed(GtkButton* button, gpointer user_data)
 	gtk_window_set_transient_for(table->window, GTK_WINDOW(toplevel));
 	gdk_window_get_origin (gtk_widget_get_window(GTK_WIDGET(table)), &left, &top);
 	gtk_widget_get_allocation(GTK_WIDGET(table), &alloc);
-	gtk_window_move(table->window,
-	                left + alloc.x,	top + alloc.y + alloc.height);
+	table->pos_x = left + alloc.x;
+	table->pos_y = top + alloc.y + alloc.height;
+	gtk_window_move(table->window, table->pos_x, table->pos_y);
 	abi_table_resize(table);
 
 	gtk_widget_show(GTK_WIDGET(table->window));
@@ -727,6 +737,8 @@ abi_table_init (AbiTable* table)
 
 	gtk_widget_show_all(GTK_WIDGET(table->window_vbox));
 
+	table->pos_x = 0;
+	table->pos_y = 0;
 	table->selected_rows = init_rows;
 	table->selected_cols = init_cols;
 

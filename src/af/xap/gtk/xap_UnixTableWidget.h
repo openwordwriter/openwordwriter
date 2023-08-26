@@ -59,6 +59,8 @@ typedef struct _AbiTable
 	GtkStyleContext* style_context;
 #endif
 
+	gint pos_x;
+	gint pos_y;
 	guint selected_rows;
 	guint selected_cols;
 
