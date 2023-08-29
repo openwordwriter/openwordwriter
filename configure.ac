@@ -820,6 +820,9 @@ AM_CONDITIONAL([TOOLKIT_GTK], test "$TOOLKIT" = "gtk")
 AM_CONDITIONAL([TOOLKIT_QT], test "$TOOLKIT" = "qt")
 AM_CONDITIONAL([TOOLKIT_WIN], test "$TOOLKIT" = "win")
 
+AM_CONDITIONAL([PLATFORM_UNIX], test "$PLATFORM" = "unix")
+AM_CONDITIONAL([PLATFORM_WIN], test "$PLATFORM" = "win")
+
 if test "$enable_shared" = ""; then
 	enable_shared="no"
 fi
@@ -1134,67 +1137,22 @@ AC_CONFIG_FILES([libabiword.pc
   src/Makefile
   src/af/Makefile
   src/af/ev/Makefile
-  src/af/ev/cocoa/Makefile
-  src/af/ev/gtk/Makefile
-  src/af/ev/qt/Makefile
-  src/af/ev/win/bmp/Makefile
-  src/af/ev/win/Makefile
-  src/af/ev/xp/Makefile
   src/af/gr/Makefile
-  src/af/gr/cocoa/Makefile
-  src/af/gr/gtk/Makefile
-  src/af/gr/qt/Makefile
-  src/af/gr/win/Makefile
-  src/af/gr/xp/Makefile
   src/af/tf/Makefile
   src/af/util/Makefile
-  src/af/util/unix/Makefile
-  src/af/util/win/Makefile
-  src/af/util/xp/Makefile
-  src/af/util/xp/t/Makefile
   src/af/xap/Makefile
-  src/af/xap/cocoa/Makefile
-  src/af/xap/gtk/Makefile
-  src/af/xap/gtk/t/Makefile
-  src/af/xap/qt/Makefile
-  src/af/xap/win/Makefile
-  src/af/xap/xp/Makefile
-  src/af/xap/xp/t/Makefile
   src/gi-overrides/Makefile
   src/plugins/Makefile
   src/text/Makefile
-  src/text/fmt/Makefile
-  src/text/fmt/gtk/Makefile
-  src/text/fmt/xp/Makefile
-  src/text/fmt/xp/t/Makefile
-  src/text/ptbl/Makefile
-  src/text/ptbl/xp/Makefile
-  src/text/ptbl/xp/t/Makefile
   src/wp/Makefile
   src/wp/ap/Makefile
-  src/wp/ap/cocoa/Makefile
-  src/wp/ap/gtk/Makefile
-  src/wp/ap/qt/Makefile
-  src/wp/ap/win/Makefile
-  src/wp/ap/xp/Makefile
-  src/wp/ap/xp/ToolbarIcons/Makefile
   src/wp/impexp/Makefile
-  src/wp/impexp/cocoa/Makefile
-  src/wp/impexp/gtk/Makefile
-  src/wp/impexp/qt/Makefile
-  src/wp/impexp/win/Makefile
-  src/wp/impexp/xp/Makefile
   src/wp/test/Makefile
-  src/wp/test/cocoa/Makefile
-  src/wp/test/unix/Makefile
   src/wp/test/unix/testwrap.sh
-  src/wp/test/win/Makefile
   src/wp/test/win/testwrap.sh
   src/wp/test/xp/Makefile
   src/wp/main/Makefile
-  src/wp/main/cocoa/Makefile
   src/wp/main/cocoa/bundle/Info.plist
-  src/wp/main/win/Makefile
   user/Makefile
   user/wp/Makefile
   user/wp/clipart/Makefile

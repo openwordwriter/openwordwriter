@@ -74,26 +74,16 @@ endif
 
 libabiword_@ABIWORD_SERIES@_la_LIBADD = \
 	plugins/libplugins.la \
-	text/fmt/xp/libxp.la \
-	text/ptbl/xp/libxp.la \
-	wp/ap/$(TOOLKIT)/lib$(TOOLKIT).la \
-	wp/ap/xp/libxp.la \
-	wp/impexp/xp/libxp.la \
-	af/xap/$(TOOLKIT)/lib$(TOOLKIT).la \
-	af/xap/xp/libxp.la \
-	af/gr/$(TOOLKIT)/lib$(TOOLKIT).la \
-	af/gr/xp/libxp.la \
-	af/util/$(PLATFORM)/lib$(PLATFORM).la \
-	af/util/xp/libxp.la \
-	af/ev/$(TOOLKIT)/lib$(TOOLKIT).la \
-	af/ev/xp/libxp.la \
+	text/libtext.la \
+	wp/ap/libap.la \
+	wp/impexp/libimpexp.la \
+	af/xap/libxap.la \
+	af/gr/libgr.la \
+	af/util/libutil.la \
+	af/ev/libev.la \
 	$(opt_libs)
 
 if TOOLKIT_GTK_ALL
-libabiword_@ABIWORD_SERIES@_la_LIBADD += \
-	wp/impexp/gtk/libgtk.la \
-	text/fmt/gtk/libgtk.la
-
 ## Resources compilation
 abi-resources.c: wp/main/gtk/resources.xml
 	$(AM_V_GEN) glib-compile-resources \
@@ -118,9 +108,6 @@ libabiword_@ABIWORD_SERIES@_include_HEADERS = \
 	wp/ap/gtk/abiwidget.h \
 	wp/main/gtk/libabiword.h \
 	af/xap/gtk/xap_UnixTableWidget.h
-else
-libabiword_@ABIWORD_SERIES@_la_LIBADD += \
-	wp/impexp/$(TOOLKIT)/lib$(TOOLKIT).la
 endif
 
 libabiword_@ABIWORD_SERIES@_la_DEPENDENCIES = \
@@ -158,6 +145,12 @@ AbiWord_LDADD = \
 AbiWord_SOURCES = \
 	$(main_cpp)
 
+nobase_resources_DATA = wp/main/cocoa/MainMenu.nib/*.nib
+resources_DATA = wp/main/cocoa/bundle/*.icns \
+	wp/main/cocoa/bundle/*.tif \
+	wp/main/cocoa/bundle/*.png
+contents_DATA = wp/main/cocoa/bundle/Info.plist \
+	wp/main/cocoa/bundle/PkgInfo
 
 else
 # not MacOS
@@ -213,3 +206,9 @@ CLEANFILES += $(gir_DATA) $(typelibs_DATA)
 
 endif # HAVE_INTROSPECTION
 
+EXTRA_DIST = \
+	wp/main/win/AbiWord.exe.x86.MANIFEST \
+	wp/main/win/AbiWord.exe.amd64.MANIFEST \
+	wp/main/win/Win32Main.rc \
+	wp/main/cocoa/MainMenu.nib \
+	wp/main/cocoa/bundle

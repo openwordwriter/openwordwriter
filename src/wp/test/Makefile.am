@@ -1,5 +1,6 @@
 ## AbiSource Applications
 ## Copyright (C) 2001 Sam Tobin-Hochstadt
+## Copyright (C) 2023 Hubert Figuière
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -16,5 +17,36 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301 USA.
 
-SUBDIRS= xp @PLATFORM@
-DIST_SUBDIRS = cocoa unix win xp
+if PLATFORM_UNIX
+TESTS = unix/testwrap.sh
+
+check_SCRIPTS = testwrap.sh-stamp unix/testwrap.sh
+check_PROGRAMS = AbiWord-test
+
+AbiWord_test_CPPFLAGS = $(WP_CPPFLAGS) \
+	-DABIWORD_DATADIR="\"$(ABIWORD_DATADIR)\"" \
+	-I$(top_srcdir)/src/af/tf/xp/
+
+AbiWord_test_LDFLAGS =  -L$(top_builddir)/src -labiword-@ABIWORD_SERIES@ \
+	-L$(top_builddir)/src/af/tf -labiword-@ABIWORD_SERIES@-test
+
+AbiWord_test_LDADD =  $(DEPS_LIBS)
+
+AbiWord_test_SOURCES = unix/test_main.cpp \
+	unix/all_test_unix.h
+
+testwrap.sh-stamp: unix/testwrap.sh
+	chmod a+x unix/testwrap.sh
+	touch $@
+endif
+
+CLEANFILES = vgcore.* \
+	supp.txt \
+	testwrap.sh-stamp \
+	tf-vgdump
+
+EXTRA_DIST = \
+	xp/main.cpp \
+	xp/all_test.h \
+	win/test_main.cpp \
+	cocoa/test_main.cpp

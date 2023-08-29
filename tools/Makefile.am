@@ -1,3 +1,4 @@
 
 
-DIST_SUBDIRS = cdump
+EXTRA_DIST = \
+	cdump/xp/cdump.pl
