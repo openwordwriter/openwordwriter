@@ -253,8 +253,6 @@ endif
 if TOOLKIT_GTK_ALL
 AM_CPPFLAGS += 						\
 	$(WP_CPPFLAGS) 						\
-	-DPREFIX=\""$(prefix)"\" 				\
-	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
 	-DABIWORD_PLUGINSDIR="\"$(ABIWORD_PLUGINSDIR)"\"	\
 	-DICONDIR="\"$(ABIWORD_ICONDIR)\"" \
         $(CHAMPLAIN_CFLAGS)
@@ -843,8 +841,6 @@ if TOOLKIT_QT
 AM_CPPFLAGS += 						\
 	$(WP_CPPFLAGS) 						\
 	-I$(top_srcdir)/src/wp/ap/xp/ToolbarIcons 		\
-	-DPREFIX=\""$(prefix)"\" 				\
-	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
 	-DABIWORD_PLUGINSDIR="\"$(ABIWORD_PLUGINSDIR)"\"	\
 	-DDATADIR="\"$(datadir)\""
 
