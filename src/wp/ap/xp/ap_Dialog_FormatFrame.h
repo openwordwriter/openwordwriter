@@ -124,9 +124,9 @@ public:
 
 	const UT_RGBColor &		backgroundColor () const { return m_backgroundColor; }
 
-	void					setBorderColor (UT_RGBColor clr);
+	void setBorderColor(const UT_RGBColor& clr);
 
-	void					setBorderColorAll (UT_RGBColor clr);
+	void setBorderColorAll(const UT_RGBColor& clr);
 
 	void					setBorderColorRight  (const UT_RGBColor & rgb);
 	void					setBorderColorLeft   (const UT_RGBColor & rgb);
@@ -153,21 +153,21 @@ public:
 	bool					getTopToggled ()    const { return (m_borderLineStyleTop    ? true : false); }
 	bool					getBottomToggled () const { return (m_borderLineStyleBottom ? true : false); }
 
-	virtual void			setBorderThicknessInGUI (UT_UTF8String & sThick) = 0;
+	virtual void setBorderThicknessInGUI(const std::string& sThick) = 0;
 
-	void					setBorderThickness (const UT_UTF8String & sThick);
+	void setBorderThickness(const std::string& sThick);
 
-	void					setBorderThicknessAll (const UT_UTF8String & sThick);
+	void setBorderThicknessAll(const std::string& sThick);
 
-	void					setBorderThicknessRight  (const UT_UTF8String & sThick);
-	void					setBorderThicknessLeft   (const UT_UTF8String & sThick);
-	void					setBorderThicknessTop    (const UT_UTF8String & sThick);
-	void					setBorderThicknessBottom (const UT_UTF8String & sThick);
+	void setBorderThicknessRight(const std::string& sThick);
+	void setBorderThicknessLeft(const std::string& sThick);
+	void setBorderThicknessTop(const std::string& sThick);
+	void setBorderThicknessBottom(const std::string& sThick);
 
-	const UT_UTF8String &	getBorderThicknessRight ()  const { return m_sBorderThicknessRight;  }
-	const UT_UTF8String &	getBorderThicknessLeft ()   const { return m_sBorderThicknessLeft;   }
-	const UT_UTF8String &	getBorderThicknessTop ()    const { return m_sBorderThicknessTop;    }
-	const UT_UTF8String &	getBorderThicknessBottom () const { return m_sBorderThicknessBottom; }
+	const std::string& getBorderThicknessRight() const { return m_sBorderThicknessRight; }
+	const std::string& getBorderThicknessLeft() const { return m_sBorderThicknessLeft; }
+	const std::string& getBorderThicknessTop() const { return m_sBorderThicknessTop; }
+	const std::string& getBorderThicknessBottom() const { return m_sBorderThicknessBottom; }
 
 	void					setBorderThicknessAll (float thickness); // border line thickness in pt [0.01pt .. 99.99pt]
 
@@ -215,12 +215,12 @@ private:
 	float					m_borderThicknessTop;
 	float					m_borderThicknessBottom;
 
-	UT_UTF8String			m_sBorderThickness;
+	std::string m_sBorderThickness;
 
-	UT_UTF8String			m_sBorderThicknessRight;
-	UT_UTF8String			m_sBorderThicknessLeft;
-	UT_UTF8String			m_sBorderThicknessTop;
-	UT_UTF8String			m_sBorderThicknessBottom;
+	std::string m_sBorderThicknessRight;
+	std::string m_sBorderThicknessLeft;
+	std::string m_sBorderThicknessTop;
+	std::string m_sBorderThicknessBottom;
 
 	UT_Timer *                          m_pAutoUpdaterMC;
 

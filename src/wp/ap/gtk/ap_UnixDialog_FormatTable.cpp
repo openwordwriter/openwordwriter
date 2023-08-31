@@ -25,7 +25,7 @@
 
 #include "ut_locale.h"
 
-#include "ut_string.h"
+#include "ut_std_string.h"
 #include "ut_assert.h"
 #include "ut_debugmsg.h"
 #include "ut_unixColor.h"
@@ -304,14 +304,14 @@ void AP_UnixDialog_FormatTable::event_previewDraw(void)
 	}
 }
 
-void AP_UnixDialog_FormatTable::setBorderThicknessInGUI(UT_UTF8String & sThick)
+void AP_UnixDialog_FormatTable::setBorderThicknessInGUI(const std::string & sThick)
 {
-	guint closest = _findClosestThickness(sThick.utf8_str());
+	guint closest = _findClosestThickness(sThick.c_str());
 	XAP_GtkSignalBlocker b(G_OBJECT(m_wBorderThickness),m_iBorderThicknessConnect);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(m_wBorderThickness), closest);
 }
 
-void AP_UnixDialog_FormatTable::setBackgroundColorInGUI(UT_RGBColor clr)
+void AP_UnixDialog_FormatTable::setBackgroundColorInGUI(const UT_RGBColor& clr)
 {
 	GdkRGBA* color = UT_UnixRGBColorToGdkRGBA(clr);
 	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (m_wBackgroundColorButton), color);
@@ -325,10 +325,10 @@ void AP_UnixDialog_FormatTable::event_BorderThicknessChanged(void)
 		gint history = gtk_combo_box_get_active(GTK_COMBO_BOX(m_wBorderThickness));
 		double thickness = m_dThickness[history];
 
-		UT_UTF8String sThickness;
+		std::string sThickness;
 		{
 			UT_LocaleTransactor t(LC_NUMERIC, "C");
-			sThickness = UT_UTF8String_sprintf("%fin",thickness);
+			sThickness = UT_std_string_sprintf("%fin", thickness);
 		}
 
 		setBorderThickness(sThickness);

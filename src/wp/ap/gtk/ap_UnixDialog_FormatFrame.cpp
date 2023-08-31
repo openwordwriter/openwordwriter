@@ -27,7 +27,7 @@
 
 #include "ut_locale.h"
 
-#include "ut_string.h"
+#include "ut_std_string.h"
 #include "ut_assert.h"
 #include "ut_debugmsg.h"
 #include "ut_unixColor.h"
@@ -321,9 +321,9 @@ void AP_UnixDialog_FormatFrame::event_previewDraw(void)
 		m_pFormatFramePreview->drawImmediate();
 }
 
-void AP_UnixDialog_FormatFrame::setBorderThicknessInGUI(UT_UTF8String & sThick)
+void AP_UnixDialog_FormatFrame::setBorderThicknessInGUI(const std::string & sThick)
 {
-	double thickness = UT_convertToInches(sThick.utf8_str());
+	double thickness = UT_convertToInches(sThick.c_str());
 	guint i =0;
 	guint closest = 0;
 	double dClose = 100000000.;
@@ -349,10 +349,10 @@ void AP_UnixDialog_FormatFrame::event_BorderThicknessChanged(void)
 		gint history = gtk_combo_box_get_active(GTK_COMBO_BOX(m_wBorderThickness));
 		double thickness = m_dThickness[history];
 
-		UT_UTF8String sThickness;
+		std::string sThickness;
 		{
 			UT_LocaleTransactor t(LC_NUMERIC, "C");
-			sThickness = UT_UTF8String_sprintf("%fin",thickness);
+			sThickness = UT_std_string_sprintf("%fin", thickness);
 		}
 
 		setBorderThicknessAll(sThickness);

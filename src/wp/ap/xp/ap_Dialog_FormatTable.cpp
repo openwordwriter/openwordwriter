@@ -505,22 +505,22 @@ void AP_Dialog_FormatTable::toggleLineType(toggle_button btn, bool enabled)
 		case toggle_left:
 			PP_addOrSetAttribute("left-style", sTmp, m_vecProps);
 			PP_addOrSetAttribute("left-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("left-thickness", m_sBorderThickness.utf8_str(), m_vecProps);
+			PP_addOrSetAttribute("left-thickness", m_sBorderThickness, m_vecProps);
 			break;
 		case toggle_right:
 			PP_addOrSetAttribute("right-style", sTmp, m_vecProps);
 			PP_addOrSetAttribute("right-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("right-thickness", m_sBorderThickness.utf8_str(), m_vecProps);
+			PP_addOrSetAttribute("right-thickness", m_sBorderThickness, m_vecProps);
 			break;
 		case toggle_top:
 			PP_addOrSetAttribute("top-style", sTmp, m_vecProps);
 			PP_addOrSetAttribute("top-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("top-thickness", m_sBorderThickness.utf8_str(), m_vecProps);
+			PP_addOrSetAttribute("top-thickness", m_sBorderThickness, m_vecProps);
 			break;
 		case toggle_bottom:
 			PP_addOrSetAttribute("bot-style", sTmp, m_vecProps);
 			PP_addOrSetAttribute("bot-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("bot-thickness", m_sBorderThickness.utf8_str(), m_vecProps);
+			PP_addOrSetAttribute("bot-thickness", m_sBorderThickness, m_vecProps);
 			break;
 	}
 
@@ -528,16 +528,16 @@ void AP_Dialog_FormatTable::toggleLineType(toggle_button btn, bool enabled)
 	m_bSettingsChanged = true;
 }
 
-void AP_Dialog_FormatTable::setBorderThickness(const UT_UTF8String & sThick)
+void AP_Dialog_FormatTable::setBorderThickness(const std::string& sThick)
 {
 	m_sBorderThickness = sThick;
 	if(m_borderToggled) {
 		return;
 	}
-	PP_addOrSetAttribute("left-thickness", m_sBorderThickness.utf8_str(), m_vecProps);
-	PP_addOrSetAttribute("right-thickness",m_sBorderThickness.utf8_str(), m_vecProps);
-	PP_addOrSetAttribute("top-thickness",m_sBorderThickness.utf8_str(), m_vecProps);
-	PP_addOrSetAttribute("bot-thickness",m_sBorderThickness.utf8_str(), m_vecProps);
+	PP_addOrSetAttribute("left-thickness", m_sBorderThickness, m_vecProps);
+	PP_addOrSetAttribute("right-thickness", m_sBorderThickness, m_vecProps);
+	PP_addOrSetAttribute("top-thickness", m_sBorderThickness, m_vecProps);
+	PP_addOrSetAttribute("bot-thickness", m_sBorderThickness, m_vecProps);
 
 	m_bSettingsChanged = true;
 

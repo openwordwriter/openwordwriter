@@ -330,14 +330,14 @@ void AP_Win32Dialog_FormatTable::event_previewExposed(void)
 		m_pFormatTablePreview->draw();
 }
 
-void AP_Win32Dialog_FormatTable::setBackgroundColorInGUI(UT_RGBColor clr)
+void AP_Win32Dialog_FormatTable::setBackgroundColorInGUI(const UT_RGBColor& clr)
 {
 	m_backgButton.setColour(RGB(clr.m_red,clr.m_grn,clr.m_blu));
 	/* force redraw */
 	InvalidateRect(GetDlgItem(m_hDlg, AP_RID_DIALOG_FORMATTABLE_BTN_BACKCOLOR), nullptr, FALSE);
 }
 
-void AP_Win32Dialog_FormatTable::setBorderThicknessInGUI(UT_UTF8String & /*sThick*/)
+void AP_Win32Dialog_FormatTable::setBorderThicknessInGUI(const std::string & /*sThick*/)
 {
 	UT_ASSERT_HARMLESS(UT_NOT_IMPLEMENTED);
 }

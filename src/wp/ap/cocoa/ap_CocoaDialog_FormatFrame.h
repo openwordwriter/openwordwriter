@@ -48,7 +48,7 @@ public:
 	virtual void			event_Close(void);
 	void					event_ApplyToChanged(void);
 	void event_previewInvalidate(void);
-	virtual void setBorderThicknessInGUI(UT_UTF8String & sThick) override;
+	virtual void setBorderThicknessInGUI(const std::string & sThick) override;
 	virtual void setSensitivity(bool bSens) override;
 	virtual void destroy(void) override;
 	virtual void activate(void) override;

@@ -583,7 +583,7 @@ void AP_Dialog_FormatFrame::setCurFrameProps(void)
 		m_borderColorBottom.setColor(style.c_str());
 	}
 
-	UT_UTF8String thickness;
+	std::string thickness;
 
 	style = PP_getAttribute("right-thickness", m_vecProps);
 	if (!style.empty()) {
@@ -759,7 +759,7 @@ void AP_Dialog_FormatFrame::toggleLineType(toggle_button btn, bool enabled)
 			setBorderThicknessLeft(m_sBorderThickness);
 			PP_addOrSetAttribute("left-style", sTmp, m_vecProps);
 			PP_addOrSetAttribute("left-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("left-thickness",m_sBorderThickness.utf8_str(), m_vecProps);
+			PP_addOrSetAttribute("left-thickness", m_sBorderThickness, m_vecProps);
 		}
 		break;
 
@@ -770,7 +770,7 @@ void AP_Dialog_FormatFrame::toggleLineType(toggle_button btn, bool enabled)
 			setBorderThicknessRight(m_sBorderThickness);
 			PP_addOrSetAttribute("right-style", sTmp, m_vecProps);
 			PP_addOrSetAttribute("right-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("right-thickness", m_sBorderThickness.utf8_str(), m_vecProps);
+			PP_addOrSetAttribute("right-thickness", m_sBorderThickness, m_vecProps);
 		}
 		break;
 
@@ -781,7 +781,7 @@ void AP_Dialog_FormatFrame::toggleLineType(toggle_button btn, bool enabled)
 			setBorderThicknessTop(m_sBorderThickness);
 			PP_addOrSetAttribute("top-style", sTmp, m_vecProps);
 			PP_addOrSetAttribute("top-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("top-thickness",m_sBorderThickness.utf8_str(), m_vecProps);
+			PP_addOrSetAttribute("top-thickness", m_sBorderThickness, m_vecProps);
 		}
 		break;
 
@@ -792,7 +792,7 @@ void AP_Dialog_FormatFrame::toggleLineType(toggle_button btn, bool enabled)
 			setBorderThicknessBottom(m_sBorderThickness);
 			PP_addOrSetAttribute("bot-style", sTmp, m_vecProps);
 			PP_addOrSetAttribute("bot-color", cTmp, m_vecProps);
-			PP_addOrSetAttribute("bot-thickness",m_sBorderThickness.utf8_str(), m_vecProps);
+			PP_addOrSetAttribute("bot-thickness", m_sBorderThickness, m_vecProps);
 		}
 		break;
 
@@ -840,14 +840,14 @@ void AP_Dialog_FormatFrame::setBorderLineStyleBottom (UT_sint32 linestyle)
 	m_bSettingsChanged = true;
 }
 
-void AP_Dialog_FormatFrame::setBorderThickness(const UT_UTF8String & sThick)
+void AP_Dialog_FormatFrame::setBorderThickness(const std::string & sThick)
 {
 	m_sBorderThickness = sThick;
 
 	m_bSettingsChanged = true;
 }
 
-void AP_Dialog_FormatFrame::setBorderThicknessAll(const UT_UTF8String & sThick)
+void AP_Dialog_FormatFrame::setBorderThicknessAll(const std::string & sThick)
 {
 	setBorderThicknessRight(sThick);
 	setBorderThicknessLeft(sThick);
@@ -857,9 +857,9 @@ void AP_Dialog_FormatFrame::setBorderThicknessAll(const UT_UTF8String & sThick)
 	m_bSettingsChanged = true;
 }
 
-static UT_UTF8String s_canonical_thickness (float thickness)
+static std::string s_canonical_thickness (float thickness)
 {
-	UT_UTF8String sThick;
+	std::string sThick;
 
 	if (thickness < 0.01) {
 		sThick = "0.01pt";
@@ -869,16 +869,16 @@ static UT_UTF8String s_canonical_thickness (float thickness)
 	}
 	else {
 		UT_LocaleTransactor t(LC_NUMERIC, "C");
-		UT_UTF8String_sprintf(sThick, "%.2fpt", thickness);
+		sThick = UT_std_string_sprintf("%.2fpt", thickness);
 	}
 	return sThick;
 }
 
-static UT_UTF8String s_canonical_thickness (const UT_UTF8String & sThickness, float & thickness)
+static std::string s_canonical_thickness (const std::string & sThickness, float & thickness)
 {
-	thickness = static_cast<float>(UT_convertToPoints(sThickness.utf8_str()));
+	thickness = static_cast<float>(UT_convertToPoints(sThickness.c_str()));
 
-	UT_UTF8String sThick;
+	std::string sThick;
 
 	if (thickness < 0.01) {
 		thickness = 0.01f;
@@ -890,43 +890,43 @@ static UT_UTF8String s_canonical_thickness (const UT_UTF8String & sThickness, fl
 	}
 	else {
 		UT_LocaleTransactor t(LC_NUMERIC, "C");
-		UT_UTF8String_sprintf(sThick, "%.2fpt", thickness);
+		sThick = UT_std_string_sprintf("%.2fpt", thickness);
 	}
 	return sThick;
 }
 
-void AP_Dialog_FormatFrame::setBorderThicknessRight (const UT_UTF8String & sThick)
+void AP_Dialog_FormatFrame::setBorderThicknessRight (const std::string & sThick)
 {
 	m_sBorderThicknessRight = s_canonical_thickness(sThick, m_borderThicknessRight);
 
-	PP_addOrSetAttribute("right-thickness", m_sBorderThicknessRight.utf8_str(), m_vecProps);
+	PP_addOrSetAttribute("right-thickness", m_sBorderThicknessRight, m_vecProps);
 
 	m_bSettingsChanged = true;
 }
 
-void AP_Dialog_FormatFrame::setBorderThicknessLeft (const UT_UTF8String & sThick)
+void AP_Dialog_FormatFrame::setBorderThicknessLeft (const std::string & sThick)
 {
 	m_sBorderThicknessLeft = s_canonical_thickness(sThick, m_borderThicknessLeft);
 
-	PP_addOrSetAttribute("left-thickness", m_sBorderThicknessLeft.utf8_str(), m_vecProps);
+	PP_addOrSetAttribute("left-thickness", m_sBorderThicknessLeft, m_vecProps);
 
 	m_bSettingsChanged = true;
 }
 
-void AP_Dialog_FormatFrame::setBorderThicknessTop (const UT_UTF8String & sThick)
+void AP_Dialog_FormatFrame::setBorderThicknessTop (const std::string & sThick)
 {
 	m_sBorderThicknessTop = s_canonical_thickness(sThick, m_borderThicknessTop);
 
-	PP_addOrSetAttribute("top-thickness", m_sBorderThicknessTop.utf8_str(), m_vecProps);
+	PP_addOrSetAttribute("top-thickness", m_sBorderThicknessTop, m_vecProps);
 
 	m_bSettingsChanged = true;
 }
 
-void AP_Dialog_FormatFrame::setBorderThicknessBottom (const UT_UTF8String & sThick)
+void AP_Dialog_FormatFrame::setBorderThicknessBottom (const std::string & sThick)
 {
 	m_sBorderThicknessBottom = s_canonical_thickness(sThick, m_borderThicknessBottom);
 
-	PP_addOrSetAttribute("bot-thickness", m_sBorderThicknessBottom.utf8_str(), m_vecProps);
+	PP_addOrSetAttribute("bot-thickness", m_sBorderThicknessBottom, m_vecProps);
 
 	m_bSettingsChanged = true;
 }
@@ -956,7 +956,7 @@ void AP_Dialog_FormatFrame::setBorderThicknessBottom (float thickness)
 	setBorderThicknessBottom(s_canonical_thickness(thickness));
 }
 
-void AP_Dialog_FormatFrame::setBorderColor(UT_RGBColor clr)
+void AP_Dialog_FormatFrame::setBorderColor(const UT_RGBColor& clr)
 {
 	m_borderColor = clr;
 
@@ -967,7 +967,7 @@ void AP_Dialog_FormatFrame::setBorderColor(UT_RGBColor clr)
 	m_bSettingsChanged = true;
 }
 
-void AP_Dialog_FormatFrame::setBorderColorAll(UT_RGBColor clr)
+void AP_Dialog_FormatFrame::setBorderColorAll(const UT_RGBColor& clr)
 {
 	setBorderColorRight(clr);
 	setBorderColorLeft(clr);
@@ -1191,7 +1191,7 @@ void AP_FormatFrame_preview::drawImmediate(const UT_Rect* clip)
 
 		m_gc->setColor(m_pFormatFrame->borderColorRight());
 
-		UT_sint32 iRightThickness = UT_convertToLogicalUnits(m_pFormatFrame->getBorderThicknessRight().utf8_str());
+		UT_sint32 iRightThickness = UT_convertToLogicalUnits(m_pFormatFrame->getBorderThicknessRight().c_str());
 		m_gc->setLineWidth(iRightThickness);
 
 		painter.drawLine(pageRect.left + pageRect.width - border, pageRect.top + border,
@@ -1211,7 +1211,7 @@ void AP_FormatFrame_preview::drawImmediate(const UT_Rect* clip)
 
 		m_gc->setColor(m_pFormatFrame->borderColorLeft());
 
-		UT_sint32 iLeftThickness = UT_convertToLogicalUnits(m_pFormatFrame->getBorderThicknessLeft().utf8_str());
+		UT_sint32 iLeftThickness = UT_convertToLogicalUnits(m_pFormatFrame->getBorderThicknessLeft().c_str());
 		m_gc->setLineWidth(iLeftThickness);
 
 		painter.drawLine(pageRect.left + border, pageRect.top + border,
@@ -1229,8 +1229,8 @@ void AP_FormatFrame_preview::drawImmediate(const UT_Rect* clip)
 		else
 			m_gc->setLineProperties(1, GR_Graphics::JOIN_MITER, GR_Graphics::CAP_BUTT, GR_Graphics::LINE_SOLID);
 
-		m_gc->setColor(m_pFormatFrame->borderColorTop());		
-		UT_sint32 iTopThickness = UT_convertToLogicalUnits(m_pFormatFrame->getBorderThicknessTop().utf8_str());
+		m_gc->setColor(m_pFormatFrame->borderColorTop());
+		UT_sint32 iTopThickness = UT_convertToLogicalUnits(m_pFormatFrame->getBorderThicknessTop().c_str());
 		m_gc->setLineWidth(iTopThickness);
 
 		painter.drawLine(pageRect.left + border, pageRect.top + border,
@@ -1250,7 +1250,7 @@ void AP_FormatFrame_preview::drawImmediate(const UT_Rect* clip)
 
 		m_gc->setColor(m_pFormatFrame->borderColorBottom());
 
-		UT_sint32 iBottomThickness = UT_convertToLogicalUnits(m_pFormatFrame->getBorderThicknessBottom().utf8_str());
+		UT_sint32 iBottomThickness = UT_convertToLogicalUnits(m_pFormatFrame->getBorderThicknessBottom().c_str());
 		m_gc->setLineWidth(iBottomThickness);
 
 		painter.drawLine(pageRect.left + border, pageRect.top + pageRect.height - border,

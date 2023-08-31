@@ -21,6 +21,7 @@
 #include <stdlib.h>
 
 #include "ut_string.h"
+#include "ut_std_string.h"
 #include "ut_assert.h"
 #include "ut_debugmsg.h"
 #include "ut_locale.h"
@@ -102,15 +103,15 @@ void AP_CocoaDialog_FormatTable::setSensitivity(bool bSens)
 	[m_dlg setSensitivity:bSens];
 }
 
-void AP_CocoaDialog_FormatTable::setBackgroundColorInGUI(UT_RGBColor clr)
+void AP_CocoaDialog_FormatTable::setBackgroundColorInGUI(const UT_RGBColor& clr)
 {
 	NSColor *color = GR_CocoaGraphics::_utRGBColorToNSColor(clr);
 	[m_dlg->_bgColorWell setColor:color];
 }
 
-void AP_CocoaDialog_FormatTable::setBorderThicknessInGUI(UT_UTF8String & sThick)
+void AP_CocoaDialog_FormatTable::setBorderThicknessInGUI(const std::string& sThick)
 {
-	guint closest = _findClosestThickness(sThick.utf8_str());
+	guint closest = _findClosestThickness(sThick.c_str());
 	[m_dlg->_thicknessPopup selectItemAtIndex:closest];
 }
 
@@ -158,10 +159,10 @@ void AP_CocoaDialog_FormatTable::event_BorderThicknessChanged(NSPopUpButton *ctr
 		NSInteger idx = [ctrl indexOfSelectedItem];
 		double thickness = m_dThickness[idx];
 
-		UT_UTF8String sThickness;
+		std::string sThickness;
 		{
 			UT_LocaleTransactor t(LC_NUMERIC, "C");
-			sThickness = UT_UTF8String_sprintf("%fin",thickness);
+			sThickness = UT_std_string_sprintf("%fin", thickness);
 		}
 
 		setBorderThickness(sThickness);

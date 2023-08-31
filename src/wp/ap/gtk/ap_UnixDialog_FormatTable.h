@@ -47,8 +47,8 @@ public:
 	void event_previewDraw(void);
 	void					event_ApplyToChanged(void);
 	void                    event_BorderThicknessChanged(void);
-	virtual void  setBorderThicknessInGUI(UT_UTF8String & sThick) override;
-	virtual void  setBackgroundColorInGUI(UT_RGBColor clr) override;
+	virtual void  setBorderThicknessInGUI(const std::string& sThick) override;
+	virtual void  setBackgroundColorInGUI(const UT_RGBColor& clr) override;
 	virtual void  setSensitivity(bool bsens) override;
 	virtual void  destroy(void) override;
 	virtual void  activate(void) override;

@@ -46,8 +46,8 @@ public:
 	void event_previewInvalidate(void);
 	void                    event_BorderThicknessChanged(NSPopUpButton *ctrl);
 	virtual void setSensitivity(bool bSens) override;
-	virtual void setBackgroundColorInGUI(UT_RGBColor clr) override;
-	virtual void setBorderThicknessInGUI(UT_UTF8String & sThick) override;
+	virtual void setBackgroundColorInGUI(const UT_RGBColor& clr) override;
+	virtual void setBorderThicknessInGUI(const std::string & sThick) override;
 	virtual void destroy(void) override;
 	virtual void activate(void) override;
 	virtual void notifyActiveFrame(XAP_Frame * pFrame) override;

@@ -45,7 +45,7 @@ public:
 	virtual void            	destroy(void);
 	virtual void            	activate(void);
 	virtual void            	notifyActiveFrame(XAP_Frame * pFrame);
-	virtual void                setBorderThicknessInGUI(UT_UTF8String & /*sThick*/) { UT_ASSERT_HARMLESS(UT_NOT_IMPLEMENTED); };
+	virtual void                setBorderThicknessInGUI(const std::string & /*sThick*/) override { UT_ASSERT_HARMLESS(UT_NOT_IMPLEMENTED); };
 	virtual void *				pGetWindowHandle( void ) {  return (void *) m_hDlg; }
 
 	virtual BOOL			_onInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam);

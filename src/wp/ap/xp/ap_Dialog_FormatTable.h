@@ -101,10 +101,10 @@ public:
 	void								applyChanges(void);
 	void                                toggleLineType(toggle_button btn, bool enabled);
 	void								setBorderColor(const UT_RGBColor & clr);
-	void								setBackgroundColor(const UT_RGBColor & clr);
-	virtual void						setBackgroundColorInGUI(UT_RGBColor clr) = 0;
-	void                                setBorderThickness(const UT_UTF8String & sThick);
-	virtual void                        setBorderThicknessInGUI(UT_UTF8String & sThick) = 0;
+	void setBackgroundColor(const UT_RGBColor & clr);
+	virtual void setBackgroundColorInGUI(const UT_RGBColor& clr) = 0;
+	void setBorderThickness(const std::string & sThick);
+	virtual void setBorderThicknessInGUI(const std::string & sThick) = 0;
 	void                                clearImage(void);
 	void                                askForGraphicPathName(void);
 	void                                ShowErrorBox(UT_String & sFile, UT_Error errorCode);
@@ -126,7 +126,7 @@ public:
 	UT_sint32							m_lineStyle;
 	gchar *							m_bgFillStyle;
 	PP_PropertyVector                   m_vecProps;
-	UT_UTF8String                       m_sBorderThickness;
+	std::string m_sBorderThickness;
 protected:
 	guint                               _findClosestThickness(const char *) const;
 	AP_Dialog_FormatTable::tAnswer		m_answer;

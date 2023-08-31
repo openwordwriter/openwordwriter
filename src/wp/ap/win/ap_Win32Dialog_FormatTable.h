@@ -41,8 +41,8 @@ public:
 
 	virtual void			event_Close(void);
 	void					event_previewExposed(void);
-	virtual void			setBackgroundColorInGUI(UT_RGBColor clr);
-	virtual void            setBorderThicknessInGUI(UT_UTF8String & sThick);
+	virtual void		setBackgroundColorInGUI(const UT_RGBColor& clr) override;
+	virtual void            setBorderThicknessInGUI(const std::string & sThick) override;
 	virtual void            setSensitivity(bool bsens);
 	virtual void            destroy(void);
 	virtual void            activate(void);

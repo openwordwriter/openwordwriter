@@ -107,7 +107,7 @@ void AP_CocoaDialog_FormatFrame::setSensitivity(bool bSens)
 	[m_dlg setSensitivity:bSens];
 }
 
-void AP_CocoaDialog_FormatFrame::setBorderThicknessInGUI(UT_UTF8String & /*sThick*/)
+void AP_CocoaDialog_FormatFrame::setBorderThicknessInGUI(const std::string & /*sThick*/)
 {
 	UT_ASSERT_NOT_REACHED();
 }
@@ -217,7 +217,7 @@ void AP_CocoaDialog_FormatFrame::_populateWindowData(void)
 
 		float value;
 
-		thickness = [NSString stringWithUTF8String:(getBorderThicknessRight().utf8_str())];
+		thickness = [NSString stringWithUTF8String:(getBorderThicknessRight().c_str())];
 
 		value = borderThicknessRight();
 
@@ -229,7 +229,7 @@ void AP_CocoaDialog_FormatFrame::_populateWindowData(void)
 
 		bca = borderColorLeft().m_bIsTransparent ? 0.0f : 1.0f;
 
-		thickness = [NSString stringWithUTF8String:(getBorderThicknessLeft().utf8_str())];
+		thickness = [NSString stringWithUTF8String:(getBorderThicknessLeft().c_str())];
 
 		value = borderThicknessLeft();
 
@@ -241,7 +241,7 @@ void AP_CocoaDialog_FormatFrame::_populateWindowData(void)
 
 		bca = borderColorTop().m_bIsTransparent ? 0.0f : 1.0f;
 
-		thickness = [NSString stringWithUTF8String:(getBorderThicknessTop().utf8_str())];
+		thickness = [NSString stringWithUTF8String:(getBorderThicknessTop().c_str())];
 
 		value = borderThicknessTop();
 
@@ -253,7 +253,7 @@ void AP_CocoaDialog_FormatFrame::_populateWindowData(void)
 
 		bca = borderColorBottom().m_bIsTransparent ? 0.0f : 1.0f;
 
-		thickness = [NSString stringWithUTF8String:(getBorderThicknessBottom().utf8_str())];
+		thickness = [NSString stringWithUTF8String:(getBorderThicknessBottom().c_str())];
 
 		value = borderThicknessBottom();
 
@@ -366,7 +366,7 @@ void AP_CocoaDialog_FormatFrame::_storeWindowData(void)
 	NSStepper * stepper = 0;
 	NSFormCell * field = 0;
 	float thickness = 0;
-	UT_UTF8String sThick;
+	std::string sThick;
 
 	switch ([sender tag])
 		{
@@ -377,7 +377,7 @@ void AP_CocoaDialog_FormatFrame::_storeWindowData(void)
 			_xap->setBorderThicknessRight(sThick);
 			thickness = _xap->borderThicknessRight();
 			[stepper setFloatValue:thickness];
-			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessRight().utf8_str())]];
+			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessRight().c_str())]];
 			break;
 
 		case 2:
@@ -387,7 +387,7 @@ void AP_CocoaDialog_FormatFrame::_storeWindowData(void)
 			_xap->setBorderThicknessBottom(sThick);
 			thickness = _xap->borderThicknessBottom();
 			[stepper setFloatValue:thickness];
-			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessBottom().utf8_str())]];
+			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessBottom().c_str())]];
 			break;
 
 		case 3:
@@ -397,7 +397,7 @@ void AP_CocoaDialog_FormatFrame::_storeWindowData(void)
 			_xap->setBorderThicknessLeft(sThick);
 			thickness = _xap->borderThicknessLeft();
 			[stepper setFloatValue:thickness];
-			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessLeft().utf8_str())]];
+			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessLeft().c_str())]];
 			break;
 
 		case 4:
@@ -407,7 +407,7 @@ void AP_CocoaDialog_FormatFrame::_storeWindowData(void)
 			_xap->setBorderThicknessTop(sThick);
 			thickness = _xap->borderThicknessTop();
 			[stepper setFloatValue:thickness];
-			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessTop().utf8_str())]];
+			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessTop().c_str())]];
 			break;
 
 		default:
@@ -422,7 +422,7 @@ void AP_CocoaDialog_FormatFrame::_storeWindowData(void)
 
 			thickness = _xap->borderThicknessRight();
 			[stepper setFloatValue:thickness];
-			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessRight().utf8_str())]];
+			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessRight().c_str())]];
 
 			[ _rightBorderNumber setStringValue:[field stringValue]];
 			[  _leftBorderNumber setStringValue:[field stringValue]];
@@ -454,7 +454,7 @@ void AP_CocoaDialog_FormatFrame::_storeWindowData(void)
 			_xap->setBorderThicknessRight(thickness);
 			thickness = _xap->borderThicknessRight();
 			[stepper setFloatValue:thickness];
-			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessRight().utf8_str())]];
+			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessRight().c_str())]];
 			break;
 
 		case 2:
@@ -464,7 +464,7 @@ void AP_CocoaDialog_FormatFrame::_storeWindowData(void)
 			_xap->setBorderThicknessBottom(thickness);
 			thickness = _xap->borderThicknessBottom();
 			[stepper setFloatValue:thickness];
-			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessBottom().utf8_str())]];
+			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessBottom().c_str())]];
 			break;
 
 		case 3:
@@ -474,7 +474,7 @@ void AP_CocoaDialog_FormatFrame::_storeWindowData(void)
 			_xap->setBorderThicknessLeft(thickness);
 			thickness = _xap->borderThicknessLeft();
 			[stepper setFloatValue:thickness];
-			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessLeft().utf8_str())]];
+			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessLeft().c_str())]];
 			break;
 
 		case 4:
@@ -484,7 +484,7 @@ void AP_CocoaDialog_FormatFrame::_storeWindowData(void)
 			_xap->setBorderThicknessTop(thickness);
 			thickness = _xap->borderThicknessTop();
 			[stepper setFloatValue:thickness];
-			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessTop().utf8_str())]];
+			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessTop().c_str())]];
 			break;
 
 		default:
@@ -499,7 +499,7 @@ void AP_CocoaDialog_FormatFrame::_storeWindowData(void)
 
 			thickness = _xap->borderThicknessRight();
 			[stepper setFloatValue:thickness];
-			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessRight().utf8_str())]];
+			[field   setStringValue:[NSString stringWithUTF8String:(_xap->getBorderThicknessRight().c_str())]];
 
 			[ _rightBorderNumber setStringValue:[field stringValue]];
 			[  _leftBorderNumber setStringValue:[field stringValue]];
