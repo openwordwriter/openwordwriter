@@ -836,7 +836,7 @@ public:
 									  UT_sint32 *iRight,UT_sint32 *iTop, UT_sint32 *iBot) const;
 	bool				getCellLineStyle(PT_DocPosition posCell, UT_sint32 * pLeft, UT_sint32 * pRight,
 										 UT_sint32 * pTop, UT_sint32 * pBot) const;
-	bool				setCellFormat(const PP_PropertyVector & properties, FormatTable applyTo, const FG_ConstGraphicPtr & pFG, UT_String & sDataID);
+	bool				setCellFormat(const PP_PropertyVector & properties, FormatTable applyTo, const FG_ConstGraphicPtr & pFG, const std::string& sDataID);
 	bool				getCellProperty(PT_DocPosition pos, const gchar * szPropName, gchar * &szPropValue) const;
 	bool	            setTableFormat(const PP_PropertyVector & properties);
 	bool	            setTableFormat(PT_DocPosition pos,const PP_PropertyVector & properties);

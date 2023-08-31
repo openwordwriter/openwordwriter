@@ -107,7 +107,7 @@ public:
 	virtual void setBorderThicknessInGUI(const std::string & sThick) = 0;
 	void                                clearImage(void);
 	void                                askForGraphicPathName(void);
-	void                                ShowErrorBox(UT_String & sFile, UT_Error errorCode);
+	void showErrorBox(const std::string& sFile, UT_Error errorCode);
 	void								_createPreviewFromGC(GR_Graphics * gc,
 															 UT_uint32 width,
 															 UT_uint32 height);
@@ -154,7 +154,7 @@ private:
 	bool m_bAutoUpdate_happening_now;
 
 	PT_DocPosition                      m_iOldPos;
-	UT_String                           m_sImagePath;
+	std::string                         m_sImagePath;
 	IEGraphicFileType                   m_iGraphicType;
 	GR_Image *                          m_pImage;
 	FG_ConstGraphicPtr                  m_pGraphic;

@@ -231,7 +231,7 @@ void AP_Dialog_FormatTable::askForGraphicPathName(void)
 	errorCode = IE_ImpGraphic::loadGraphic(m_sImagePath.c_str(), m_iGraphicType, pFG);
 	if(errorCode != UT_OK || !pFG)
 	{
-		ShowErrorBox(m_sImagePath, errorCode);
+		showErrorBox(m_sImagePath, errorCode);
 		return;
 	}
 
@@ -243,8 +243,7 @@ void AP_Dialog_FormatTable::askForGraphicPathName(void)
 	UT_return_if_fail(pView && pView->getDocument());
 
 	UT_uint32 uid = pView->getDocument()->getUID(UT_UniqueId::Image); //see Bug 10852
-	m_sImagePath.clear();
-	UT_String_sprintf(m_sImagePath,"%d",uid);
+	m_sImagePath = UT_std_string_sprintf("%d", uid);
 
 	const UT_ConstByteBufPtr & pBB = m_pGraphic->getBuffer();
 	if(m_pGraphic->getType() == FGT_Raster)
@@ -272,7 +271,7 @@ void AP_Dialog_FormatTable::askForGraphicPathName(void)
 
 }
 
-void AP_Dialog_FormatTable::ShowErrorBox(UT_String & sFile, UT_Error errorCode)
+void AP_Dialog_FormatTable::showErrorBox(const std::string& sFile, UT_Error errorCode)
 {
 	XAP_String_Id String_id;
 	XAP_Frame * pFrame = XAP_App::getApp()->getLastFocussedFrame();

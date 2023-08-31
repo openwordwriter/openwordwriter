@@ -8634,7 +8634,7 @@ bool FV_View::getCellLineStyle(PT_DocPosition posCell, UT_sint32 * pLeft, UT_sin
  \param applyTo the range to apply the changes to
  \return True if the operation was succesful, false otherwise
  */
-bool FV_View::setCellFormat(const PP_PropertyVector & properties, FormatTable applyTo, const FG_ConstGraphicPtr & pFG, UT_String & sDataID)
+bool FV_View::setCellFormat(const PP_PropertyVector & properties, FormatTable applyTo, const FG_ConstGraphicPtr & pFG, const std::string & sDataID)
 {
 	bool bRet;
 	setCursorWait();
