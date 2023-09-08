@@ -1150,7 +1150,6 @@ AC_CONFIG_FILES([libabiword.pc
   src/wp/test/Makefile
   src/wp/test/unix/testwrap.sh
   src/wp/test/win/testwrap.sh
-  src/wp/test/xp/Makefile
   src/wp/main/Makefile
   src/wp/main/cocoa/bundle/Info.plist
   user/Makefile
@@ -1159,8 +1158,6 @@ AC_CONFIG_FILES([libabiword.pc
   user/wp/dictionary/Makefile
   user/wp/templates/Makefile
   tools/Makefile
-  tools/cdump/Makefile
-  tools/cdump/xp/Makefile
   com.abisource.AbiWord.appdata.xml
 ])
 AC_OUTPUT
