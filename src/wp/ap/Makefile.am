@@ -206,13 +206,13 @@ libap_la_SOURCES = \
 	xp/ap_Toolbar_Layouts.cpp \
 	xp/ap_TopRuler.cpp \
 	xp/ap_TopRuler.h \
-	xp/ap_wp_sidebar.cpp \
 	xp/ap_RDFContact.h \
 	xp/ap_RDFContact.cpp \
 	xp/ap_RDFEvent.h \
 	xp/ap_RDFEvent.cpp \
 	xp/ap_RDFLocation.h \
-	xp/ap_RDFLocation.cpp
+	xp/ap_RDFLocation.cpp \
+	ap_wp_sidebar.cpp
 
 if ENABLE_SPELL
 libap_la_SOURCES += \
