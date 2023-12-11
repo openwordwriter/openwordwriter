@@ -26,6 +26,7 @@
 #include <algorithm>
 
 #include <libxml/uri.h>
+#include <libxml/xmlmemory.h>
 
 #include <glib.h>
 
