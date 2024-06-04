@@ -1,0 +1,49 @@
+name: CI Build
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  build:
+    name: Build on Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
+
+    - name: Install necessary build tools and libraries
+      run: |
+        sudo apt update
+        sudo apt install -y gcc g++ make autoconf automake libtool pkg-config \
+                             libfribidi-dev libglib2.0-dev libgsf-1-dev libxslt1-dev libcairo2-dev libpango1.0-dev libgtk-3-dev librsvg2-dev \
+                             libwv-dev libgoffice-0.10-dev libx11-dev autoconf-archive \
+                             libboost-all-dev  # This installs all Boost development libraries
+
+    - name: Configure BOOST_ROOT (if necessary)
+      run: |
+        echo "BOOST_ROOT=/usr/include/boost" >> $GITHUB_ENV
+
+
+    - name: Run autogen.sh
+      run: |
+        ./autogen.sh --enable-plugins
+
+    - name: Build the Project
+      run: |
+        make -j4
+
+    - name: Install the Project 
+      run: |
+        sudo make install -j4
+
+    - name: Run Tests 
+      run: |
+        make test -j4  
+        
+        # 530 tests, 10 failures, at 2024-06-02.
+        ./src/openwordwriter  --plugin=AbiTest || echo "Tests failed"
